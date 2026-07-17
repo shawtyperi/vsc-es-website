@@ -1,0 +1,2170 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VSC - ES (Empeo Support) - ระบบแจ้งปัญหาการใช้งานสำหรับพนักงาน</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Sarabun, Inter, Padauk (for Burmese) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Padauk:wght@400;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', 'Padauk', 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .form-card {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col">
+
+    <!-- NAVIGATION_BAR -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <div class="p-2 bg-indigo-600 rounded-lg text-white">
+                        <i class="fa-solid fa-square-poll-horizontal text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">VSC - ES <span class="text-xs font-semibold text-slate-500" data-i18n="navbar_subtitle">(Empeo Support)</span></span>
+                </div>
+                
+                <div class="flex items-center gap-2 sm:gap-4">
+                    <!-- Language Switcher Pill -->
+                    <div class="flex items-center border border-slate-200 bg-slate-50 p-1 rounded-xl shadow-sm">
+                        <button onclick="changeLanguage('th')" id="lang-btn-th" class="px-2 py-1 text-xs font-bold rounded-lg transition-all bg-indigo-600 text-white shadow-sm">
+                            TH
+                        </button>
+                        <button onclick="changeLanguage('my')" id="lang-btn-my" class="px-2 py-1 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-800">
+                            မြန်မာ
+                        </button>
+                    </div>
+
+                    <!-- User Profile & Logout -->
+                    <div id="user-profile-badge" class="hidden flex items-center gap-2">
+                        <span class="text-xs font-semibold text-slate-600 hidden sm:inline">
+                            <span data-i18n="hello">สวัสดี, คุณ</span> 
+                            <span id="user-display-name" class="text-indigo-600 font-bold"></span>
+                        </span>
+                        <button onclick="handleLogout()" class="text-xs bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-3 py-1.5 rounded-xl border border-red-200 transition-all">
+                            <i class="fa-solid fa-right-from-bracket mr-1"></i> <span data-i18n="logout">ออกจากระบบ</span>
+                        </button>
+                    </div>
+
+                    <!-- Subtle Admin Setup Button (Gear Icon) -->
+                    <button onclick="openAdminAuth()" class="text-slate-400 hover:text-indigo-600 p-2 rounded-full hover:bg-slate-100 transition-all" title="ตั้งค่าระบบเชื่อมต่อ Google Sheets">
+                        <i class="fa-solid fa-gear text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN_PORTAL_CONTAINER -->
+    <main class="flex-grow max-w-3xl w-full mx-auto px-4 py-8 flex flex-col justify-center">
+        
+        <!-- Toast Notification Container -->
+        <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+        <!-- 1. LOGIN_SCREEN_SECTION (Default Screen) -->
+        <div id="login-section" class="max-w-md w-full mx-auto bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 form-card">
+            <div class="text-center mb-6">
+                <div class="h-14 w-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm border border-indigo-100">
+                    <i class="fa-solid fa-user-shield text-2xl"></i>
+                </div>
+                <h2 class="text-xl font-bold text-slate-800" data-i18n="login_title">เข้าสู่ระบบพนักงาน VSC</h2>
+                <p class="text-xs text-slate-400 mt-1" data-i18n="login_desc">กรุณาระบุข้อมูลบัญชีของคุณเพื่อเข้ายื่นแก้ไขและติดตามงานส่วนบุคคล</p>
+            </div>
+
+            <form id="login-form" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1.5"><span data-i18n="email_label">อีเมลผู้ใช้งาน</span> <span class="text-red-500">*</span></label>
+                    <input type="email" id="login-email" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm" data-placeholder="email_placeholder" placeholder="เช่น yourname@email.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1.5 flex justify-between">
+                        <span><span data-i18n="password_label">รหัสผ่าน</span> <span class="text-red-500">*</span></span>
+                        <button type="button" onclick="switchAuthMode('forgot')" class="text-xs text-indigo-600 hover:underline" data-i18n="forgot_pwd_btn">ลืมรหัสผ่าน?</button>
+                    </label>
+                    <div class="relative">
+                        <input type="password" id="login-password" required class="w-full pl-4 pr-10 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm" placeholder="••••••••">
+                        <button type="button" onclick="togglePasswordVisibility('login-password', 'login-password-icon')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 focus:outline-none transition-all">
+                            <i id="login-password-icon" class="fa-solid fa-eye text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold py-3 rounded-xl transition-all shadow-md text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> <span data-i18n="login_btn">เข้าสู่ระบบ</span>
+                </button>
+            </form>
+
+            <div class="mt-6 pt-6 border-t border-slate-100 text-center">
+                <p class="text-xs text-slate-500" data-i18n="no_account">ยังไม่ได้ลงทะเบียนเข้าใช้งาน?</p>
+                <button onclick="switchAuthMode('register')" class="mt-2 text-xs text-indigo-600 hover:text-indigo-800 font-bold transition-all underline" data-i18n="go_register">
+                    สมัครสมาชิกใหม่ที่นี่
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. REGISTER_SCREEN_SECTION (With Email OTP Verification) -->
+        <div id="register-section" class="max-w-md w-full mx-auto bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 form-card hidden">
+            <div class="text-center mb-6">
+                <div class="h-14 w-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm border border-emerald-100">
+                    <i class="fa-solid fa-user-plus text-2xl"></i>
+                </div>
+                <h2 class="text-xl font-bold text-slate-800" data-i18n="register_title">สมัครสมาชิกและยืนยันตัวตน</h2>
+                <p class="text-xs text-slate-400 mt-1" data-i18n="register_desc">ใช้อีเมลใดก็ได้เพื่อสมัคร ระบบจะจัดส่ง OTP ไปตรวจสอบเพื่อความปลอดภัย</p>
+            </div>
+
+            <form id="register-form" onsubmit="handleRegisterSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1.5"><span data-i18n="reg_email_label">ระบุอีเมลสมัครใช้งาน</span> <span class="text-red-500">*</span></label>
+                    <div class="flex gap-2">
+                        <input type="email" id="reg-email" required class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm" data-placeholder="email_placeholder" placeholder="เช่น myemail@gmail.com">
+                        <button type="button" id="reg-send-otp-btn" onclick="sendRegisterOTP()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-2.5 rounded-xl text-xs transition-all shrink-0" data-i18n="reg_send_otp_btn">
+                            ขอรับ OTP
+                        </button>
+                    </div>
+                </div>
+
+                <!-- OTP Input Container -->
+                <div id="reg-otp-container" class="hidden bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="block text-xs font-bold text-slate-700"><span data-i18n="reg_otp_label">ระบุรหัส OTP 6 หลักที่ได้รับในอีเมลของคุณ</span> <span class="text-red-500">*</span></label>
+                        <span id="reg-otp-timer" class="text-[10px] text-red-500 font-bold"></span>
+                    </div>
+                    <input type="text" id="reg-otp" maxlength="6" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none text-center text-lg tracking-widest font-mono" placeholder="000000">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1.5"><span data-i18n="reg_password_label">ตั้งรหัสผ่านสำหรับเข้าสู่ระบบ</span> <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                        <input type="password" id="reg-password" required minlength="4" class="w-full pl-4 pr-10 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm" data-placeholder="reg_password_placeholder" placeholder="รหัสผ่านขั้นต่ำ 4 ตัวอักษร">
+                        <button type="button" onclick="togglePasswordVisibility('reg-password', 'reg-password-icon')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 focus:outline-none transition-all">
+                            <i id="reg-password-icon" class="fa-solid fa-eye text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <hr class="border-slate-100 my-4">
+                
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1.5"><span data-i18n="reg_name_label">ชื่อ-นามสกุลจริง</span> <span class="text-red-500">*</span></label>
+                    <input type="text" id="reg-name" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm" data-placeholder="reg_name_placeholder" placeholder="เช่น นายสมชาย ดีใจ">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5"><span data-i18n="reg_nickname_label">ชื่อเล่น</span> <span class="text-red-500">*</span></label>
+                        <input type="text" id="reg-nickname" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm" data-placeholder="reg_nickname_placeholder" placeholder="สมชาย">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5"><span data-i18n="reg_position_label">ตำแหน่ง</span> <span class="text-red-500">*</span></label>
+                        <select id="reg-position" required onchange="handleRegisterPositionChange(this.value)" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-xs font-medium">
+                            <option value="" disabled selected data-i18n="reg_position_placeholder">เลือกตำแหน่ง</option>
+                            <option value="VCM - Smart Production">VCM - Smart Production</option>
+                            <option value="VCM - Warehouse">VCM - Warehouse</option>
+                            <option value="VCM - TOE">VCM - TOE</option>
+                            <option value="VCM - Quality Control">VCM - Quality Control</option>
+                            <option value="VCM - Quality Assurance">VCM - Quality Assurance</option>
+                            <option value="อื่นๆ" data-i18n="reg_position_other_opt">อื่นๆ (ระบุเพิ่มเติม)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Custom Position Specification Input Container -->
+                <div id="reg-position-other-container" class="hidden mt-3">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1.5"><span data-i18n="reg_position_other_label">ระบุตำแหน่งงานอื่นๆ ของท่าน</span> <span class="text-red-500">*</span></label>
+                    <input type="text" id="reg-position-other" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm" placeholder="">
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold py-3 rounded-xl transition-all shadow-md text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="reg_submit_btn">ยืนยันการลงทะเบียน</span>
+                </button>
+            </form>
+
+            <div class="mt-6 pt-6 border-t border-slate-100 text-center">
+                <p class="text-xs text-slate-500" data-i18n="already_has_account">มีบัญชีผู้ใช้งานระบบนี้อยู่แล้ว?</p>
+                <button onclick="switchAuthMode('login')" class="mt-2 text-xs text-indigo-600 hover:text-indigo-800 font-bold transition-all underline" data-i18n="go_login">
+                    กลับไปหน้าล็อกอินเข้าใช้งาน
+                </button>
+            </div>
+        </div>
+
+        <!-- 3. FORGOT_PASSWORD_SCREEN_SECTION -->
+        <div id="forgot-section" class="max-w-md w-full mx-auto bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 form-card hidden">
+            <div class="text-center mb-6">
+                <div class="h-14 w-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm border border-amber-100">
+                    <i class="fa-solid fa-key text-2xl"></i>
+                </div>
+                <h2 class="text-xl font-bold text-slate-800" data-i18n="forgot_title">เปลี่ยนรหัสผ่าน / ลืมรหัสผ่าน</h2>
+                <p class="text-xs text-slate-400 mt-1" data-i18n="forgot_desc">กรุณาระบุอีเมลที่ลงทะเบียนไว้ ระบบจะจัดส่งรหัส OTP ปลดล็อกไปตรวจสอบที่อีเมลนั้น</p>
+            </div>
+
+            <form id="forgot-form" onsubmit="handleResetSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1.5"><span data-i18n="forgot_email_label">อีเมลที่ใช้สมัครของคุณ</span> <span class="text-red-500">*</span></label>
+                    <div class="flex gap-2">
+                        <input type="email" id="forgot-email" required class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm" data-placeholder="email_placeholder" placeholder="เช่น yourname@email.com">
+                        <button type="button" id="forgot-send-otp-btn" onclick="sendForgotOTP()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-2.5 rounded-xl text-xs transition-all shrink-0" data-i18n="reg_send_otp_btn">
+                            ขอรับ OTP
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Reset OTP Input Container -->
+                <div id="forgot-otp-container" class="hidden bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="block text-xs font-bold text-slate-700"><span data-i18n="forgot_otp_label">ระบุรหัส OTP 6 หลักที่ได้รับในอีเมล</span> <span class="text-red-500">*</span></label>
+                        <span id="forgot-otp-timer" class="text-[10px] text-red-500 font-bold"></span>
+                    </div>
+                    <input type="text" id="forgot-otp" maxlength="6" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none text-center text-lg tracking-widest font-mono" placeholder="000000">
+                    
+                    <hr class="border-slate-200 my-2">
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5"><span data-i18n="forgot_new_password_label">ตั้งรหัสผ่านใหม่</span> <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <input type="password" id="forgot-new-password" minlength="4" class="w-full pl-4 pr-10 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none text-sm" data-placeholder="reg_password_placeholder" placeholder="รหัสผ่านใหม่ขั้นต่ำ 4 ตัวอักษร">
+                            <button type="button" onclick="togglePasswordVisibility('forgot-new-password', 'forgot-new-password-icon')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 focus:outline-none transition-all">
+                                <i id="forgot-new-password-icon" class="fa-solid fa-eye text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold py-3 rounded-xl transition-all shadow-md text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-check"></i> <span data-i18n="forgot_submit_btn">ยืนยันเปลี่ยนรหัสผ่าน</span>
+                </button>
+            </form>
+
+            <div class="mt-6 pt-6 border-t border-slate-100 text-center">
+                <button onclick="switchAuthMode('login')" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold transition-all underline" data-i18n="go_login">
+                    กลับไปหน้าล็อกอินเข้าใช้งาน
+                </button>
+            </div>
+        </div>
+
+        <!-- 4. MAIN_APPLICATION_PORTAL -->
+        <div id="main-application-section" class="hidden space-y-8">
+            
+            <!-- Employee Form Card -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 form-card">
+                <h3 class="text-md font-bold text-slate-800 mb-4 flex items-center gap-2 pb-2 border-b border-slate-100">
+                    <i class="fa-solid fa-user-gear text-indigo-600"></i>
+                    <span data-i18n="form_personal_info">ข้อมูลพนักงานผู้ยื่นเรื่อง</span>
+                </h3>
+                <form id="issue-form" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                    
+                    <!-- Employee Personal Details (Pre-filled and Locked) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <!-- Employee Name -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-400 mb-2"><span data-i18n="form_name">ชื่อ-นามสกุล</span> <span class="text-xs text-slate-400" data-i18n="form_locked_info">(ผูกกับระบบล็อกอิน)</span></label>
+                            <input type="text" id="emp-name" readonly class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 outline-none cursor-not-allowed">
+                        </div>
+                        <!-- Employee Nickname -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-400 mb-2"><span data-i18n="form_nickname">ชื่อเล่น</span> <span class="text-xs text-slate-400" data-i18n="form_locked_info">(ผูกกับระบบล็อกอิน)</span></label>
+                            <input type="text" id="emp-nickname" readonly class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 outline-none cursor-not-allowed">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6">
+                        <!-- Job Position (Locked to login info) -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-400 mb-2"><span data-i18n="form_position">ตำแหน่ง</span> <span class="text-xs text-slate-400" data-i18n="form_locked_info">(ผูกกับระบบล็อกอิน)</span></label>
+                            <input type="text" id="emp-position" readonly class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 outline-none cursor-not-allowed">
+                        </div>
+                    </div>
+
+                    <hr class="border-slate-200 my-6">
+
+                    <!-- Issue Type Selection -->
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2"><span data-i18n="form_issue_type">ระบบที่มีปัญหาใน Empeo</span> <span class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                            <label class="relative flex flex-col p-4 border border-slate-300 rounded-xl cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/10 transition-all select-none">
+                                <input type="radio" name="issue-type" value="การลางาน" required onchange="handleIssueTypeSelect(this.value)" class="absolute top-4 right-4 text-indigo-600 focus:ring-indigo-500">
+                                <span class="font-bold text-slate-800"><i class="fa-solid fa-calendar-minus text-rose-500 mr-1.5"></i> <span data-i18n="form_issue_leave">การลางาน</span></span>
+                                <span class="text-xs text-slate-500 mt-1" data-i18n="form_issue_leave_desc">ยื่นลาในระบบไม่ได้ วันลาไม่ตรง หรือไม่ขึ้นวันลา</span>
+                            </label>
+                            <label class="relative flex flex-col p-4 border border-slate-300 rounded-xl cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/10 transition-all select-none">
+                                <input type="radio" name="issue-type" value="การกดขอโอที" onchange="handleIssueTypeSelect(this.value)" class="absolute top-4 right-4 text-indigo-600 focus:ring-indigo-500">
+                                <span class="font-bold text-slate-800"><i class="fa-solid fa-clock text-indigo-500 mr-1.5"></i> <span data-i18n="form_issue_ot">การกดขอโอที (OT)</span></span>
+                                <span class="text-xs text-slate-500 mt-1" data-i18n="form_issue_ot_desc">ระบบล่ม หัวหน้าตั้งกะไม่ตรง หรือลืมกด</span>
+                            </label>
+                            <label class="relative flex flex-col p-4 border border-slate-300 rounded-xl cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/10 transition-all select-none">
+                                <input type="radio" name="issue-type" value="กะการทำงานไม่ตรง" onchange="handleIssueTypeSelect(this.value)" class="absolute top-4 right-4 text-indigo-600 focus:ring-indigo-500">
+                                <span class="font-bold text-slate-800"><i class="fa-solid fa-calendar-days text-emerald-500 mr-1.5"></i> <span data-i18n="form_issue_shift">กะการทำงานไม่ตรง</span></span>
+                                <span class="text-xs text-slate-500 mt-1" data-i18n="form_issue_shift_desc">เวลาเข้าออกงานไม่ตรงตารางกะงาน ต้องการเปลี่ยนประเภทกะ</span>
+                            </label>
+                            <label class="relative flex flex-col p-4 border border-slate-300 rounded-xl cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/10 transition-all select-none">
+                                <input type="radio" name="issue-type" value="ปัญหาอื่น ๆ" onchange="handleIssueTypeSelect(this.value)" class="absolute top-4 right-4 text-indigo-600 focus:ring-indigo-500">
+                                <span class="font-bold text-slate-800"><i class="fa-solid fa-circle-question text-amber-500 mr-1.5"></i> <span data-i18n="form_issue_other">ปัญหาอื่น ๆ</span></span>
+                                <span class="text-xs text-slate-500 mt-1" data-i18n="form_issue_other_desc">ปัญหาเชิงเทคนิคอื่น ๆ เกี่ยวกับระบบ Empeo เท่านั้น</span>
+                            </label>
+                        </div>
+
+                        <!-- Dynamic Sub-form: การกดขอโอที -->
+                        <div id="ot-sub-container" class="hidden mt-4 bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+                            <label class="block text-sm font-semibold text-slate-700" data-i18n="form_ot_reason">สาเหตุที่กดขอโอทีไม่ได้</label>
+                            <select id="ot-reason-type" onchange="handleOtReasonChange(this.value)" class="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm outline-none">
+                                <option value="ระบบมีปัญหา / ระบบล่ม ไม่สามารถกดได้" data-i18n="form_ot_opt_system">ระบบมีปัญหา / ระบบล่ม ไม่สามารถกดได้</option>
+                                <option value="หัวหน้าตั้งกะไม่ตรง" data-i18n="form_ot_opt_chief">หัวหน้าตั้งกะไม่ตรง</option>
+                                <option value="ลืมกด" data-i18n="form_ot_opt_forgot">ลืมกด (จะไม่สามารถกดย้อนหลังให้ได้)</option>
+                            </select>
+                            <!-- Warning banner for 'Forgot to press' -->
+                            <div id="ot-warning-banner" class="hidden bg-rose-50 border border-rose-200 rounded-lg p-3 text-rose-700 text-xs flex items-start gap-2">
+                                <i class="fa-solid fa-triangle-exclamation text-base mt-0.5 shrink-0"></i>
+                                <div>
+                                    <span class="font-bold text-sm block mb-0.5" data-i18n="warning_title">⚠️ โปรดทราบ</span>
+                                    <span data-i18n="warning_forgot_ot">สำหรับกรณีที่พนักงานลืมกดขอโอทีด้วยตนเอง ฝ่ายบุคคลจะไม่สามารถดำเนินการขออนุมัติหรือกดย้อนหลังให้ได้ในทุกกรณีตามระเบียบของระบบ Empeo</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Sub-form: กะการทำงานไม่ตรง -->
+                        <div id="shift-sub-container" class="hidden mt-4 bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+                            <p class="text-xs text-indigo-600 font-semibold mb-2"><i class="fa-solid fa-circle-info"></i> <span data-i18n="form_shift_info_banner">กรุณาระบุข้อมูลรายละเอียดการขอปรับปรุงกะให้ครบถ้วนเพื่อความรวดเร็วในการแก้ไข</span></p>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="form_shift_type">ประเภทกะ <span class="text-red-500">*</span></label>
+                                    <select id="shift-time-type" onchange="updateShiftTimeOptions()" class="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm outline-none">
+                                        <option value="กะกลางวัน" data-i18n="form_shift_day">กะกลางวัน</option>
+                                        <option value="กะกลางคืน" data-i18n="form_shift_night">กะกลางคืน</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="form_shift_target">กะที่ต้องการแก้ไข (เวลา) <span class="text-red-500">*</span></label>
+                                    <select id="shift-target" class="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm outline-none">
+                                        <!-- Will be dynamically populated by JS -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="form_shift_side">ฝั่งการทำงาน <span class="text-red-500">*</span></label>
+                                    <select id="shift-side" class="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm outline-none">
+                                        <option value="ฝั่งสุก" data-i18n="form_shift_side_cooked">ฝั่งสุก</option>
+                                        <option value="ฝั่งดิบ" data-i18n="form_shift_side_raw">ฝั่งดิบ</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Sub-form: ปัญหาอื่นๆ -->
+                        <div id="other-issue-container" class="hidden mt-4 bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+                            <div class="flex gap-2 items-center text-amber-700 text-xs mb-1">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <span data-i18n="form_other_warning">หมายเหตุ: โปรดระบุปัญหาเชิงเทคนิคที่เกี่ยวข้องกับระบบ Empeo เท่านั้น</span>
+                            </div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1" data-i18n="form_other_custom_label">ระบุรายละเอียดประเภทปัญหาอื่น ๆ <span class="text-red-500">*</span></label>
+                            <input type="text" id="issue-type-custom" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-sm" placeholder="">
+                        </div>
+                    </div>
+
+                    <!-- Date of Correction Request -->
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2"><span data-i18n="form_date_label">วันที่ต้องการแก้ไข</span> <span class="text-red-500">*</span></label>
+                        <input type="date" id="issue-date" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
+                    </div>
+
+                    <!-- Issue Description -->
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2"><span data-i18n="form_desc_label">รายละเอียดปัญหา หรือเหตุผลประกอบในการขอแก้ไข</span> <span class="text-red-500">*</span></label>
+                        <textarea id="issue-desc" rows="4" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" data-placeholder="form_desc_placeholder" placeholder="กรุณาอธิบายปัญหาโดยสังเขป เช่น 'ขอลาฉุกเฉินวันที่ 15 ย้อนหลัง เนื่องจากระบบปิดการทำรายการไปแล้ว'"></textarea>
+                    </div>
+
+                    <!-- Screenshot Attachment (MANDATORY & MULTIPLE) -->
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2"><span data-i18n="form_file_label">แนบรูปภาพหรือภาพหน้าจอ (Screenshot) หลักฐานปัญหา</span> <span class="text-red-500">*</span></label>
+                        <div class="flex items-center justify-center w-full">
+                            <label id="file-dropzone" class="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-rose-300 hover:border-indigo-500 rounded-2xl cursor-pointer bg-rose-50/20 hover:bg-indigo-50/5 transition-all relative">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-rose-400 mb-2" id="upload-icon"></i>
+                                    <p class="text-xs text-slate-500" id="dropzone-text-1"><span class="font-semibold text-indigo-600" data-i18n="form_file_dropzone">คลิกที่นี่เพื่อเลือกภาพ</span></p>
+                                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="form_file_warning">ไฟล์รูปภาพ (PNG, JPG, JPEG) ขนาดไม่เกิน 2MB ต่อไฟล์</p>
+                                    <p id="file-name-display" class="text-xs text-emerald-600 mt-2 hidden font-bold"></p>
+                                </div>
+                                <input type="file" id="issue-file" accept="image/*" multiple class="hidden" onchange="handleFileChange(event)">
+                            </label>
+                        </div>
+                        
+                        <!-- Previews grid container -->
+                        <div id="image-preview-container" class="mt-4 hidden">
+                            <p class="text-xs text-slate-500 mb-2"><span data-i18n="form_file_preview_count">รูปภาพหลักฐานที่เลือกยื่นส่ง</span> (<span id="preview-count-text">0</span>/5 <span data-i18n="form_file_count_unit">รูป</span>):</p>
+                            <div id="previews-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="submit-btn" class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-md">
+                        <i class="fa-solid fa-paper-plane"></i> <span data-i18n="form_submit_btn">ส่งรายงานปัญหาระบบและบันทึกรูปภาพ</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Personal History / Confirmation Log -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 form-card">
+                <h3 class="text-sm font-bold text-slate-700 mb-4 flex items-center justify-between">
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-history text-indigo-500"></i>
+                        <span data-i18n="history_title">ประวัติการส่งรายงานล่าสุดของคุณบนเครื่องนี้</span>
+                    </span>
+                    <button onclick="checkReportStatusAutomated(true)" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1 px-2.5 py-1.5 rounded-xl hover:bg-indigo-50 transition-all border border-indigo-100">
+                        <i class="fa-solid fa-rotate text-[10px]" id="refresh-icon"></i> <span data-i18n="history_refresh">รีเฟรชสถานะ</span>
+                    </button>
+                </h3>
+                <div id="local-history-list" class="space-y-3">
+                    <!-- Populated dynamically by JS -->
+                    <div class="text-center py-4 text-xs text-slate-400">
+                        <p data-i18n="history_empty">ยังไม่มีการยื่นรายงานในเซสชันนี้</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- MODAL: Password Verification for Admin Setup (Strictly confidential) -->
+    <div id="admin-auth-modal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <button onclick="closeAdminAuth()" class="absolute top-4 right-4 bg-slate-100 hover:bg-slate-200 text-slate-700 h-8 w-8 rounded-full flex items-center justify-center transition-all">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="h-12 w-12 bg-violet-100 text-violet-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fa-solid fa-lock text-xl"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 text-lg">ยืนยันตัวตน (for HR / IT)</h3>
+                <p class="text-xs text-slate-400 mt-1">กรุณากรอกรหัสผ่านควบคุมความปลอดภัยเพื่อตั้งค่าปลายทาง Google Sheets</p>
+            </div>
+            <div class="space-y-4">
+                <div class="relative">
+                    <input type="password" id="admin-password-input" class="w-full pl-4 pr-12 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-center text-lg tracking-widest" placeholder="••••">
+                    <button type="button" onclick="togglePasswordVisibility('admin-password-input', 'admin-password-icon')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 focus:outline-none transition-all">
+                        <i id="admin-password-icon" class="fa-solid fa-eye text-base"></i>
+                    </button>
+                </div>
+                <button onclick="verifyAdminPassword()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition-all">
+                    ยืนยันรหัสผ่าน
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Settings & Google Sheets Setup Guide -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4 overflow-y-auto backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative my-8">
+            <button onclick="closeSettings()" class="absolute top-4 right-4 bg-slate-100 hover:bg-slate-200 text-slate-700 h-8 w-8 rounded-full flex items-center justify-center transition-all">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <h2 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2 border-b border-slate-100 pb-3">
+                <i class="fa-solid fa-gears text-indigo-600"></i>
+                ตั้งค่าเส้นทางการเชื่อมต่อ Google Sheets (Auto Sync)
+            </h2>
+
+            <!-- Configuration Box -->
+            <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 mb-6 mt-4">
+                <h3 class="text-indigo-800 text-xs font-semibold mb-2"><i class="fa-solid fa-link"></i> ลิงก์เว็บแอปสคริปต์ (Apps Script Web App URL)</h3>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <input type="url" id="sheet-api-url" class="flex-1 px-3 py-2 rounded-xl border border-indigo-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-xs" placeholder="https://script.google.com/macros/s/XXXXX/exec">
+                    <button onclick="saveSheetUrl()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-xl transition-all text-xs shrink-0">
+                        บันทึกการเชื่อมโยง
+                    </button>
+                </div>
+                <p class="text-[10px] text-indigo-600 mt-2"><i class="fa-solid fa-circle-info"></i> เมื่อบันทึกแล้ว ข้อมูลปัญหาใหม่ทั้งหมดจะถูกส่งเข้าตารางนี้และรูปจะบันทึกลง Google Drive ของท่านทันที</p>
+            </div>
+
+            <!-- Deployment Stepper -->
+            <h3 class="text-sm font-bold text-slate-800 mb-3"><i class="fa-solid fa-list-ol mr-1.5 text-indigo-600"></i> วิธีปรับปรุงสคริปต์ลง Google Sheets และเพิ่มฟังก์ชันอัปโหลดรูปเข้า Drive:</h3>
+            
+            <div class="space-y-4 text-xs text-slate-600 max-h-[350px] overflow-y-auto pr-2">
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-1">1. เตรียมคอลัมน์ใน Google Sheets</h4>
+                    <p class="mb-1">เปิดชีทของคุณและจัดวางแถวแรก (Row 1) ด้วยคอลัมน์ต่อไปนี้ตามลำดับ:</p>
+                    <div class="bg-slate-100 p-2 rounded text-[10px] font-mono overflow-x-auto text-slate-700 select-all mb-2">
+                        วันเวลาที่แจ้ง | ชื่อ-นามสกุล | ชื่อเล่น | ตำแหน่ง | ประเภทปัญหา | วันที่ต้องการแก้ไข | รายละเอียดปัญหา | สถานะ | ลิงก์รูปหลักฐานบน Google Drive | ผลการแก้ไข | รหัสอ้างอิง (ID) | อีเมลผู้แจ้ง
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-1">2. เปิดใช้งาน Apps Script</h4>
+                    <p>เปิดไปที่ชีทของคุณและเลือกเมนูด้านบน <strong>ส่วนขยาย (Extensions)</strong> -> <strong>Apps Script</strong></p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-1">3. คัดลอกและวางโค้ด Apps Script</h4>
+                    <div class="relative mt-1">
+                        <button onclick="copyAppsScriptCode()" class="absolute right-2 top-2 bg-slate-800 hover:bg-slate-700 text-white text-[10px] px-2 py-1 rounded flex items-center gap-1">
+                            <i class="fa-regular fa-copy"></i> คัดลอกโค้ด
+                        </button>
+                        <pre id="apps-script-code" class="bg-slate-900 text-slate-100 p-3 rounded-xl text-[10px] font-mono overflow-x-auto select-all max-h-56 border border-slate-800">
+// [ฟังก์ชันสําคัญ] สำหรับกดเรียกใช้ (Run) ครั้งแรก เพื่อให้ระบบขออนุมัติสิทธิ์เข้าใช้งาน Google Drive &amp; ส่งเมล Gmail
+function runFirstTimeAuthorization() {
+  var folderName = "VSC Empeo Screenshots";
+  var folders = DriveApp.getFoldersByName(folderName);
+  var folder;
+  if (folders.hasNext()) {
+    folder = folders.next();
+  } else {
+    folder = DriveApp.createFolder(folderName);
+  }
+  
+  // ตรวจสอบและสร้างหน้า "Email-Active" ไว้รองรับผู้สมัคร
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName("Email-Active");
+  if (!sheet) {
+    sheet = ss.insertSheet("Email-Active");
+    sheet.appendRow(["อีเมล", "รหัสผ่าน", "ชื่อ-นามสกุล", "ชื่อเล่น", "ตำแหน่ง", "วันที่สมัคร"]);
+  }
+  Logger.log("อนุมัติสิทธิ์สำเร็จแล้ว! โฟลเดอร์ปลายทางใน Drive คือ: " + folder.getName());
+}
+
+// ฟังก์ชันสำหรับดึงสถานะการแก้ไขกลับไปแสดงที่พนักงานแบบอัตโนมัติ (doGet)
+function doGet(e) {
+  if (e.parameter.action === "checkStatus" && e.parameter.ids) {
+    try {
+      var ss = SpreadsheetApp.getActiveSpreadsheet();
+      var sheet = ss.getSheets()[0];
+      var data = sheet.getDataRange().getValues();
+      
+      var requestedIds = e.parameter.ids.split(",");
+      var results = {};
+      
+      // ค้นหาเรื่องแจ้งที่ระบุ ID
+      for (var i = 1; i < data.length; i++) {
+        var row = data[i];
+        var rowId = row[10] ? row[10].toString().trim() : ""; // คอลัมน์ K (รหัสอ้างอิง)
+        
+        // ค้นหาเผื่อแอดมินสลับคอลัมน์
+        if (!rowId) {
+          for (var col = 0; col < row.length; col++) {
+            if (row[col] && row[col].toString().indexOf("REP-") === 0) {
+              rowId = row[col].toString().trim();
+              break;
+            }
+          }
+        }
+        
+        if (rowId && requestedIds.indexOf(rowId) !== -1) {
+          var columnJValue = row[9] ? row[9].toString().trim() : ""; // คอลัมน์ J (ผลการแก้ไข)
+          var columnHValue = row[7] ? row[7].toString().trim() : ""; // คอลัมน์ H (สถานะ)
+          
+          var statusText = "รอดำเนินการ";
+          // ถ้ามีคำว่า "แก้ไขแล้ว" ในคอลัมน์ J หรือคอลัมน์ H ให้เป็น ดำเนินการเรียบร้อย
+          if (columnJValue.indexOf("แก้ไขแล้ว") !== -1 || columnHValue.indexOf("แก้ไขแล้ว") !== -1 || columnJValue.indexOf("ดำเนินการเรียบร้อย") !== -1) {
+            statusText = "ดำเนินการเรียบร้อย";
+          } else if (columnJValue) {
+            statusText = columnJValue; // โชว์ข้อความที่แอดมินพิมพ์ใน J
+          } else if (columnHValue) {
+            statusText = columnHValue;
+          }
+          
+          results[rowId] = statusText;
+        }
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({
+        "status": "success",
+        "results": results
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+    } catch(err) {
+      return ContentService.createTextOutput(JSON.stringify({
+        "status": "error",
+        "message": err.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  // รองรับการ Login และดึงประวัติของพนักงานเฉพาะคนผ่าน doGet
+  if (e.parameter.action === "getHistory" && e.parameter.email) {
+    try {
+      var ss = SpreadsheetApp.getActiveSpreadsheet();
+      var sheet = ss.getSheets()[0];
+      var data = sheet.getDataRange().getValues();
+      
+      var targetEmail = e.parameter.email.toString().trim().toLowerCase();
+      var userHistory = [];
+      
+      for (var i = 1; i < data.length; i++) {
+        var row = data[i];
+        var rowEmail = row[11] ? row[11].toString().trim().toLowerCase() : "";
+        
+        if (rowEmail === targetEmail) {
+          var columnJValue = row[9] ? row[9].toString().trim() : "";
+          var columnHValue = row[7] ? row[7].toString().trim() : "";
+          
+          var statusText = "รอดำเนินการ";
+          if (columnJValue.indexOf("แก้ไขแล้ว") !== -1 || columnHValue.indexOf("แก้ไขแล้ว") !== -1 || columnJValue.indexOf("ดำเนินการเรียบร้อย") !== -1) {
+            statusText = "ดำเนินการเรียบร้อย";
+          } else if (columnJValue) {
+            statusText = columnJValue;
+          } else if (columnHValue) {
+            statusText = columnHValue;
+          }
+
+          userHistory.push({
+            id: row[10] ? row[10].toString().trim() : "REP-" + i,
+            issueType: row[4] ? row[4].toString() : "",
+            issueDate: row[5] ? row[5].toString() : "",
+            createdTime: row[0] ? row[0].toString() : "",
+            status: statusText,
+            syncStatus: "Synced"
+          });
+        }
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({
+        "status": "success",
+        "history": userHistory
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+    } catch(err) {
+      return ContentService.createTextOutput(JSON.stringify({
+        "status": "error",
+        "message": err.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  return ContentService.createTextOutput(JSON.stringify({
+    "status": "success",
+    "message": "ระบบ VSC - ES (Empeo Support) API พร้อมทำงานบนตารางงานปัจจุบันแล้ว!"
+  }))
+  .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ค้นหาแถวของอีเมลในชีท Email-Active (ส่งกลับดัชนีแถวแบบ 1-Based)
+function findEmailRow(email, ss) {
+  var sheet = ss.getSheetByName("Email-Active");
+  if (!sheet) {
+    return -1;
+  }
+  var data = sheet.getDataRange().getValues();
+  email = email.trim().toLowerCase();
+  for (var i = 0; i < data.length; i++) {
+    if (data[i][0] && data[i][0].toString().trim().toLowerCase() === email) {
+      return i + 1; // 1-based row index
+    }
+  }
+  return -1;
+}
+
+// ฟังก์ชันส่งเมลแบบป้องกันล้มเหลว (Safe Mail Sender)
+function sendEmailWithFallback(email, subject, bodyText) {
+  try {
+    MailApp.sendEmail({
+      to: email,
+      subject: subject,
+      body: bodyText
+    });
+    return true;
+  } catch (err1) {
+    try {
+      GmailApp.sendEmail(email, subject, bodyText);
+      return true;
+    } catch (err2) {
+      Logger.log("ไม่สามารถส่งอีเมลได้: " + err2.toString());
+      throw new Error("ระบบบล็อกการส่งเมลของ Google ชั่วคราว กรุณาติดต่อ HR/IT: " + err2.toString());
+    }
+  }
+}
+
+// ฟังก์ชันหลักในการรับข้อมูลปัญหาและรูปภาพหน้าจอ
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    // A. ส่ง OTP สำหรับการลงทะเบียน (Register OTP)
+    if (data.action === "sendRegisterOTP") {
+      var email = data.email.trim().toLowerCase();
+      
+      var sheet = ss.getSheetByName("Email-Active");
+      if (!sheet) {
+        sheet = ss.insertSheet("Email-Active");
+        sheet.appendRow(["อีเมล", "รหัสผ่าน", "ชื่อ-นามสกุล", "ชื่อเล่น", "ตำแหน่ง", "วันที่สมัคร"]);
+      }
+      
+      var emailRow = findEmailRow(email, ss);
+      if (emailRow !== -1) {
+        var existingPassword = sheet.getRange(emailRow, 2).getValue().toString().trim();
+        if (existingPassword !== "") {
+          return ContentService.createTextOutput(JSON.stringify({
+            "status": "error",
+            "message": "อีเมลนี้ผ่านการลงทะเบียนเข้าใช้เรียบร้อยแล้ว ท่านสามารถล็อกอินได้ทันที"
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+      
+      // สร้าง OTP 6 หลัก และเก็บใน cache (มีอายุ 10 นาที)
+      var otp = Math.floor(100000 + Math.random() * 900000).toString();
+      var cache = CacheService.getScriptCache();
+      cache.put("OTP_REG_" + email, otp, 600); // 10 นาที
+      
+      // ส่งอีเมลหาพนักงานโดยตรง
+      var subject = "รหัส OTP สำหรับยืนยันตัวตนระบบ VSC - ES (Empeo Support)";
+      var bodyText = "สวัสดีครับ,\n\nรหัสยืนยันตัวตน (OTP) สำหรับเปิดใช้งานบัญชี VSC - ES (Empeo Support) ของคุณคือ: " + otp + "\n\nรหัสนี้มีอายุใช้งาน 10 นาที หากคุณไม่ได้ส่งคำขอนี้ กรุณาติดต่อแอดมิน\n\nด้วยความเคารพ,\nฝ่ายทรัพยากรบุคคล (HR)";
+      
+      sendEmailWithFallback(email, subject, bodyText);
+      
+      return ContentService.createTextOutput(JSON.stringify({
+        "status": "success",
+        "message": "ส่งรหัส OTP ไปที่อีเมลของท่านเรียบร้อยแล้ว กรุณาเปิดกล่องข้อความตรวจสอบ"
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // B. ฟังก์ชันการลงทะเบียนพนักงานใหม่ (Register) -> สมัครได้ทุกคนแล้วเอาข้อมูลบันทึกใน Email-Active
+    if (data.action === "register") {
+      var email = data.email.trim().toLowerCase();
+      var otpSubmitted = data.otp.toString().trim();
+      
+      // ตรวจสอบ OTP ใน Cache
+      var cache = CacheService.getScriptCache();
+      var cachedOtp = cache.get("OTP_REG_" + email);
+      if (!cachedOtp || cachedOtp !== otpSubmitted) {
+        return ContentService.createTextOutput(JSON.stringify({
+          "status": "error",
+          "message": "รหัส OTP ไม่ถูกต้อง หรือหมดอายุแล้ว กรุณากดขอ OTP ใหม่อีกครั้ง"
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      var sheet = ss.getSheetByName("Email-Active");
+      if (!sheet) {
+        sheet = ss.insertSheet("Email-Active");
+        sheet.appendRow(["อีเมล", "รหัสผ่าน", "ชื่อ-นามสกุล", "ชื่อเล่น", "ตำแหน่ง", "วันที่สมัคร"]);
+      }
+      
+      var emailRow = findEmailRow(email, ss);
+      
+      if (emailRow !== -1) {
+        // มีแถวอีเมลนี้อยู่แล้ว (เช่น แอดมินสร้างไว้แต่แรก) ให้เขียนรหัสผ่านและข้อมูลทับ
+        sheet.getRange(emailRow, 2).setValue(data.password.toString().trim());
+        sheet.getRange(emailRow, 3).setValue(data.name.toString().trim());
+        sheet.getRange(emailRow, 4).setValue(data.nickname.toString().trim());
+        sheet.getRange(emailRow, 5).setValue(data.position.toString().trim());
+        sheet.getRange(emailRow, 6).setValue(new Date());
+      } else {
+        // ยังไม่มีข้อมูลอีเมลนี้เลย ให้ Append แถวใหม่ทันที
+        sheet.appendRow([
+          email,
+          data.password.toString().trim(),
+          data.name.toString().trim(),
+          data.nickname.toString().trim(),
+          data.position.toString().trim(),
+          new Date()
+        ]);
+      }
+      
+      // ล้าง OTP ออกหลังจากใช้งานแล้ว
+      cache.remove("OTP_REG_" + email);
+      
+      return ContentService.createTextOutput(JSON.stringify({
+        "status": "success",
+        "message": "ลงทะเบียนพนักงานสำเร็จแล้ว!"
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // C. ส่ง OTP สำหรับเปลี่ยนรหัสผ่าน (Reset Password OTP)
+    if (data.action === "sendResetOTP") {
+      var email = data.email.trim().toLowerCase();
+      
+      var sheet = ss.getSheetByName("Email-Active");
+      if (!sheet) {
+        return ContentService.createTextOutput(JSON.stringify({
+          "status": "error",
+          "message": "ระบบเก็บฐานข้อมูลยังไม่ได้เริ่มต้นสมัครใช้งาน (ไม่พบชีท Email-Active)"
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      var emailRow = findEmailRow(email, ss);
+      if (emailRow === -1) {
+        return ContentService.createTextOutput(JSON.stringify({
+          "status": "error",
+          "message": "ไม่พบอีเมลนี้ในระบบสมัครใช้งาน กรุณาลงทะเบียนสมาชิกใหม่ก่อนครับ"
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      var existingPassword = sheet.getRange(emailRow, 2).getValue().toString().trim();
+      if (existingPassword === "") {
+        return ContentService.createTextOutput(JSON.stringify({
+          "status": "error",
+          "message": "อีเมลนี้ยังไม่ได้ลงทะเบียนตั้งรหัสผ่าน กรุณาทำรายการสมัครสมาชิกใหม่ก่อนครับ"
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      var otp = Math.floor(100000 + Math.random() * 900000).toString();
+      var cache = CacheService.getScriptCache();
+      cache.put("OTP_RESET_" + email, otp, 600);
+      
+      var subject = "รหัส OTP สำหรับเปลี่ยนรหัสผ่าน VSC - ES (Empeo Support)";
+      var bodyText = "สวัสดีครับ,\n\nรหัสยืนยันตัวตน (OTP) สำหรับเปลี่ยนรหัสผ่านบัญชี VSC - ES (Empeo Support) ของคุณคือ: " + otp + "\n\nรหัสนี้มีอายุใช้งาน 10 นาที\n\nด้วยความเคารพ,\nฝ่ายทรัพยากรบุคคล (HR)";
+      
+      sendEmailWithFallback(email, subject, bodyText);
+      
+      return ContentService.createTextOutput(JSON.stringify({
+        "status": "success",
+        "message": "ส่งรหัส OTP สำหรับเปลี่ยนรหัสผ่านสำเร็จแล้ว!"
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // D. ยืนยันรหัสผ่านใหม่ (Reset Password Confirm) -> อัปเดตใน Email-Active
+    if (data.action === "resetPassword") {
+      var email = data.email.trim().toLowerCase();
+      var otpSubmitted = data.otp.toString().trim();
+      var newPassword = data.newPassword.toString().trim();
+      
+      var cache = CacheService.getScriptCache();
+      var cachedOtp = cache.get("OTP_RESET_" + email);
+      if (!cachedOtp || cachedOtp !== otpSubmitted) {
+        return ContentService.createTextOutput(JSON.stringify({
+          "status": "error",
+          "message": "รหัส OTP ไม่ถูกต้อง หรือหมดอายุแล้ว"
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      var emailRow = findEmailRow(email, ss);
+      if (emailRow !== -1) {
+        var sheet = ss.getSheetByName("Email-Active");
+        sheet.getRange(emailRow, 2).setValue(newPassword);
+        cache.remove("OTP_RESET_" + email);
+        return ContentService.createTextOutput(JSON.stringify({
+          "status": "success",
+          "message": "เปลี่ยนรหัสผ่านใหม่สำเร็จแล้ว!"
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({
+        "status": "error",
+        "message": "ไม่พบพนักงานคนดังกล่าวในระบบจัดเก็บฐานข้อมูล"
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // E. ฟังก์ชันการเข้าสู่ระบบพนักงาน (Login)
+    if (data.action === "login") {
+      var email = data.email.trim().toLowerCase();
+      var password = data.password.toString().trim();
+      
+      var emailRow = findEmailRow(email, ss);
+      if (emailRow === -1) {
+        return ContentService.createTextOutput(JSON.stringify({
+          "status": "error",
+          "message": "ไม่พบอีเมลนี้ในระบบฐานข้อมูล กรุณาคลิกสมัครสมาชิกใหม่ก่อนเข้าใช้งานครับ"
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      var sheet = ss.getSheetByName("Email-Active");
+      var savedPassword = sheet.getRange(emailRow, 2).getValue().toString().trim();
+      var name = sheet.getRange(emailRow, 3).getValue().toString().trim();
+      var nickname = sheet.getRange(emailRow, 4).getValue().toString().trim();
+      var position = sheet.getRange(emailRow, 5).getValue().toString().trim();
+      
+      if (savedPassword === "") {
+        return ContentService.createTextOutput(JSON.stringify({
+          "status": "error",
+          "message": "อีเมลนี้ยังไม่ได้ลงทะเบียนเข้าใช้งาน กรุณากดลงทะเบียนสมาชิกใหม่ก่อนเข้าใช้งานครั้งแรกครับ"
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      if (savedPassword === password) {
+        return ContentService.createTextOutput(JSON.stringify({
+          "status": "success",
+          "user": {
+            "email": email,
+            "name": name,
+            "nickname": nickname,
+            "position": position
+          }
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({
+        "status": "error",
+        "message": "อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบใหม่อีกครั้ง"
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // F. บันทึกรายงานปัญหาของพนักงาน (Submit Report)
+    var fileUrlsList = [];
+    
+    // จัดการแยกและแปลงรูปภาพ Base64
+    if (data.screenshots && data.screenshots.length > 0) {
+      for (var i = 0; i < data.screenshots.length; i++) {
+        var base64Img = data.screenshots[i];
+        if (base64Img && base64Img.indexOf("data:image") === 0) {
+          try {
+            var splitData = base64Img.split(",");
+            var contentType = splitData[0].split(":")[1].split(";")[0];
+            var base64Data = splitData[1];
+            
+            var decoded = Utilities.base64Decode(base64Data);
+            var fileExtension = contentType.split("/")[1] || "png";
+            
+            var fileName = "screenshot_" + data.nickname + "_" + i + "_" + new Date().getTime() + "." + fileExtension;
+            var blob = Utilities.newBlob(decoded, contentType, fileName);
+            
+            var folderName = "VSC Empeo Screenshots";
+            var folders = DriveApp.getFoldersByName(folderName);
+            var folder;
+            if (folders.hasNext()) {
+              folder = folders.next();
+            } else {
+              folder = DriveApp.createFolder(folderName);
+            }
+            
+            var createdFile = folder.createFile(blob);
+            createdFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+            fileUrlsList.push(createdFile.getUrl());
+            
+          } catch (fileError) {
+            fileUrlsList.push("เกิดปัญหาการบันทึกภาพรูปที่ " + (i+1) + ": " + fileError.toString());
+          }
+        }
+      }
+    }
+    
+    var finalFileUrls = fileUrlsList.length > 0 ? fileUrlsList.join("\n") : "ไม่มีรูปภาพแนบ";
+    
+    var sheet = ss.getSheets()[0]; 
+    var timestamp = new Date();
+    var formattedDate = Utilities.formatDate(timestamp, "GMT+7", "yyyy-MM-dd HH:mm:ss");
+    
+    sheet.appendRow([
+      formattedDate,
+      data.employeeName,
+      data.nickname,
+      data.position,
+      data.issueType,
+      data.issueDate,
+      data.description,
+      data.status || "รอดำเนินการ",
+      finalFileUrls,
+      "",
+      data.id,
+      data.email
+    ]);
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      "status": "success",
+      "message": "บันทึกข้อมูลและอัปโหลดรูปหลักฐานลง Google Drive ของคุณเรียบร้อยแล้ว!"
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+    
+  } catch(error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      "status": "error",
+      "message": error.toString()
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+  }
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-6 text-center text-xs text-slate-400">
+        <div class="max-w-4xl mx-auto px-4">
+            <p>© 2026 VSC - ES (Empeo Support). <span data-i18n="footer_text">พัฒนาขึ้นเพื่อเป็นเครื่องมืออำนวยความสะดวกในการซิงค์ข้อมูลปัญหาและตารางเวลาเข้าสู่ Google Sheets</span></p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT_LOGIC -->
+    <script>
+        // กำหนด Default API URL ที่ส่งมาจากผู้ใช้งาน เพื่อให้ระบบเชื่อมโยงอัตโนมัติทันที
+        const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbyo1c5ntcgWAo24oPeVX1QUm3K42oJOd95wpsPTRz_RD2VL7aJIcWrrGFqRe9uut0d2/exec';
+
+        // Dictionary containing all UI Translations
+        const i18n = {
+            th: {
+                navbar_subtitle: "(Empeo Support)",
+                hello: "สวัสดี, คุณ",
+                logout: "ออกจากระบบ",
+                login_title: "เข้าสู่ระบบพนักงาน VSC",
+                login_desc: "กรุณาระบุข้อมูลบัญชีของคุณเพื่อเข้ายื่นแก้ไขและติดตามงานส่วนบุคคล",
+                email_label: "อีเมลผู้ใช้งาน",
+                email_placeholder: "เช่น yourname@email.com",
+                password_label: "รหัสผ่าน",
+                forgot_pwd_btn: "ลืมรหัสผ่าน?",
+                login_btn: "เข้าสู่ระบบ",
+                no_account: "ยังไม่ได้ลงทะเบียนเข้าใช้งาน?",
+                go_register: "สมัครสมาชิกใหม่ที่นี่",
+                
+                register_title: "สมัครสมาชิกและยืนยันตัวตน",
+                register_desc: "ใช้อีเมลใดก็ได้เพื่อสมัคร ระบบจะจัดส่ง OTP ไปตรวจสอบเพื่อความปลอดภัย",
+                reg_email_label: "ระบุอีเมลสมัครใช้งาน (ตรวจการสะกดตัวอักษรให้ถูกต้อง)",
+                reg_send_otp_btn: "ขอรับ OTP",
+                reg_otp_label: "ระบุรหัส OTP 6 หลักที่ได้รับในอีเมลของคุณ",
+                reg_password_label: "ตั้งรหัสผ่านสำหรับเข้าสู่ระบบ",
+                reg_password_placeholder: "รหัสผ่านขั้นต่ำ 4 ตัวอักษร",
+                reg_name_label: "ชื่อ-นามสกุลจริง",
+                reg_name_placeholder: "เช่น นายสมชาย ดีใจ",
+                reg_nickname_label: "ชื่อเล่น",
+                reg_nickname_placeholder: "สมชาย",
+                reg_position_label: "ตำแหน่ง",
+                reg_position_placeholder: "เลือกตำแหน่ง",
+                reg_position_other_label: "ระบุตำแหน่งงานอื่นๆ ของท่าน",
+                reg_submit_btn: "ยืนยันการลงทะเบียน",
+                already_has_account: "มีบัญชีผู้ใช้งานระบบนี้อยู่แล้ว?",
+                go_login: "กลับไปหน้าล็อกอินเข้าใช้งาน",
+
+                forgot_title: "เปลี่ยนรหัสผ่าน / ลืมรหัสผ่าน",
+                forgot_desc: "กรุณาระบุอีเมลที่ลงทะเบียนไว้ ระบบจะจัดส่งรหัส OTP ปลดล็อกไปตรวจสอบที่อีเมลนั้น",
+                forgot_email_label: "อีเมลที่ใช้สมัครของคุณ",
+                forgot_otp_label: "ระบุรหัส OTP 6 หลักที่ได้รับในอีเมล",
+                forgot_new_password_label: "ตั้งรหัสผ่านใหม่",
+                forgot_submit_btn: "ยืนยันเปลี่ยนรหัสผ่าน",
+
+                form_personal_info: "ข้อมูลพนักงานผู้ยื่นเรื่อง",
+                form_name: "ชื่อ-นามสกุล",
+                form_nickname: "ชื่อเล่น",
+                form_position: "ตำแหน่ง",
+                form_locked_info: "(ผูกกับระบบล็อกอิน)",
+                form_issue_type: "ระบบที่มีปัญหาใน Empeo",
+                form_issue_leave: "การลางาน",
+                form_issue_leave_desc: "ยื่นลาในระบบไม่ได้ วันลาไม่ตรง หรือไม่ขึ้นวันลา",
+                form_issue_ot: "การกดขอโอที (OT)",
+                form_issue_ot_desc: "ระบบล่ม หัวหน้าตั้งกะไม่ตรง หรือลืมกด",
+                form_issue_shift: "กะการทำงานไม่ตรง",
+                form_issue_shift_desc: "เวลาเข้าออกงานไม่ตรงตารางกะงาน ต้องการเปลี่ยนประเภทกะ",
+                form_issue_other: "ปัญหาอื่น ๆ",
+                form_issue_other_desc: "ปัญหาเชิงเทคนิคอื่น ๆ เกี่ยวกับระบบ Empeo เท่านั้น",
+
+                form_ot_reason: "สาเหตุที่กดขอโอทีไม่ได้",
+                form_ot_opt_system: "ระบบมีปัญหา / ระบบล่ม ไม่สามารถกดได้",
+                form_ot_opt_chief: "หัวหน้าตั้งกะไม่ตรง",
+                form_ot_opt_forgot: "ลืมกด (จะไม่สามารถกดย้อนหลังให้ได้)",
+                warning_title: "⚠️ โปรดทราบ",
+                warning_forgot_ot: "สำหรับกรณีที่พนักงานลืมกดขอโอทีด้วยตนเอง ฝ่ายบุคคลจะไม่สามารถดำเนินการขออนุมัติหรือกดย้อนหลังให้ได้ในทุกกรณีตามระเบียบของระบบ Empeo",
+
+                form_shift_info_banner: "กรุณาระบุข้อมูลรายละเอียดการขอปรับปรุงกะให้ครบถ้วนเพื่อความรวดเร็วในการแก้ไข",
+                form_shift_type: "ประเภทกะ",
+                form_shift_day: "กะกลางวัน",
+                form_shift_night: "กะกลางคืน",
+                form_shift_target: "กะที่ต้องการแก้ไข (เวลา)",
+                form_shift_side: "ฝั่งการทำงาน",
+                form_shift_side_cooked: "ฝั่งสุก",
+                form_shift_side_raw: "ฝั่งดิบ",
+
+                form_other_warning: "หมายเหตุ: โปรดระบุปัญหาเชิงเทคนิคที่เกี่ยวข้องกับระบบ Empeo เท่านั้น",
+                form_other_custom_label: "ระบุรายละเอียดประเภทปัญหาอื่น ๆ",
+                form_date_label: "วันที่ต้องการแก้ไข",
+                form_desc_label: "รายละเอียดปัญหา หรือเหตุผลประกอบในการขอแก้ไข",
+                form_desc_placeholder: "กรุณาอธิบายปัญหาโดยสังเขป เช่น 'ขอลาฉุกเฉินวันที่ 15 ย้อนหลัง เนื่องจากระบบปิดการทำรายการไปแล้ว'",
+                form_file_label: "แนบรูปภาพหรือภาพหน้าจอ (Screenshot) หลักฐานปัญหา",
+                form_file_dropzone: "คลิกที่นี่เพื่อเลือกภาพ หรือลากไฟล์ภาพมาวาง",
+                form_file_warning: "ไฟล์รูปภาพ (PNG, JPG, JPEG) ขนาดไม่เกิน 2MB ต่อไฟล์",
+                form_file_preview_count: "รูปภาพหลักฐานที่เลือกยื่นส่ง",
+                form_file_count_unit: "รูป",
+                form_submit_btn: "ส่งรายงานปัญหาระบบและบันทึกรูปภาพ",
+
+                history_title: "ประวัติการส่งรายงานล่าสุดของคุณบนเครื่องนี้",
+                history_refresh: "รีเฟรชสถานะ",
+                history_empty: "ยังไม่มีการยื่นรายงานในเซสชันนี้",
+                footer_text: "พัฒนาขึ้นเพื่อเป็นเครื่องมืออำนวยความสะดวกในการซิงค์ข้อมูลปัญหาและตารางเวลาเข้าสู่ Google Sheets",
+
+                // Dynamic alert/status messages
+                alert_no_url: "กรุณาตั้งค่าเชื่อมระบบ Google Sheet (กดรูปฟันเฟือง ⚙️) ก่อนใช้งาน",
+                alert_otp_enter: "กรุณากรอกรหัส OTP ยืนยันตัวตนก่อนส่งข้อมูลครับ",
+                alert_file_max: "แนบรูปได้ไม่เกิน 5 รูปครับ! กรุณาลบภาพเก่าออกหรือเลือกเฉพาะภาพหลักฐานที่สำคัญ",
+                alert_file_size: "ไฟล์มีขนาดใหญ่เกิน 2MB! ไม่สามารถแนบไฟล์นี้ได้ครับ",
+                alert_desc_warn: "กรุณาระบุประเภทปัญหาอื่นๆ เพิ่มเติมด้วยครับ",
+                status_pending: "รอดำเนินการ",
+                status_done: "ดำเนินการเรียบร้อย",
+                status_failed: "ซิงค์ล้มเหลว",
+                status_offline: "เซฟแบบออฟไลน์",
+                status_synced: "คลาวด์ซิงค์สำเร็จ"
+            },
+            my: {
+                navbar_subtitle: "(Empeo Support)",
+                hello: "မင်္ဂလာပါ၊ ကို",
+                logout: "အကောင့်ထွက်ရန်",
+                login_title: "VSC ဝန်ထမ်းအကောင့်ဝင်ရန်",
+                login_desc: "သင်၏တင်ပြချက်များကို စတင်ရန်နှင့် ကိုယ်ရေးကိုယ်တာအခြေအနေများကို ကြည့်ရှုရန် အကောင့်ဝင်ပါ",
+                email_label: "အသုံးပြုသူအီးမေးလ်",
+                email_placeholder: "ဥပမာ yourname@email.com",
+                password_label: "စကားဝှက်",
+                forgot_pwd_btn: "စကားဝှက်မေ့နေပါသလား?",
+                login_btn: "အကောင့်ဝင်ရန်",
+                no_account: "အကောင့်မရှိသေးဘူးလား?",
+                go_register: "ဤနေရာတွင် အကောင့်သစ်ဖွင့်ပါ",
+                
+                register_title: "အကောင့်ဖွင့်ခြင်းနှင့် အတည်ပြုခြင်း",
+                register_desc: "အီးမေးလ်တစ်ခုခုကို အသုံးပြု၍ အကောင့်ဖွင့်နိုင်သည်။ လုံခြုံရေးအတွက် OTP ပေးပို့ပါမည်။",
+                reg_email_label: "အကောင့်ဖွင့်ရန် အီးမေးလ်ဖြည့်ပါ (စာလုံးပေါင်း မှန်ကန်စွာ စစ်ဆေးပါ)",
+                reg_send_otp_btn: "OTP တောင်းဆိုရန်",
+                reg_otp_label: "အီးမေးလ်သို့ ပေးပို့ထားသော ဂဏန်း ၆ လုံးပါဝင်သည့် OTP ကို ဖြည့်ပါ",
+                reg_password_label: "စနစ်သို့ဝင်ရောက်ရန် စကားဝှက် သတ်မှတ်ပါ",
+                reg_password_placeholder: "အနည်းဆုံး စာလုံး ၄ လုံး",
+                reg_name_label: "နာမည်အပြည့်အစုံ",
+                reg_name_placeholder: "ဥပမာ ဦးမောင်မောင်",
+                reg_nickname_label: "နာမည်ပြောင်",
+                reg_nickname_placeholder: "မောင်မောင်",
+                reg_position_label: "ရာထူး",
+                reg_position_placeholder: "ရာထူး ရွေးချယ်ပါ",
+                reg_position_other_label: "အခြားရာထူးကို ဖော်ပြပေးပါ",
+                reg_submit_btn: "အကောင့်ဖွင့်ခြင်း အတည်ပြုပါ",
+                already_has_account: "အသုံးပြုသူအကောင့် ရှိပြီးသားလား?",
+                go_login: "အကောင့်ဝင်သည့် စာမျက်နှာသို့ ပြန်သွားရန်",
+
+                forgot_title: "စကားဝှက်ပြောင်းလဲခြင်း / စကားဝှက်မေ့ခြင်း",
+                forgot_desc: "အကောင့်ဖွင့်ထားသော အီးမေးလ်ကို ထည့်သွင်းပါ။ စကားဝှက်ပြောင်းရန် OTP ကို ပေးပို့ပါမည်။",
+                forgot_email_label: "သင်၏ အကောင့်ဖွင့်အီးမေးလ်",
+                forgot_otp_label: "အီးမေးလ်သို့ လက်ခံရရှိသည့် ၆ လုံးပါ OTP ကို ဖြည့်ပါ",
+                forgot_new_password_label: "စကားဝှက်အသစ် သတ်မှတ်ပါ",
+                forgot_submit_btn: "စကားဝှက်အသစ် အတည်ပြုပါ",
+
+                form_personal_info: "ဝန်ထမ်းကိုယ်ရေးအချက်အလက်",
+                form_name: "နာမည်အပြည့်အစုံ",
+                form_nickname: "နာမည်ပြောင်",
+                form_position: "ရာထူး",
+                form_locked_info: "(အကောင့်စနစ်နှင့် ချိတ်ဆက်ပြီး)",
+                form_issue_type: "Empeo စနစ်ရှိ ပြဿနာအမျိုးအစား",
+                form_issue_leave: "ခွင့်ယူခြင်း",
+                form_issue_leave_desc: "စနစ်အတွင်း ခွင့်တိုင်ကြား၍မရခြင်း၊ ခွင့်ရက်မမှန်ခြင်း သို့မဟုတ် မပေါ်ခြင်း",
+                form_issue_ot: "အိုတီ တောင်းဆိုခြင်း (OT)",
+                form_issue_ot_desc: "စနစ်လိုင်းကျနေခြင်း၊ ဆိုင်းမှားယွင်းနေခြင်း သို့မဟုတ် နှိပ်ရန်မေ့သွားခြင်း",
+                form_issue_shift: "အလုပ်ဆိုင်း မမှန်ကန်ခြင်း",
+                form_issue_shift_desc: "အလုပ်ဆိုင်းချိန် မမှန်ကန်ခြင်း သို့မဟုတ် ဆိုင်းအမျိုးအစား ပြောင်းလဲလိုခြင်း",
+                form_issue_other: "အခြားပြဿနာများ",
+                form_issue_other_desc: "Empeo စနစ်နှင့် ပတ်သက်သည့် အခြားနည်းပညာပိုင်းဆိုင်ရာ ပြဿနာများသာ",
+
+                form_ot_reason: "အိုတီတောင်းဆို၍ မရရသည့် အကြောင်းပြချက်",
+                form_ot_opt_system: "စနစ်ပြဿနာရှိနေခြင်း / စနစ်ပျက်နေ၍ နှိပ်မရခြင်း",
+                form_ot_opt_chief: "ခေါင်းဆောင်မှ အလုပ်ဆိုင်းမှားယွင်းသတ်မှတ်ထားခြင်း",
+                form_ot_opt_forgot: "နှိပ်ရန်မေ့သွားခြင်း (နောက်ကြောင်းပြန် တောင်းဆို၍မရပါ)",
+                warning_title: "⚠️ သတိပြုရန်",
+                warning_forgot_ot: "ဝန်ထမ်းကိုယ်တိုင် အိုတီတောင်းဆိုရန် မေ့လျော့ခဲ့ပါက၊ Empeo စနစ်စည်းမျဉ်းများအရ HR ဌာနမှ မည်သည့်အခြေအနေမျိုးတွင်မဆို နောက်ကြောင်းပြန် အတည်ပြုပေးမည် မဟုတ်ပါ။",
+
+                form_shift_info_banner: "လျင်မြန်စွာ ပြင်ဆင်ပေးနိုင်ရန် ဆိုင်းအချက်အလက်များကို အပြည့်အစုံ ဖြည့်ပေးပါ",
+                form_shift_type: "ဆိုင်းအမျိုးအစား",
+                form_shift_day: "နေ့ဆိုင်း",
+                form_shift_night: "ညဆိုင်း",
+                form_shift_target: "ပြင်ဆင်လိုသည့်ဆိုင်း (အချိန်)",
+                form_shift_side: "လုပ်ငန်းခွင်အပိုင်း",
+                form_shift_side_cooked: "ချက်ပြီးသားအပိုင်း (ฝั่งสุก)",
+                form_shift_side_raw: "အစိမ်းအပိုင်း (ฝั่งดิบ)",
+
+                form_other_warning: "မှတ်ချက်: Empeo စနစ်နှင့် ပတ်သက်သည့် နည်းပညာပိုင်းဆိုင်ရာ ပြဿနာများကိုသာ ရေးပါ",
+                form_other_custom_label: "အခြားပြဿနာအမျိုးအစား အသေးစိတ်ကို ဖော်ပြပါ",
+                form_date_label: "ပြင်ဆင်လိုသည့် နေ့စွဲ",
+                form_desc_label: "ပြဿနာအသေးစိတ် သို့မဟုတ် ပြင်ဆင်လိုသည့် အကြောင်းပြချက်",
+                form_desc_placeholder: "ပြဿနာကို အကျဉ်းချုပ် ရှင်းပြပါ ဥပမာ - စနစ်ပိတ်သွားသည့်အတွက် ရက်စွဲ ၁၅ ရက်နေ့အတွက် အရေးပေါ်ခွင့်ကို နောက်ကြောင်းပြန်တိုင်ကြားလိုပါသည်",
+                form_file_label: "ပြဿနာသက်သေပြရန် ဓာတ်ပုံ သို့မဟုတ် ဖုန်းမျက်နှာပြင်ပုံ (Screenshot) ထည့်သွင်းပါ",
+                form_file_dropzone: "ပုံရွေးချယ်ရန် ဤနေရာကို နှိပ်ပါ သို့မဟုတ် ပုံကို ဆွဲထည့်ပါ",
+                form_file_warning: "ပုံဖိုင်အမျိုးအစား (PNG, JPG, JPEG) တစ်ပုံလျှင် အများဆုံး 2MB အထိသာ",
+                form_file_preview_count: "တင်သွင်းရန် ရွေးချယ်ထားသောပုံများ",
+                form_file_count_unit: "ပုံ",
+                form_submit_btn: "ပြဿနာအစီရင်ခံစာတင်သွင်းပြီး ဓာတ်ပုံသိမ်းဆည်းပါ",
+
+                history_title: "ဤစက်ရှိ သင်၏ နောက်ဆုံးတင်ပြချက်မှတ်တမ်း",
+                history_refresh: "အခြေအနေ ပြန်လည်စစ်ဆေးရန်",
+                history_empty: "ယခုဆဲရှင်းတွင် တင်ပြထားသည့်မှတ်တမ်း မရှိသေးပါ",
+                footer_text: "ပြဿနာအချက်အလက်များနှင့် အချိန်ဇယားများကို Google Sheets သို့ အလိုအလျောက် ပေးပို့ရန် ဖန်တီးထားပါသည်",
+
+                // Dynamic alert/status messages
+                alert_no_url: "အသုံးမပြုမီ Google Sheets ချိတ်ဆက်မှု URL ကို သတ်မှတ်ပါ (ဂီယာပုံစံ ⚙️ ကိုနှိပ်ပါ)",
+                alert_otp_enter: "အချက်အလက်များ မတင်သွင်းမီ OTP ဖြည့်သွင်းပေးပါ",
+                alert_file_max: "အများဆုံး ၅ ပုံအထိသာ တင်နိုင်ပါသည်။ ပုံဟောင်းများကို ဖျက်ပါ သို့မဟုတ် အရေးကြီးပုံများကိုသာ ရွေးပါ",
+                alert_file_size: "ဖိုင်အရွယ်အစားသည် 2MB ထက် ကြီးမားနေသဖြင့် တင်၍မရပါ",
+                alert_desc_warn: "ကျေးဇူးပြု၍ အခြားပြဿနာအသေးစိတ်ကို ရေးသားပေးပါ",
+                status_pending: "ဆောင်ရွက်ဆဲ",
+                status_done: "ဆောင်ရွက်ပြီးစီး",
+                status_failed: "ချိတ်ဆက်မှု မအောင်မြင်ပါ",
+                status_offline: "အော့ဖ်လိုင်း သိမ်းဆည်းထားသည်",
+                status_synced: "ကလောက်ဒ်သို့ ပေးပို့ပြီးပါပြီ"
+            }
+        };
+
+        // Core state handling
+        let state = {
+            googleSheetUrl: '',
+            attachedFiles: [], // Array of base64 strings
+            localHistory: [],
+            currentUser: null, // { email, name, nickname, position }
+            lang: 'th' // Current language
+        };
+
+        window.onload = function() {
+            // Check language preference
+            const savedLang = localStorage.getItem('empeo_portal_lang');
+            if (savedLang) {
+                state.lang = savedLang;
+            } else {
+                state.lang = 'th';
+            }
+            applyLanguage();
+
+            // โหลด URL ตั้งค่าชีท หากมีในเครื่องให้เลือกใช้ตัวบันทึก หากไม่มีให้ใช้ค่าเริ่มต้น DEFAULT_API_URL ทันที
+            const savedUrl = localStorage.getItem('empeo_portal_sheet_url');
+            if (savedUrl) {
+                state.googleSheetUrl = savedUrl;
+            } else {
+                state.googleSheetUrl = DEFAULT_API_URL;
+            }
+            document.getElementById('sheet-api-url').value = state.googleSheetUrl;
+
+            // Set current date in forms
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('issue-date').value = today;
+
+            // Check if user is already logged in
+            const savedUser = localStorage.getItem('empeo_current_user');
+            if (savedUser) {
+                state.currentUser = JSON.parse(savedUser);
+                initUserSession();
+            } else {
+                showLoginScreen();
+            }
+        };
+
+        // Apply Language dictionary to elements
+        function applyLanguage() {
+            const dictionary = i18n[state.lang];
+            
+            // Translate Text elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dictionary[key]) {
+                    el.innerText = dictionary[key];
+                }
+            });
+
+            // Translate placeholders
+            document.querySelectorAll('[data-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-placeholder');
+                if (dictionary[key]) {
+                    el.placeholder = dictionary[key];
+                }
+            });
+
+            // Adjust Active Language Pill Styling
+            const btnTh = document.getElementById('lang-btn-th');
+            const btnMy = document.getElementById('lang-btn-my');
+            
+            if (state.lang === 'th') {
+                btnTh.className = "px-2 py-1 text-xs font-bold rounded-lg transition-all bg-indigo-600 text-white shadow-sm";
+                btnMy.className = "px-2 py-1 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-800";
+            } else {
+                btnTh.className = "px-2 py-1 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-800";
+                btnMy.className = "px-2 py-1 text-xs font-bold rounded-lg transition-all bg-indigo-600 text-white shadow-sm";
+            }
+
+            // Repopulate dynamic fields if already rendered
+            updateShiftTimeOptions();
+        }
+
+        // Change active application language
+        function changeLanguage(lang) {
+            state.lang = lang;
+            localStorage.setItem('empeo_portal_lang', lang);
+            applyLanguage();
+            renderLocalHistory();
+        }
+
+        // Toggle password fields text/password state and font-awesome icons
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Toggle custom position input field visibility in Registration form
+        function handleRegisterPositionChange(value) {
+            const container = document.getElementById('reg-position-other-container');
+            const otherInput = document.getElementById('reg-position-other');
+            if (value === 'อื่นๆ') {
+                container.classList.remove('hidden');
+                otherInput.required = true;
+                otherInput.focus();
+            } else {
+                container.classList.add('hidden');
+                otherInput.required = false;
+                otherInput.value = '';
+            }
+        }
+
+        // Switch between login, register and forgot password views
+        function switchAuthMode(mode) {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('register-section').classList.add('hidden');
+            document.getElementById('forgot-section').classList.add('hidden');
+
+            if (mode === 'register') {
+                document.getElementById('register-section').classList.remove('hidden');
+                document.getElementById('register-form').reset();
+                document.getElementById('reg-position-other-container').classList.add('hidden');
+                document.getElementById('reg-otp-container').classList.add('hidden');
+            } else if (mode === 'forgot') {
+                document.getElementById('forgot-section').classList.remove('hidden');
+                document.getElementById('forgot-form').reset();
+                document.getElementById('forgot-otp-container').classList.add('hidden');
+            } else {
+                document.getElementById('login-section').classList.remove('hidden');
+                document.getElementById('login-form').reset();
+            }
+        }
+
+        // UI Session Initialization
+        function initUserSession() {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('register-section').classList.add('hidden');
+            document.getElementById('forgot-section').classList.add('hidden');
+            document.getElementById('main-application-section').classList.remove('hidden');
+            document.getElementById('user-profile-badge').classList.remove('hidden');
+            
+            document.getElementById('user-display-name').innerText = state.currentUser.nickname;
+            document.getElementById('emp-name').value = state.currentUser.name;
+            document.getElementById('emp-nickname').value = state.currentUser.nickname;
+            document.getElementById('emp-position').value = state.currentUser.position;
+
+            // Fetch history from Google Sheets specifically for this logged-in user!
+            fetchUserHistoryFromSheets();
+        }
+
+        function showLoginScreen() {
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('register-section').classList.add('hidden');
+            document.getElementById('forgot-section').classList.add('hidden');
+            document.getElementById('main-application-section').classList.add('hidden');
+            document.getElementById('user-profile-badge').classList.add('hidden');
+            document.getElementById('login-form').reset();
+            state.localHistory = [];
+            renderLocalHistory();
+        }
+
+        // Send OTP for Register
+        async function sendRegisterOTP() {
+            const email = document.getElementById('reg-email').value.trim();
+            if (!email) {
+                return;
+            }
+            if (!state.googleSheetUrl) {
+                showNotification(i18n[state.lang].alert_no_url, 'warning');
+                return;
+            }
+
+            const sendBtn = document.getElementById('reg-send-otp-btn');
+            const originalText = sendBtn.innerText;
+            sendBtn.disabled = true;
+            sendBtn.innerText = 'Loading...';
+
+            try {
+                const response = await fetch(state.googleSheetUrl, {
+                    method: 'POST',
+                    mode: 'cors',
+                    body: JSON.stringify({
+                        action: 'sendRegisterOTP',
+                        email: email
+                    })
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    showNotification(data.message, 'success');
+                    document.getElementById('reg-otp-container').classList.remove('hidden');
+                    startOTPTimer('reg-otp-timer');
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            } catch (err) {
+                showNotification('Connection Error. OTP dispatch failed.', 'error');
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerText = originalText;
+            }
+        }
+
+        // Send OTP for Reset Password
+        async function sendForgotOTP() {
+            const email = document.getElementById('forgot-email').value.trim();
+            if (!email) {
+                return;
+            }
+            if (!state.googleSheetUrl) {
+                showNotification(i18n[state.lang].alert_no_url, 'warning');
+                return;
+            }
+
+            const sendBtn = document.getElementById('forgot-send-otp-btn');
+            const originalText = sendBtn.innerText;
+            sendBtn.disabled = true;
+            sendBtn.innerText = 'Loading...';
+
+            try {
+                const response = await fetch(state.googleSheetUrl, {
+                    method: 'POST',
+                    mode: 'cors',
+                    body: JSON.stringify({
+                        action: 'sendResetOTP',
+                        email: email
+                    })
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    showNotification(data.message, 'success');
+                    document.getElementById('forgot-otp-container').classList.remove('hidden');
+                    startOTPTimer('forgot-otp-timer');
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            } catch (err) {
+                showNotification('Connection Error. Reset OTP dispatch failed.', 'error');
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerText = originalText;
+            }
+        }
+
+        // OTP Countdown Timer Helper
+        function startOTPTimer(elementId) {
+            const element = document.getElementById(elementId);
+            let timeRemaining = 600; // 10 minutes in seconds
+            
+            const interval = setInterval(() => {
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                element.innerText = `Expired in: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(interval);
+                    element.innerText = 'OTP Expired';
+                }
+                timeRemaining--;
+            }, 1000);
+        }
+
+        // Handle Log in (With strict verification on server side)
+        async function handleLoginSubmit(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+
+            if (!state.googleSheetUrl) {
+                showNotification(i18n[state.lang].alert_no_url, 'warning');
+                return;
+            }
+
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalHtml = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Checking account...`;
+
+            try {
+                const response = await fetch(state.googleSheetUrl, {
+                    method: 'POST',
+                    mode: 'cors',
+                    body: JSON.stringify({
+                        action: 'login',
+                        email: email,
+                        password: password
+                    })
+                });
+                const data = await response.json();
+
+                if (data.status === 'success' && data.user) {
+                    state.currentUser = data.user;
+                    localStorage.setItem('empeo_current_user', JSON.stringify(state.currentUser));
+                    showNotification('Sign in successful!', 'success');
+                    initUserSession();
+                } else {
+                    showNotification(data.message || 'Incorrect email or password.', 'error');
+                }
+            } catch (e) {
+                showNotification('Server communication failure. Please check your connection.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHtml;
+            }
+        }
+
+        // Handle Registration (Strict Verification)
+        async function handleRegisterSubmit(event) {
+            event.preventDefault();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value.trim();
+            const otp = document.getElementById('reg-otp').value.trim();
+            const name = document.getElementById('reg-name').value.trim();
+            const nickname = document.getElementById('reg-nickname').value.trim();
+            
+            const positionSel = document.getElementById('reg-position').value;
+            const position = positionSel === 'อื่นๆ' ? document.getElementById('reg-position-other').value.trim() : positionSel;
+
+            if (!otp) {
+                showNotification(i18n[state.lang].alert_otp_enter, 'warning');
+                return;
+            }
+
+            if (!state.googleSheetUrl) {
+                showNotification(i18n[state.lang].alert_no_url, 'warning');
+                return;
+            }
+
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalHtml = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Registering...`;
+
+            try {
+                const response = await fetch(state.googleSheetUrl, {
+                    method: 'POST',
+                    mode: 'cors',
+                    body: JSON.stringify({
+                        action: 'register',
+                        email: email,
+                        password: password,
+                        otp: otp,
+                        name: name,
+                        nickname: nickname,
+                        position: position
+                    })
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showNotification('Registration successful! Please login with your new account.', 'success');
+                    switchAuthMode('login');
+                    document.getElementById('login-email').value = email;
+                } else {
+                    showNotification(data.message || 'Registration failed.', 'error');
+                }
+            } catch (e) {
+                showNotification('Registration crash. Please check connection or OTP code.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHtml;
+            }
+        }
+
+        // Handle Forgot Password Reset Confirmation
+        async function handleResetSubmit(event) {
+            event.preventDefault();
+            const email = document.getElementById('forgot-email').value.trim();
+            const otp = document.getElementById('forgot-otp').value.trim();
+            const newPassword = document.getElementById('forgot-new-password').value.trim();
+
+            if (!otp || !newPassword) {
+                return;
+            }
+
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalHtml = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Updating password...`;
+
+            try {
+                const response = await fetch(state.googleSheetUrl, {
+                    method: 'POST',
+                    mode: 'cors',
+                    body: JSON.stringify({
+                        action: 'resetPassword',
+                        email: email,
+                        otp: otp,
+                        newPassword: newPassword
+                    })
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showNotification('Password updated successfully! Please login with your new credentials.', 'success');
+                    switchAuthMode('login');
+                    document.getElementById('login-email').value = email;
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            } catch (err) {
+                showNotification('Database error. Please try again later.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHtml;
+            }
+        }
+
+        // Handle Log out
+        // Clear active session variables and revert to authentication screen
+        function handleLogout() {
+            localStorage.removeItem('empeo_current_user');
+            state.currentUser = null;
+            state.localHistory = [];
+            showLoginScreen();
+            showNotification('Session cleared.', 'info');
+        }
+
+        // Fetch User-specific History from Google Sheets API
+        async function fetchUserHistoryFromSheets() {
+            if (!state.googleSheetUrl || !state.currentUser) {
+                return;
+            }
+
+            try {
+                const fetchUrl = `${state.googleSheetUrl}?action=getHistory&email=${encodeURIComponent(state.currentUser.email)}`;
+                const response = await fetch(fetchUrl);
+                const result = await response.json();
+
+                if (result.status === 'success' && result.history) {
+                    state.localHistory = result.history;
+                    renderLocalHistory();
+                }
+            } catch (e) {
+                console.error('Failed to fetch individual history', e);
+                // Fallback to local device cache
+                const cachedHistory = localStorage.getItem(`history_${state.currentUser.email}`);
+                if (cachedHistory) {
+                    state.localHistory = JSON.parse(cachedHistory);
+                    renderLocalHistory();
+                }
+            }
+        }
+
+        // Trigger Settings Access Verification
+        function openAdminAuth() {
+            document.getElementById('admin-auth-modal').classList.remove('hidden');
+            document.getElementById('admin-password-input').focus();
+        }
+
+        function closeAdminAuth() {
+            document.getElementById('admin-auth-modal').classList.add('hidden');
+            document.getElementById('admin-password-input').value = '';
+        }
+
+        function verifyAdminPassword() {
+            const pin = document.getElementById('admin-password-input').value.trim();
+            if (pin === 'people') {
+                closeAdminAuth();
+                document.getElementById('settings-modal').classList.remove('hidden');
+            } else {
+                showNotification('Unauthorized Admin Access!', 'error');
+            }
+        }
+
+        function closeSettings() {
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+
+        // Save Spreadsheet Sync Endpoint
+        function saveSheetUrl() {
+            const rawUrl = document.getElementById('sheet-api-url').value.trim();
+            if (rawUrl === '') {
+                // หากลบการตั้งค่าออก ให้สลับกลับมาใช้ Default API URL ทันที
+                state.googleSheetUrl = DEFAULT_API_URL;
+                localStorage.removeItem('empeo_portal_sheet_url');
+                showNotification('Default engine restored.', 'info');
+                document.getElementById('sheet-api-url').value = DEFAULT_API_URL;
+                closeSettings();
+                return;
+            }
+
+            if (!rawUrl.startsWith('https://script.google.com/')) {
+                showNotification('Invalid Google Script URL structure.', 'error');
+                return;
+            }
+
+            state.googleSheetUrl = rawUrl;
+            localStorage.setItem('empeo_portal_sheet_url', rawUrl);
+            showNotification('Google Cloud Engine connected successfully!', 'success');
+            closeSettings();
+            if (state.currentUser) {
+                fetchUserHistoryFromSheets();
+            }
+        }
+
+        // Toggle special input on selection based on issue type
+        function handleIssueTypeSelect(value) {
+            // Hide all sub containers first
+            document.getElementById('ot-sub-container').classList.add('hidden');
+            document.getElementById('shift-sub-container').classList.add('hidden');
+            document.getElementById('other-issue-container').classList.add('hidden');
+
+            // Reset dynamic requirements
+            document.getElementById('shift-target').required = false;
+            document.getElementById('issue-type-custom').required = false;
+
+            if (value === 'การกดขอโอที') {
+                document.getElementById('ot-sub-container').classList.remove('hidden');
+                handleOtReasonChange(document.getElementById('ot-reason-type').value);
+            } else if (value === 'กะการทำงานไม่ตรง') {
+                document.getElementById('shift-sub-container').classList.remove('hidden');
+                document.getElementById('shift-target').required = true;
+                document.getElementById('ot-warning-banner').classList.add('hidden');
+                updateShiftTimeOptions();
+            } else if (value === 'ปัญหาอื่น ๆ') {
+                document.getElementById('other-issue-container').classList.remove('hidden');
+                document.getElementById('issue-type-custom').required = true;
+                document.getElementById('ot-warning-banner').classList.add('hidden');
+            } else {
+                document.getElementById('ot-warning-banner').classList.add('hidden');
+            }
+        }
+
+        // Dynamic Dropdown populator for shift times based on day/night selection
+        function updateShiftTimeOptions() {
+            const timeType = document.getElementById('shift-time-type').value;
+            const shiftTargetSelect = document.getElementById('shift-target');
+            
+            if (!shiftTargetSelect) return;
+            
+            // Clear current options
+            shiftTargetSelect.innerHTML = '';
+            
+            let options = [];
+            if (timeType === 'กะกลางวัน') {
+                options = ['06.00-15.00', '07.00-16.00', '08.00-17.00', '09.00-18.00'];
+            } else if (timeType === 'กะกลางคืน') {
+                options = ['19.00-04.00', '19.30-04.30', '20.00-05.00', '20.30-05.30'];
+            }
+            
+            options.forEach(opt => {
+                const el = document.createElement('option');
+                el.value = opt;
+                el.textContent = opt;
+                shiftTargetSelect.appendChild(el);
+            });
+        }
+
+        // OT Sub reason toggle warning handler
+        function handleOtReasonChange(value) {
+            const warningBanner = document.getElementById('ot-warning-banner');
+            if (value === 'ลืมกด') {
+                warningBanner.classList.remove('hidden');
+            } else {
+                warningBanner.classList.add('hidden');
+            }
+        }
+
+        // Handle File Upload and Preview Processing for Multiple Files
+        function handleFileChange(event) {
+            const files = event.target.files;
+            const dropzone = document.getElementById('file-dropzone');
+            const uploadIcon = document.getElementById('upload-icon');
+
+            if (!files || files.length === 0) {
+                return;
+            }
+
+            // Cap the images to 5 max
+            if (state.attachedFiles.length + files.length > 5) {
+                showNotification(i18n[state.lang].alert_file_max, 'error');
+                event.target.value = '';
+                return;
+            }
+
+            let filesLoaded = 0;
+            const targetCount = files.length;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+
+                // Size restriction 2MB per file
+                if (file.size > 2 * 1024 * 1024) {
+                    showNotification(i18n[state.lang].alert_file_size, 'error');
+                    continue;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    state.attachedFiles.push(e.target.result);
+                    filesLoaded++;
+                    
+                    if (filesLoaded === targetCount || state.attachedFiles.length >= 5) {
+                        renderPreviews();
+                        event.target.value = ''; // Reset input
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Render Previews Grid with Removal function
+        function renderPreviews() {
+            const previewContainer = document.getElementById('image-preview-container');
+            const previewsGrid = document.getElementById('previews-grid');
+            const dropzone = document.getElementById('file-dropzone');
+            const uploadIcon = document.getElementById('upload-icon');
+            const countText = document.getElementById('preview-count-text');
+
+            countText.innerText = state.attachedFiles.length;
+
+            if (state.attachedFiles.length === 0) {
+                previewContainer.classList.add('hidden');
+                previewsGrid.innerHTML = '';
+                // Reset dropzone design
+                dropzone.classList.remove('border-emerald-500', 'bg-emerald-50/10');
+                dropzone.classList.add('border-rose-300', 'bg-rose-50/20');
+                uploadIcon.className = 'fa-solid fa-cloud-arrow-up text-3xl text-rose-400 mb-2';
+                return;
+            }
+
+            previewContainer.classList.remove('hidden');
+            
+            // Highlight dropzone green
+            dropzone.classList.remove('border-rose-300', 'bg-rose-50/20');
+            dropzone.classList.add('border-emerald-500', 'bg-emerald-50/10');
+            uploadIcon.className = 'fa-solid fa-circle-check text-3xl text-emerald-500 mb-2';
+
+            let html = '';
+            state.attachedFiles.forEach((base64, index) => {
+                html += `
+                    <div class="relative inline-block border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white">
+                        <img src="${base64}" alt="Screenshot Preview ${index+1}" class="w-full h-28 object-cover">
+                        <div class="absolute top-1 left-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded-md font-semibold">รูปที่ ${index+1}</div>
+                        <button type="button" onclick="removeImage(${index})" class="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white w-5 h-5 rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110">
+                            <i class="fa-solid fa-xmark text-[10px]"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            previewsGrid.innerHTML = html;
+        }
+
+        function removeImage(index) {
+            state.attachedFiles.splice(index, 1);
+            renderPreviews();
+        }
+
+        function clearImageSelection() {
+            state.attachedFiles = [];
+            renderPreviews();
+        }
+
+        // Automated background status checks
+        async function checkReportStatusAutomated(isManual = false) {
+            if (!state.googleSheetUrl) {
+                if (isManual) showNotification(i18n[state.lang].alert_no_url, 'warning');
+                return;
+            }
+            if (!state.currentUser) return;
+
+            const refreshIcon = document.getElementById('refresh-icon');
+            if (refreshIcon) refreshIcon.classList.add('animate-spin');
+
+            try {
+                // Fetch the latest history live from Sheet
+                await fetchUserHistoryFromSheets();
+                if (isManual) {
+                    showNotification('Status records synchronized!', 'success');
+                }
+            } catch (e) {
+                console.error('Error auto-syncing status:', e);
+                if (isManual) showNotification('Network sync failure.', 'error');
+            } finally {
+                if (refreshIcon) refreshIcon.classList.remove('animate-spin');
+            }
+        }
+
+        // Handling Form Submissions
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+
+            // Enforce Image Upload constraint (strictly mandatory - need at least 1 image)
+            if (state.attachedFiles.length === 0) {
+                showNotification('Please attach at least 1 screenshot evidence.', 'warning');
+                document.getElementById('file-dropzone').focus();
+                return;
+            }
+
+            const employeeName = state.currentUser.name;
+            const nickname = state.currentUser.nickname;
+            const position = state.currentUser.position;
+            const issueDate = document.getElementById('issue-date').value;
+            const rawDescription = document.getElementById('issue-desc').value.trim();
+
+            const checkedTypeNode = document.querySelector('input[name="issue-type"]:checked');
+            let issueType = checkedTypeNode.value;
+            
+            // Build dynamic issue explanation and details structure based on select type
+            let formattedDetails = "";
+
+            if (issueType === 'การกดขอโอที') {
+                const otReason = document.getElementById('ot-reason-type').value;
+                formattedDetails += `[สาเหตุย่อย: ${otReason}]\n`;
+            } else if (issueType === 'กะการทำงานไม่ตรง') {
+                const target = document.getElementById('shift-target').value.trim();
+                const side = document.getElementById('shift-side').value;
+                const shiftTimeType = document.getElementById('shift-time-type').value;
+                formattedDetails += `[กะที่ต้องการแก้ไข: ${target} | ฝั่งการทำงาน: ${side} | ประเภทกะ: ${shiftTimeType}]\n`;
+            } else if (issueType === 'ปัญหาอื่น ๆ') {
+                const customVal = document.getElementById('issue-type-custom').value.trim();
+                if (customVal === '') {
+                    showNotification(i18n[state.lang].alert_desc_warn, 'warning');
+                    return;
+                }
+                issueType = `ปัญหาอื่นๆ: ${customVal}`;
+                formattedDetails += `[ปัญหาอื่นๆ ที่เกี่ยวข้องกับระบบ Empeo เท่านั้น]\n`;
+            }
+
+            const description = `${formattedDetails}รายละเอียดเพิ่มเติม: ${rawDescription}`;
+
+            const reportId = 'REP-' + Math.floor(1000 + Math.random() * 9000);
+            const now = new Date();
+            const createdTime = now.getFullYear() + '-' + 
+                String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                String(now.getDate()).padStart(2, '0') + ' ' + 
+                String(now.getHours()).padStart(2, '0') + ':' + 
+                String(now.getMinutes()).padStart(2, '0') + ':' + 
+                String(now.getSeconds()).padStart(2, '0');
+
+            const payload = {
+                id: reportId,
+                employeeName,
+                nickname,
+                position,
+                issueType,
+                issueDate,
+                description,
+                status: 'รอดำเนินการ',
+                screenshots: state.attachedFiles, // Array of base64s sent to backend
+                createdTime,
+                email: state.currentUser.email
+            };
+
+            // Loading state toggle on submit button
+            const submitBtn = document.getElementById('submit-btn');
+            const originalHtml = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Uploading screenshots and report data...`;
+
+            let isSyncSuccess = false;
+
+            // Submit values to Google Sheets if connected
+            if (state.googleSheetUrl) {
+                try {
+                    isSyncSuccess = await sendToGoogleSheetWithRetry(payload, state.googleSheetUrl);
+                } catch (err) {
+                    console.error('Failed to write spreadsheet API', err);
+                }
+            }
+
+            // Save locally and in state
+            const newHistoryItem = {
+                id: reportId,
+                issueType,
+                issueDate,
+                createdTime,
+                status: 'รอดำเนินการ',
+                syncStatus: isSyncSuccess ? 'Synced' : (state.googleSheetUrl ? 'Failed' : 'Offline')
+            };
+
+            state.localHistory.unshift(newHistoryItem);
+            
+            // Cache locally under user's email key
+            localStorage.setItem(`history_${state.currentUser.email}`, JSON.stringify(state.localHistory));
+            renderLocalHistory();
+
+            // Re-render Form
+            document.getElementById('issue-form').reset();
+            clearImageSelection();
+            
+            // Hide dynamic containers
+            document.getElementById('ot-sub-container').classList.add('hidden');
+            document.getElementById('shift-sub-container').classList.add('hidden');
+            document.getElementById('other-issue-container').classList.add('hidden');
+            document.getElementById('ot-warning-banner').classList.add('hidden');
+            
+            document.getElementById('issue-date').value = new Date().toISOString().split('T')[0];
+
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalHtml;
+
+            // UI feedback based on execution outcomes
+            if (isSyncSuccess) {
+                showNotification(`Submission successful! Report saved to Google Sheets and Drive. (ID: ${reportId})`, 'success');
+                // Auto reload state 1.5s after submission to ensure synchronization
+                setTimeout(() => { checkReportStatusAutomated(false); }, 1500);
+            } else if (state.googleSheetUrl) {
+                showNotification(`Local save successful but synchronization failed. (ID: ${reportId})`, 'warning');
+            } else {
+                showNotification(`Report logged offline. Please connect API URL to sync.`, 'info');
+            }
+        }
+
+        // Retry helper logic for network requests
+        async function sendToGoogleSheetWithRetry(data, url, maxRetries = 2) {
+            let delay = 1000;
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        mode: 'no-cors', // Standard bypass for Google Apps Script execution context
+                        headers: {
+                            'Content-Type': 'text/plain'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    return true;
+                } catch (e) {
+                    console.warn(`Retry attempt ${i+1} failed writing spreadsheet. Retrying...`, e);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                }
+            }
+            return false;
+        }
+
+        // UI Builder for Local Submission History
+        function renderLocalHistory() {
+            const list = document.getElementById('local-history-list');
+            const dictionary = i18n[state.lang];
+            
+            if (!state.currentUser) {
+                list.innerHTML = `
+                    <div class="text-center py-4 text-xs text-slate-400">
+                        <p>Please login to see report history.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            if (state.localHistory.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center py-6 text-xs text-slate-400 bg-slate-50 border border-dashed border-slate-200 rounded-xl">
+                        <i class="fa-solid fa-folder-open text-xl mb-2 text-slate-300 block"></i>
+                        <p class="font-semibold text-slate-600 mb-0.5">${dictionary.history_empty}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            state.localHistory.forEach(item => {
+                let badgeClass = 'bg-amber-100 text-amber-800';
+                let syncBadge = '';
+                let displayStatus = item.status;
+
+                // Style based on HR actions/status
+                if (item.status === 'ดำเนินการเรียบร้อย' || item.status === 'แก้ไขเสร็จสิ้น' || item.status === 'แก้ไขแล้ว' || item.status === 'ดำเนินการเรียบร้อยแล้ว') {
+                    badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+                    displayStatus = dictionary.status_done;
+                } else if (item.status === 'รอดำเนินการ') {
+                    badgeClass = 'bg-amber-100 text-amber-800 border border-amber-200';
+                    displayStatus = dictionary.status_pending;
+                } else {
+                    badgeClass = 'bg-blue-100 text-blue-800 border border-blue-200';
+                }
+
+                if (item.syncStatus === 'Synced') {
+                    syncBadge = `<span class="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-semibold"><i class="fa-solid fa-cloud-arrow-up"></i> ${dictionary.status_synced}</span>`;
+                } else if (item.syncStatus === 'Failed') {
+                    syncBadge = `<span class="text-[10px] bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-full font-semibold"><i class="fa-solid fa-triangle-exclamation"></i> ${dictionary.status_failed}</span>`;
+                } else {
+                    syncBadge = `<span class="text-[10px] bg-slate-100 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-full font-semibold"><i class="fa-solid fa-eye-slash"></i> ${dictionary.status_offline}</span>`;
+                }
+
+                // Map issue categories to current active language for display
+                let translatedType = item.issueType;
+                if (state.lang === 'my') {
+                    if (item.issueType.includes('การลางาน')) translatedType = translatedType.replace('การลางาน', dictionary.form_issue_leave);
+                    if (item.issueType.includes('การกดขอโอที')) translatedType = translatedType.replace('การกดขอโอที', dictionary.form_issue_ot);
+                    if (item.issueType.includes('กะการทำงานไม่ตรง')) translatedType = translatedType.replace('กะการทำงานไม่ตรง', dictionary.form_issue_shift);
+                    if (item.issueType.includes('ปัญหาอื่น ๆ')) translatedType = translatedType.replace('ปัญหาอื่น ๆ', dictionary.form_issue_other);
+                    if (item.issueType.includes('ปัญหาอื่นๆ')) translatedType = translatedType.replace('ปัญหาอื่นๆ', dictionary.form_issue_other);
+                }
+
+                html += `
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-xs font-bold text-slate-400">#${item.id}</span>
+                                <h4 class="font-bold text-xs text-slate-800">${translatedType}</h4>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Created: ${item.createdTime} | Target Date: ${item.issueDate}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            ${syncBadge}
+                            <span class="text-[10px] font-bold px-2.5 py-1 rounded-full ${badgeClass}">
+                                <i class="fa-regular fa-clock"></i> ${displayStatus}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+        }
+
+        // Copy Code to Clipboard Helper
+        function copyAppsScriptCode() {
+            const scriptText = document.getElementById('apps-script-code').innerText;
+            const temp = document.createElement('textarea');
+            temp.value = scriptText;
+            document.body.appendChild(temp);
+            temp.select();
+            
+            try {
+                document.execCommand('copy');
+                showNotification('Code copied to clipboard!', 'success');
+            } catch (err) {
+                showNotification('Please manually select and copy the code block.', 'error');
+            }
+            document.body.removeChild(temp);
+        }
+
+        // Toast Messages Helper
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let borderStyle = 'border-emerald-500';
+            let iconClass = 'fa-circle-check text-emerald-500';
+            
+            if (type === 'error') {
+                borderStyle = 'border-red-500';
+                iconClass = 'fa-circle-exclamation text-red-500';
+            } else if (type === 'warning') {
+                borderStyle = 'border-amber-500';
+                iconClass = 'fa-triangle-exclamation text-amber-500';
+            } else if (type === 'info') {
+                borderStyle = 'border-indigo-500';
+                iconClass = 'fa-circle-info text-indigo-500';
+            }
+
+            toast.className = `p-4 mb-3 rounded-xl flex items-start gap-3 w-80 shadow-xl pointer-events-auto transition-all duration-300 transform translate-x-12 opacity-0 glass-panel bg-white border-l-4 ${borderStyle}`;
+            toast.innerHTML = `
+                <i class="fa-solid ${iconClass} text-lg mt-0.5 shrink-0"></i>
+                <div class="flex-1">
+                    <p class="text-xs font-semibold text-slate-800 leading-normal">${message}</p>
+                </div>
+                <button class="text-slate-400 hover:text-slate-600 text-xs self-start" onclick="this.parentElement.remove()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            `;
+
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-x-12', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-x-12', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
