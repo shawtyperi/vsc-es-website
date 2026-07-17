@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
@@ -171,11 +171,15 @@
                         <label class="block text-xs font-semibold text-slate-600 mb-1.5"><span data-i18n="reg_position_label">ตำแหน่ง</span> <span class="text-red-500">*</span></label>
                         <select id="reg-position" required onchange="handleRegisterPositionChange(this.value)" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-xs font-medium">
                             <option value="" disabled selected data-i18n="reg_position_placeholder">เลือกตำแหน่ง</option>
-                            <option value="VCM - Smart Production">VCM - Smart Production</option>
-                            <option value="VCM - Warehouse">VCM - Warehouse</option>
-                            <option value="VCM - TOE">VCM - TOE</option>
-                            <option value="VCM - Quality Control">VCM - Quality Control</option>
-                            <option value="VCM - Quality Assurance">VCM - Quality Assurance</option>
+                            <option value="Production Staff">Production Staff</option>
+                            <option value="Warehouse Staff">Warehouse Staff</option>
+                            <option value="Personal Hygiene Staff">Personal Hygiene Staff</option>
+                            <option value="Production Line Cleaning Staff">Production Line Cleaning Staff</option>
+                            <option value="Maintenance Technician Officer">Maintenance Technician Officer</option>
+                            <option value="Production Officer">Production Officer</option>
+                            <option value="Quality Control In-Line Officer">Quality Control In-Line Officer</option>
+                            <option value="Quality Control Inspector Officer">Quality Control Inspector Officer</option>
+                            <option value="Warehouse Officer">Warehouse Officer</option>
                             <option value="อื่นๆ" data-i18n="reg_position_other_opt">อื่นๆ (ระบุเพิ่มเติม)</option>
                         </select>
                     </div>
@@ -981,13 +985,6 @@ function doPost(e) {
         </div>
     </div>
 
-    <!-- Footer Section -->
-    <footer class="bg-white border-t border-slate-200 mt-12 py-6 text-center text-xs text-slate-400">
-        <div class="max-w-4xl mx-auto px-4">
-            <p>© 2026 VSC - ES (Empeo Support). <span data-i18n="footer_text">พัฒนาขึ้นเพื่อเป็นเครื่องมืออำนวยความสะดวกในการซิงค์ข้อมูลปัญหาและตารางเวลาเข้าสู่ Google Sheets</span></p>
-        </div>
-    </footer>
-
     <!-- JAVASCRIPT_LOGIC -->
     <script>
         // กำหนด Default API URL ที่ส่งมาจากผู้ใช้งาน เพื่อให้ระบบเชื่อมโยงอัตโนมัติทันที
@@ -1022,6 +1019,7 @@ function doPost(e) {
                 reg_nickname_placeholder: "สมชาย",
                 reg_position_label: "ตำแหน่ง",
                 reg_position_placeholder: "เลือกตำแหน่ง",
+                reg_position_other_opt: "อื่นๆ (ระบุเพิ่มเติม)",
                 reg_position_other_label: "ระบุตำแหน่งงานอื่นๆ ของท่าน",
                 reg_submit_btn: "ยืนยันการลงทะเบียน",
                 already_has_account: "มีบัญชีผู้ใช้งานระบบนี้อยู่แล้ว?",
@@ -1110,7 +1108,7 @@ function doPost(e) {
                 
                 register_title: "အကောင့်ဖွင့်ခြင်းနှင့် အတည်ပြုခြင်း",
                 register_desc: "အီးမေးလ်တစ်ခုခုကို အသုံးပြု၍ အကောင့်ဖွင့်နိုင်သည်။ လုံခြုံရေးအတွက် OTP ပေးပို့ပါမည်။",
-                reg_email_label: "အကောင့်ဖွင့်ရန် အီးမေးလ်ဖြည့်ပါ (စာလုံးပေါင်း မှန်ကန်စွာ စစ်ဆေးပါ)",
+                reg_email_label: "အကောင့်ဖွင့်ရန် အီးမေးလ်ဖြည့်ပါ (စာလုံးပေါင်း မှันကန်စွာ စစ်ဆေးပါ)",
                 reg_send_otp_btn: "OTP တောင်းဆိုရန်",
                 reg_otp_label: "အီးမေးလ်သို့ ပေးပို့ထားသော ဂဏန်း ၆ လုံးပါဝင်သည့် OTP ကို ဖြည့်ပါ",
                 reg_password_label: "စနစ်သို့ဝင်ရောက်ရန် စကားဝှက် သတ်မှတ်ပါ",
@@ -1121,6 +1119,7 @@ function doPost(e) {
                 reg_nickname_placeholder: "မောင်မောင်",
                 reg_position_label: "ရာထူး",
                 reg_position_placeholder: "ရာထူး ရွေးချယ်ပါ",
+                reg_position_other_opt: "အခြား (အသေးစိတ်ဖော်ပြရန်)",
                 reg_position_other_label: "အခြားရာထူးကို ဖော်ပြပေးပါ",
                 reg_submit_btn: "အကောင့်ဖွင့်ခြင်း အတည်ပြုပါ",
                 already_has_account: "အသုံးပြုသူအကောင့် ရှိပြီးသားလား?",
@@ -1153,7 +1152,7 @@ function doPost(e) {
                 form_ot_opt_chief: "ခေါင်းဆောင်မှ အလုပ်ဆိုင်းမှားယွင်းသတ်မှတ်ထားခြင်း",
                 form_ot_opt_forgot: "နှိပ်ရန်မေ့သွားခြင်း (နောက်ကြောင်းပြန် တောင်းဆို၍မရပါ)",
                 warning_title: "⚠️ သတိပြုရန်",
-                warning_forgot_ot: "ဝန်ထမ်းကိုယ်တိုင် အိုတီတောင်းဆိုရန် မေ့လျော့ခဲ့ပါက၊ Empeo စနစ်စည်းမျဉ်းများအရ HR ဌာနမှ မည်သည့်အခြေအနေမျိုးတွင်မဆို နောက်ကြောင်းပြန် အတည်ပြုပေးမည် မဟုတ်ပါ။",
+                warning_forgot_ot: "ဝန်ထမ်းကိုယ်တိုင် အိုတီတောင်းဆိုရန် မေ့လျော့ခဲ့ပါက၊ Empeo စနစ်စည်းမျဉ်းများအရ HR ဌาနမှ မည်သည့်အခြေအနေမျိုးတွင်မဆို နောက်ကြောင်းပြန် အတည်ပြုပေးမည် မဟုတ်ပါ။",
 
                 form_shift_info_banner: "လျင်မြန်စွာ ပြင်ဆင်ပေးနိုင်ရန် ဆိုင်းအချက်အလက်များကို အပြည့်အစုံ ဖြည့်ပေးပါ",
                 form_shift_type: "ဆိုင်းအမျိုးအစား",
@@ -1166,10 +1165,10 @@ function doPost(e) {
 
                 form_other_warning: "မှတ်ချက်: Empeo စနစ်နှင့် ပတ်သက်သည့် နည်းပညာပိုင်းဆိုင်ရာ ပြဿနာများကိုသာ ရေးပါ",
                 form_other_custom_label: "အခြားပြဿနာအမျိုးအစား အသေးစိတ်ကို ဖော်ပြပါ",
-                form_date_label: "ပြင်ဆင်လိုသည့် နေ့စွဲ",
+                form_date_label: "ပြင်ဆินလိုသည့် နေ့စွဲ",
                 form_desc_label: "ပြဿနာအသေးစိတ် သို့မဟုတ် ပြင်ဆင်လိုသည့် အကြောင်းပြချက်",
                 form_desc_placeholder: "ပြဿနာကို အကျဉ်းချုပ် ရှင်းပြပါ ဥပမာ - စနစ်ပိတ်သွားသည့်အတွက် ရက်စွဲ ၁၅ ရက်နေ့အတွက် အရေးပေါ်ခွင့်ကို နောက်ကြောင်းပြန်တိုင်ကြားလိုပါသည်",
-                form_file_label: "ပြဿနာသက်သေပြရန် ဓာတ်ပုံ သို့မဟုတ် ဖုန်းမျက်နှာပြင်ပုံ (Screenshot) ထည့်သွင်းပါ",
+                form_file_label: "ပြဿနာသက်သေပြရန် ဓာတ်ပုံ သို့မဟုတ် ဖုန်းမျက်နှาပြင်ပုံ (Screenshot) ထည့်သွင်းပါ",
                 form_file_dropzone: "ပုံရွေးချယ်ရန် ဤနေရာကို နှိပ်ပါ သို့မဟုတ် ပုံကို ဆွဲထည့်ပါ",
                 form_file_warning: "ပုံဖိုင်အမျိုးအစား (PNG, JPG, JPEG) တစ်ပုံလျှင် အများဆုံး 2MB အထိသာ",
                 form_file_preview_count: "တင်သွင်းရန် ရွေးချယ်ထားသောပုံများ",
@@ -1177,7 +1176,7 @@ function doPost(e) {
                 form_submit_btn: "ပြဿနာအစီရင်ခံစာတင်သွင်းပြီး ဓာတ်ပုံသိမ်းဆည်းပါ",
 
                 history_title: "ဤစက်ရှိ သင်၏ နောက်ဆုံးတင်ပြချက်မှတ်တမ်း",
-                history_refresh: "အခြေအနေ ပြန်လည်စစ်ဆေးရန်",
+                history_refresh: "အခြေအနေ ပြันလည်စစ်ဆေးရန်",
                 history_empty: "ယခုဆဲရှင်းတွင် တင်ပြထားသည့်မှတ်တမ်း မရှိသေးပါ",
                 footer_text: "ပြဿနာအချက်အလက်များနှင့် အချိန်ဇယားများကို Google Sheets သို့ အလိုအလျောက် ပေးပို့ရန် ဖန်တီးထားပါသည်",
 
@@ -1607,7 +1606,6 @@ function doPost(e) {
         }
 
         // Handle Log out
-        // Clear active session variables and revert to authentication screen
         function handleLogout() {
             localStorage.removeItem('empeo_current_user');
             state.currentUser = null;
