@@ -75,6 +75,44 @@
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
+
+        /* Print Style for Official PDF / Document Export */
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+            body > *:not(#manual-modal) {
+                display: none !important;
+            }
+            #manual-modal {
+                position: static !important;
+                background: white !important;
+                padding: 0 !important;
+                display: block !important;
+                inset: auto !important;
+            }
+            #manual-modal-container {
+                max-width: 100% !important;
+                width: 100% !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            #printable-manual {
+                padding: 0 !important;
+                color: #0f172a !important;
+                font-size: 11pt !important;
+                line-height: 1.5 !important;
+            }
+            #printable-manual table {
+                page-break-inside: avoid;
+            }
+        }
     </style>
 </head>
 <body class="min-h-full flex flex-col text-slate-800 antialiased selection:bg-blue-500 selection:text-white pb-20 md:pb-6">
@@ -112,8 +150,16 @@
                     </button>
                 </nav>
 
-                <!-- Right Utilities: Language Switch, Admin Gear & Logout Badge -->
+                <!-- Right Utilities: Language Switch, Manual PDF Download, Admin Gear & Logout Badge -->
                 <div class="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+                    
+                    <!-- Manual / Document Download Button -->
+                    <button onclick="openManualModal()" title="ดาวน์โหลดคู่มือการใช้งาน (PDF / Word)" 
+                            class="px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 flex items-center space-x-1 text-xs font-bold transition-all shadow-2xs">
+                        <i class="fa-solid fa-file-pdf text-rose-600 text-xs"></i>
+                        <span class="text-[11px] sm:text-xs">คู่มือ PDF</span>
+                    </button>
+
                     <!-- Language Switcher -->
                     <div class="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200/80">
                         <button id="lang-btn-th" onclick="setLanguage('th')" 
@@ -881,6 +927,187 @@
             <button onclick="closeLockerDetailModal()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition-colors">
                 ปิดหน้าต่าง
             </button>
+        </div>
+    </div>
+
+    <!-- USER MANUAL & DOCUMENT DOWNLOAD MODAL -->
+    <div id="manual-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 hidden overflow-y-auto">
+        <div id="manual-modal-container" class="bg-white rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden my-auto">
+            
+            <!-- Modal Header (No Print) -->
+            <div class="no-print p-4 sm:px-6 sm:py-3.5 border-b border-slate-200 bg-slate-50 flex items-center justify-between gap-3 shrink-0">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-sm">
+                        <i class="fa-solid fa-file-pdf"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-sm sm:text-base leading-tight">คู่มือการใช้งานระบบ VSC - PS</h3>
+                        <p class="text-[11px] text-slate-500">เอกสารคู่มือทางการสำหรับประชาสัมพันธ์พนักงาน</p>
+                    </div>
+                </div>
+
+                <!-- Export Action Buttons -->
+                <div class="flex items-center space-x-2">
+                    <button onclick="downloadManualAsWord()" class="px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition-colors flex items-center space-x-1">
+                        <i class="fa-solid fa-file-word text-blue-600 text-xs"></i>
+                        <span class="hidden sm:inline">โหลดไฟล์ Word (.doc)</span>
+                        <span class="sm:hidden">Word</span>
+                    </button>
+                    <button onclick="printManualDocument()" class="px-3 sm:px-3.5 py-1.5 text-xs font-bold rounded-lg bg-rose-600 text-white hover:bg-rose-700 shadow-sm transition-all flex items-center space-x-1.5">
+                        <i class="fa-solid fa-print text-xs"></i>
+                        <span>บันทึกเป็น PDF</span>
+                    </button>
+                    <button onclick="closeManualModal()" class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 flex items-center justify-center text-sm ml-1 transition-colors">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Printable Body -->
+            <div class="p-4 sm:p-8 overflow-y-auto flex-1 bg-white">
+                <div id="printable-manual" class="space-y-6 max-w-3xl mx-auto text-slate-800">
+                    
+                    <!-- Official Document Header Banner -->
+                    <div class="text-center border-b-2 border-blue-600 pb-4 space-y-1">
+                        <div class="flex items-center justify-center space-x-2 text-blue-600 font-extrabold text-xl sm:text-2xl">
+                            <i class="fa-solid fa-users-gear"></i>
+                            <span>คู่มือการใช้งานระบบ VSC - PS</span>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-sm sm:text-base">ศูนย์ประสานงานและดูแลพนักงาน (People Support)</h4>
+                        <p class="text-xs text-slate-500">บริษัท วาลู สเปเชียลตี้ คุกกิ้ง จำกัด | เอกสารประชาสัมพันธ์และคู่มือประจำปี 2026</p>
+                    </div>
+
+                    <!-- 1. ภาพรวมระบบ -->
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-blue-700 text-sm border-l-4 border-blue-600 pl-2">1. ภาพรวมและช่องทางการเข้าใช้งาน</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            ระบบ <strong class="text-slate-900">VSC - PS</strong> พัฒนาขึ้นเพื่อให้พนักงานทุกคนสามารถแจ้งปัญหาการทำงาน ตรวจสอบสิทธิประโยชน์ และดูผังตู้ล็อกเกอร์ได้อย่างสะดวก รวดเร็ว และโปร่งใส ผ่านสมาร์ตโฟนหรือคอมพิวเตอร์ตลอด 24 ชั่วโมง
+                        </p>
+                        <ul class="text-xs text-slate-600 list-disc list-inside space-y-1 pl-1">
+                            <li><strong>ลิงก์เข้าใช้งานระบบ:</strong> <span class="font-mono text-blue-600">https://vsc-es.vercel.app</span> (หรือสแกน QR Code ที่จุดประชาสัมพันธ์ฝ่ายบุคคล)</li>
+                            <li><strong>รองรับ 2 ภาษา:</strong> ภาษาไทย (TH) และภาษาพม่า (မြန်မာ) โดยกดปุ่มสลับภาษาได้ที่มุมขวาบน</li>
+                            <li><strong>การแสดงผลบนโทรศัพท์มือถือ:</strong> มีแถบเมนูด้านล่าง (Dock Bar) สะดวกต่อการกดใช้งานด้วยมือเดียว</li>
+                        </ul>
+                    </div>
+
+                    <!-- 2. การลงทะเบียนและเข้าสู่ระบบ -->
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-blue-700 text-sm border-l-4 border-blue-600 pl-2">2. การเข้าสู่ระบบและการลงทะเบียนบัญชีใหม่</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                                <span class="font-bold text-slate-900 block text-xs">2.1 สำหรับพนักงานใหม่ (สมัครสมาชิก)</span>
+                                <ol class="list-decimal list-inside space-y-1 text-slate-600">
+                                    <li>กด <strong>"สมัครสมาชิกใหม่"</strong> ที่หน้าแรก</li>
+                                    <li>กรอกอีเมลบริษัท แล้วกด <strong>"ส่ง OTP"</strong></li>
+                                    <li>นำรหัส 6 หลักจากอีเมลมากรอก (อายุ 10 นาที)</li>
+                                    <li>กรอกชื่อ-สกุล, ชื่อเล่น, แผนก และตั้งรหัสผ่าน</li>
+                                </ol>
+                            </div>
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                                <span class="font-bold text-slate-900 block text-xs">2.2 การเข้าสู่ระบบและกรณีลืมรหัสผ่าน</span>
+                                <ol class="list-decimal list-inside space-y-1 text-slate-600">
+                                    <li>กรอกอีเมลและรหัสผ่าน แล้วกด <strong>"เข้าสู่ระบบ"</strong></li>
+                                    <li>หากลืมรหัสผ่าน ให้กด <strong>"ลืมรหัสผ่าน?"</strong></li>
+                                    <li>กรอกอีเมลเพื่อรับรหัส OTP สำหรับตั้งรหัสใหม่</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. วิธีการแจ้งปัญหา 5 หมวดหลัก -->
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-blue-700 text-sm border-l-4 border-blue-600 pl-2">3. สรุปประเภทการแจ้งปัญหาพนักงาน (5 หมวดหลัก)</h4>
+                        <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-blue-50/80 text-blue-900 border-b border-slate-200">
+                                        <th class="p-2.5 font-bold w-1/4">ประเภทปัญหา</th>
+                                        <th class="p-2.5 font-bold w-2/5">ข้อมูลที่ต้องระบุ</th>
+                                        <th class="p-2.5 font-bold">ข้อกำหนดสำคัญ</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-slate-700">
+                                    <tr>
+                                        <td class="p-2.5 font-bold text-rose-600">1. การลางาน</td>
+                                        <td class="p-2.5">ประเภทการลา, เหตุผล, ช่วงวันที่ลา (ตั้งแต่วันที่ - ถึงวันที่)</td>
+                                        <td class="p-2.5 text-slate-600">ระบบคำนวณวันรวมให้อัตโนมัติ ควรแนบใบรับรองแพทย์ (กรณีลาป่วย)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold text-purple-600">2. การกดขอโอที</td>
+                                        <td class="p-2.5">สาเหตุ, วันที่ทำโอที, เวลาตั้งแต่ - ถึง (ระบบ 24 ชม.)</td>
+                                        <td class="p-2.5 text-red-600 font-medium">*กรณีลืมกดด้วยตนเอง HR ไม่สามารถขอย้อนหลังให้ได้</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold text-emerald-600">3. กะการทำงานไม่ตรง</td>
+                                        <td class="p-2.5">ประเภทกะ (วัน/คืน), ฝั่งงาน (ดิบ/สุก), วันที่ และเวลากะ</td>
+                                        <td class="p-2.5 text-slate-600">เลือกเวลากะมาตรฐาน หรือเลือก "เวลาอื่น ๆ" เพื่อระบุเอง</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold text-pink-600">4. เข้า VSC Care ไม่ได้</td>
+                                        <td class="p-2.5">อาการของปัญหา, รายละเอียดข้อผิดพลาด</td>
+                                        <td class="p-2.5 text-slate-600">ไม่ต้องระบุวันที่ ให้แนบภาพหน้าจอ Error เพื่อการตรวจสอบ</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold text-amber-600">5. ล็อกเกอร์มีปัญหา</td>
+                                        <td class="p-2.5">ประเภทปัญหา เช่น กุญแจหาย, ชำรุด, ป้ายไม่ตรง</td>
+                                        <td class="p-2.5 text-slate-600">ไม่ต้องระบุวันที่ ระบุเลขตู้ที่ต้องการซ่อมในช่องรายละเอียด</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-[11px] text-slate-500">
+                            * หมายเหตุ: ต้องแนบภาพถ่ายหรือภาพหน้าจอหลักฐานอย่างน้อย 1 รูป (สูงสุด 5 รูป, ขนาดไม่เกิน 2MB/รูป)
+                        </p>
+                    </div>
+
+                    <!-- 4. ผังล็อกเกอร์และข้อห้ามทางวินัย -->
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-blue-700 text-sm border-l-4 border-blue-600 pl-2">4. การดูผังตู้ล็อกเกอร์และกฎระเบียบข้อห้าม (Strict Rules)</h4>
+                        <div class="grid grid-cols-2 gap-2 text-xs mb-2">
+                            <div class="p-2 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center space-x-2">
+                                <span class="w-3.5 h-3.5 rounded-md bg-emerald-500 shrink-0"></span>
+                                <span class="font-bold text-emerald-800">ช่องสีเขียว: ตู้ว่างพร้อมจัดสรร</span>
+                            </div>
+                            <div class="p-2 bg-rose-50 border border-rose-200 rounded-lg flex items-center space-x-2">
+                                <span class="w-3.5 h-3.5 rounded-md bg-rose-500 shrink-0"></span>
+                                <span class="font-bold text-rose-800">ช่องสีแดง: ตู้ที่มีผู้ครอบครองแล้ว</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3.5 bg-rose-50/80 border border-rose-300 rounded-xl space-y-1.5 text-xs">
+                            <span class="font-bold text-rose-800 flex items-center space-x-1.5">
+                                <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+                                <span>ข้อห้ามเด็ดขาดในการใช้งานตู้ล็อกเกอร์:</span>
+                            </span>
+                            <ul class="list-disc list-inside space-y-1 text-slate-700 pl-1">
+                                <li><strong>ห้ามเก็บอาหารและเครื่องดื่มทุกชนิด</strong> เพื่อป้องกันการบูดเน่า กลิ่นรบกวน และสัตว์พาหะ</li>
+                                <li><strong>ห้ามทิ้งขยะหรือเศษสิ่งของเหลือใช้</strong> ในตู้ล็อกเกอร์เด็ดขาด</li>
+                                <li><strong>ห้ามเก็บสิ่งผิดกฎหมาย</strong> อาวุธ ยาเสพติด และวัตถุไวไฟทุกประเภท</li>
+                                <li><strong>ห้ามเก็บทรัพย์สินมีค่า</strong> เงินสด ทองคำ เพื่อป้องกันการสูญหาย</li>
+                            </ul>
+                            <p class="text-[10px] text-rose-700 font-semibold pt-1 border-t border-rose-200/80">
+                                * ฝ่ายบุคคล (HR) มีสิทธิ์สุ่มตรวจความสะอาดและความเป็นระเบียบเรียบร้อยของตู้ล็อกเกอร์เป็นประจำ
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 5. ติดต่อสอบถาม -->
+                    <div class="border-t border-slate-200 pt-3 text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-2">
+                        <p>ฝ่ายบุคคลและประสานงานพนักงาน (HR / People Support) ชั้น 1 อาคารสำนักงาน</p>
+                        <p class="font-medium">เวลาทำการ: จันทร์ – เสาร์ 08:00 – 17:00 น.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Modal Footer (No Print) -->
+            <div class="no-print p-3 sm:px-6 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
+                <span class="text-xs text-slate-500">สามารถกดพิมพ์หรือเลือก "Save as PDF" ได้จากเบราว์เซอร์</span>
+                <button onclick="closeManualModal()" class="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-lg text-xs transition-colors">
+                    ปิดหน้าต่าง
+                </button>
+            </div>
+
         </div>
     </div>
 
@@ -2359,6 +2586,63 @@
 
         function closeLockerDetailModal() {
             document.getElementById('locker-detail-modal').classList.add('hidden');
+        }
+
+        /* User Manual Modal and Document Download Functions */
+        function openManualModal() {
+            const modal = document.getElementById('manual-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeManualModal() {
+            const modal = document.getElementById('manual-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function printManualDocument() {
+            // Trigger browser print dialog formatted for PDF export via @media print
+            window.print();
+        }
+
+        function downloadManualAsWord() {
+            const manualContent = document.getElementById('printable-manual');
+            if (!manualContent) return;
+
+            const headerHtml = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' 
+                      xmlns:w='urn:schemas-microsoft-com:office:word' 
+                      xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta charset='utf-8'>
+                    <title>คู่มือการใช้งานระบบ VSC - PS</title>
+                    <style>
+                        body { font-family: 'Prompt', 'Segoe UI', Tahoma, sans-serif; font-size: 11pt; color: #1e293b; }
+                        h2, h3, h4 { color: #1d4ed8; }
+                        table { border-collapse: collapse; width: 100%; margin-top: 10px; margin-bottom: 10px; }
+                        th, td { border: 1px solid #cbd5e1; padding: 6px 10px; font-size: 10pt; }
+                        th { background-color: #eff6ff; color: #1e3a8a; }
+                        .warn-box { background-color: #fff1f2; border: 1px solid #fecdd3; padding: 10px; border-radius: 6px; }
+                    </style>
+                </head>
+                <body>
+            `;
+            const footerHtml = `</body></html>`;
+            const fullDocHtml = headerHtml + manualContent.innerHTML + footerHtml;
+
+            const blob = new Blob(['\ufeff', fullDocHtml], {
+                type: 'application/msword;charset=utf-8'
+            });
+
+            const downloadUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = 'คู่มือการใช้งาน_VSC_PS.doc';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(downloadUrl);
+
+            showNotification('ดาวน์โหลดไฟล์เอกสาร Word เรียบร้อยแล้ว', 'success');
         }
 
         function switchMainTab(tab) {
