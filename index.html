@@ -114,6 +114,7 @@
 </head>
 <body class="min-h-full flex flex-col text-slate-800 antialiased selection:bg-blue-500 selection:text-white pb-20 md:pb-6">
 
+    <!-- Top Navigation Bar -->
     <header class="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 shadow-xs">
         <div class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-14 sm:h-16 gap-2">
@@ -132,7 +133,7 @@
                     </div>
                 </div>
 
-                <!-- Center: Navigation Tabs (Desktop / Tablet) -->
+                <!-- Center: Navigation Tabs (Desktop only) -->
                 <nav class="hidden md:flex items-center p-1 bg-slate-100/90 rounded-xl border border-slate-200/70 shrink-0">
                     <button id="tab-btn-empeo" onclick="switchMainTab('empeo')" 
                             class="px-3.5 py-1.5 text-xs font-semibold rounded-lg flex items-center space-x-1.5 tab-btn-active text-blue-600 transition-all">
@@ -146,17 +147,14 @@
                     </button>
                 </nav>
 
-                <!-- Right Utilities: Language Switch, Manual PDF Download, Admin Gear & User Profile -->
+                <!-- Right Utilities -->
                 <div class="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
-                    
-                    <!-- Manual / Document Download Button -->
-                    <button onclick="openManualModal()" title="ดาวน์โหลดคู่มือการใช้งาน (PDF / Word)" 
+                    <button onclick="openManualModal()" title="คู่มือการใช้งาน (PDF / Word)" 
                             class="px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 flex items-center space-x-1 text-xs font-bold transition-all shadow-2xs">
                         <i class="fa-solid fa-file-pdf text-rose-600 text-xs"></i>
                         <span class="text-[11px] sm:text-xs">คู่มือ PDF</span>
                     </button>
 
-                    <!-- Language Switcher -->
                     <div class="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200/80">
                         <button id="lang-btn-th" onclick="setLanguage('th')" 
                                 class="px-2 py-0.5 text-[11px] font-bold rounded-md bg-white text-blue-600 shadow-xs transition-all">
@@ -168,18 +166,12 @@
                         </button>
                     </div>
 
-                    <!-- Admin Gear Button (PIN: shawtyperi) -->
                     <button onclick="openAdminAuth()" title="ตั้งค่าระบบ" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs transition-all border border-slate-200">
                         <i class="fa-solid fa-gear"></i>
                     </button>
 
-                    <!-- User Profile & Logout (Click to edit position/profile) -->
-                    <div id="user-profile-badge" class="hidden flex items-center space-x-1.5 pl-1.5 border-l border-slate-200">
-                        <button onclick="openEditProfileModal()" title="คลิกเพื่อเปลี่ยนตำแหน่งหรือแก้ไขข้อมูลส่วนตัว" class="flex items-center space-x-1.5 px-2 py-1 rounded-lg hover:bg-blue-50 text-slate-700 hover:text-blue-700 transition-colors border border-transparent hover:border-blue-200">
-                            <i class="fa-solid fa-circle-user text-blue-600 text-sm"></i>
-                            <span id="user-display-name" class="text-xs font-semibold hidden sm:inline">User</span>
-                            <i class="fa-solid fa-pen text-[9px] text-slate-400"></i>
-                        </button>
+                    <div id="user-profile-badge" class="hidden flex items-center space-x-1 pl-1 border-l border-slate-200">
+                        <span id="user-display-name" class="text-xs font-semibold text-slate-700 hidden sm:inline max-w-[120px] truncate mr-1"></span>
                         <button onclick="handleLogout()" title="ออกจากระบบ" class="w-7 h-7 sm:w-auto sm:px-2.5 sm:py-1 rounded-lg text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 flex items-center justify-center space-x-1 text-xs font-semibold transition-all">
                             <i class="fa-solid fa-arrow-right-from-bracket text-[11px]"></i>
                             <span class="hidden sm:inline text-[11px]">ออก</span>
@@ -190,7 +182,7 @@
         </div>
     </header>
 
-    <!-- Mobile Bottom Navigation Bar (Dock Bar) -->
+    <!-- Mobile Bottom Dock Navigation -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-lg px-6 py-2">
         <div class="max-w-md mx-auto grid grid-cols-2 gap-3">
             <button id="mobile-nav-empeo" onclick="switchMainTab('empeo')" 
@@ -206,7 +198,6 @@
         </div>
     </nav>
 
-    <!-- AUTHENTICATION WRAPPER -->
     <div id="auth-container" class="max-w-md w-full mx-auto px-4 py-8">
         
         <!-- SECTION 1: LOGIN -->
@@ -224,7 +215,7 @@
                     <label class="block text-xs font-bold text-slate-700 mb-1">อีเมลพนักงาน (Email) <span class="text-red-500">*</span></label>
                     <div class="relative">
                         <i class="fa-regular fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="email" id="login-email" required placeholder="name@vsc.co.th" class="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
+                        <input type="email" id="login-email" required placeholder="name@vsc.co.th" class="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
                     </div>
                 </div>
 
@@ -232,12 +223,12 @@
                     <label class="block text-xs font-bold text-slate-700 mb-1">รหัสผ่าน (Password) <span class="text-red-500">*</span></label>
                     <div class="relative">
                         <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="password" id="login-password" required placeholder="••••••••" class="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
+                        <input type="password" id="login-password" required placeholder="••••••••" class="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
                     </div>
                 </div>
 
                 <div class="flex items-center justify-end text-xs pt-1">
-                    <button type="button" onclick="switchAuthMode('forgot')" class="text-slate-500 hover:text-slate-800 text-[11px]">
+                    <button type="button" onclick="switchAuthMode('forgot')" class="text-slate-500 hover:text-slate-800">
                         ลืมรหัสผ่าน?
                     </button>
                 </div>
@@ -269,7 +260,7 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">อีเมลพนักงาน <span class="text-red-500">*</span></label>
                     <div class="flex gap-2">
-                        <input type="email" id="reg-email" required placeholder="name@vsc.co.th" class="flex-1 px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
+                        <input type="email" id="reg-email" required placeholder="name@vsc.co.th" class="flex-1 px-3.5 py-2.5 text-xs rounded-xl border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
                         <button type="button" id="reg-send-otp-btn" onclick="sendRegisterOTP()" class="px-3.5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold whitespace-nowrap shadow-xs">
                             ส่ง OTP
                         </button>
@@ -281,48 +272,43 @@
                         <span class="font-bold text-blue-900">รหัส OTP (6 หลัก) <span class="text-red-500">*</span></span>
                         <span id="reg-otp-timer" class="text-rose-600 font-mono text-[11px] font-bold">Expired in: 10:00</span>
                     </div>
-                    <input type="text" id="reg-otp" maxlength="6" placeholder="123456" class="w-full text-center tracking-widest text-base font-bold font-mono py-2 rounded-lg border border-blue-300 bg-white focus:ring-blue-500">
-                    <p class="text-[10px] text-blue-700">กรุณากรอกรหัส OTP ที่แสดงขึ้นเพื่อยืนยันบัญชีของคุณ</p>
+                    <input type="text" id="reg-otp" maxlength="6" placeholder="กรอกรหัส 6 หลักจากอีเมล" class="w-full text-center tracking-widest text-base font-bold font-mono py-2 rounded-lg border-blue-300 bg-white focus:ring-blue-500">
+                    <p class="text-[10px] text-blue-700 flex items-center gap-1 mt-1">
+                        <i class="fa-solid fa-envelope-circle-check text-blue-600"></i>
+                        <span>ระบบได้ส่งรหัส OTP ไปยังอีเมลของคุณแล้ว กรุณาเปิดดูในกล่องจดหมาย (หรือ Junk/Spam) แล้วนำมากรอก</span>
+                    </p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อ-นามสกุล <span class="text-red-500">*</span></label>
-                        <input type="text" id="reg-name" required placeholder="สมชาย ใจดี" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs">
+                        <input type="text" id="reg-name" required placeholder="สมชาย ใจดี" class="w-full px-3 py-2 text-xs rounded-xl border-slate-200 bg-white shadow-2xs">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อเล่น <span class="text-red-500">*</span></label>
-                        <input type="text" id="reg-nickname" required placeholder="ชาย" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs">
+                        <input type="text" id="reg-nickname" required placeholder="ชาย" class="w-full px-3 py-2 text-xs rounded-xl border-slate-200 bg-white shadow-2xs">
                     </div>
                 </div>
 
                 <div>
-                    <div class="flex items-center justify-between mb-1">
-                        <label class="block text-xs font-bold text-slate-700 flex items-center">
-                            <span>ตำแหน่ง (Position)</span> <span class="text-red-500 ml-0.5">*</span>
-                            <span id="pos-sync-status" class="text-[10px] text-emerald-600 font-medium ml-2 flex items-center">
-                                <i class="fa-solid fa-circle-check text-emerald-500 text-[9px] mr-1"></i> 77 ตำแหน่งมาตรฐาน
-                            </span>
-                        </label>
-                        <span class="text-[10px] text-slate-400">พิมพ์ค้นหา เลือก หรือพิมพ์เองได้</span>
-                    </div>
-                    <div class="relative">
-                        <input type="text" id="reg-position" list="position-datalist" oninput="handlePositionInput(this.value)" required placeholder="พิมพ์ค้นหา หรือเลือกตำแหน่งงานของคุณ..." autocomplete="off" class="w-full pl-3.5 pr-8 py-2.5 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
-                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none"></i>
-                    </div>
-                    <datalist id="position-datalist">
-                        <!-- Populated dynamically with exact curated positions list -->
-                    </datalist>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">ตำแหน่ง / ฝ่าย <span class="text-red-500">*</span></label>
+                    <select id="reg-position" onchange="toggleRegPositionOther(this.value)" class="w-full px-3 py-2 text-xs rounded-xl border-slate-200 bg-white shadow-2xs">
+                        <option value="ฝ่ายผลิต (ดิบ)">ฝ่ายผลิต (ดิบ)</option>
+                        <option value="ฝ่ายบรรจุ (สุก)">ฝ่ายบรรจุ (สุก)</option>
+                        <option value="ฝ่ายคลังสินค้า (Warehouse)">ฝ่ายคลังสินค้า (Warehouse)</option>
+                        <option value="ฝ่ายควบคุมคุณภาพ (QA/QC)">ฝ่ายควบคุมคุณภาพ (QA/QC)</option>
+                        <option value="ฝ่ายบุคคล / ธุรการ">ฝ่ายบุคคล / ธุรการ</option>
+                        <option value="อื่นๆ">อื่นๆ (ระบุ)</option>
+                    </select>
                 </div>
 
-                <div id="reg-position-other-container" class="hidden space-y-1">
-                    <label class="block text-xs font-semibold text-blue-700">ระบุตำแหน่งงานเพิ่มเติม <span class="text-red-500">*</span></label>
-                    <input type="text" id="reg-position-other" placeholder="โปรดระบุชื่อตำแหน่งงานของคุณ" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-blue-300 bg-blue-50/30 shadow-2xs focus:border-blue-500 focus:ring-blue-500">
+                <div id="reg-position-other-container" class="hidden">
+                    <input type="text" id="reg-position-other" placeholder="โปรดระบุตำแหน่งของคุณ" class="w-full px-3 py-2 text-xs rounded-xl border-slate-200 bg-white shadow-2xs">
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">ตั้งรหัสผ่าน <span class="text-red-500">*</span></label>
-                    <input type="password" id="reg-password" required minlength="6" placeholder="ขั้นต่ำ 6 ตัวอักษร" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs">
+                    <input type="password" id="reg-password" required minlength="6" placeholder="ขั้นต่ำ 6 ตัวอักษร" class="w-full px-3.5 py-2 text-xs rounded-xl border-slate-200 bg-white shadow-2xs">
                 </div>
 
                 <button type="submit" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md shadow-emerald-500/20 flex items-center justify-center space-x-2 transition-all">
@@ -352,7 +338,7 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">อีเมลพนักงาน <span class="text-red-500">*</span></label>
                     <div class="flex gap-2">
-                        <input type="email" id="forgot-email" required placeholder="name@vsc.co.th" class="flex-1 px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs">
+                        <input type="email" id="forgot-email" required placeholder="name@vsc.co.th" class="flex-1 px-3.5 py-2.5 text-xs rounded-xl border-slate-200 bg-white shadow-2xs">
                         <button type="button" id="forgot-send-otp-btn" onclick="sendForgotOTP()" class="px-3.5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold whitespace-nowrap shadow-xs">
                             ส่ง OTP
                         </button>
@@ -364,11 +350,15 @@
                         <span class="font-bold text-amber-900">รหัส OTP (6 หลัก) <span class="text-red-500">*</span></span>
                         <span id="forgot-otp-timer" class="text-rose-600 font-mono text-[11px] font-bold">Expired in: 10:00</span>
                     </div>
-                    <input type="text" id="forgot-otp" maxlength="6" placeholder="123456" class="w-full text-center tracking-widest text-base font-bold font-mono py-2 rounded-lg border border-amber-300 bg-white">
+                    <input type="text" id="forgot-otp" maxlength="6" placeholder="กรอกรหัส 6 หลักจากอีเมล" class="w-full text-center tracking-widest text-base font-bold font-mono py-2 rounded-lg border-amber-300 bg-white">
+                    <p class="text-[10px] text-amber-800 flex items-center gap-1">
+                        <i class="fa-solid fa-envelope-circle-check text-amber-600"></i>
+                        <span>ระบบได้ส่งรหัส OTP ไปยังอีเมลแล้ว กรุณาตรวจสอบกล่องจดหมาย</span>
+                    </p>
 
                     <div>
                         <label class="block text-xs font-bold text-amber-900 mb-1">รหัสผ่านใหม่ <span class="text-red-500">*</span></label>
-                        <input type="password" id="forgot-new-password" minlength="6" placeholder="กรอกรหัสผ่านใหม่" class="w-full px-3 py-2 text-xs rounded-lg border border-amber-300 bg-white">
+                        <input type="password" id="forgot-new-password" minlength="6" placeholder="กรอกรหัสผ่านใหม่" class="w-full px-3 py-2 text-xs rounded-lg border-amber-300 bg-white">
                     </div>
                 </div>
 
@@ -387,7 +377,6 @@
 
     </div>
 
-    <!-- MAIN APPLICATION SECTION (Protected, displayed after login) -->
     <main id="main-application-section" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 hidden">
 
         <!-- TAB 1: EMPEO & PEOPLE SUPPORT (ISSUE REPORTING) -->
@@ -422,34 +411,6 @@
                         <!-- Interactive Form -->
                         <form id="issue-form" onsubmit="handleFormSubmit(event)" class="p-4 sm:p-6 space-y-5 sm:space-y-6">
 
-                            <!-- Employee Profile Identity Sync Banner with Quick Edit Position Button -->
-                            <div class="bg-blue-50/70 border border-blue-200/90 rounded-xl p-3 sm:p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
-                                <div class="flex items-center space-x-2.5">
-                                    <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-xs">
-                                        <i class="fa-solid fa-id-badge"></i>
-                                    </div>
-                                    <div class="leading-snug">
-                                        <div class="flex items-center space-x-1.5 flex-wrap">
-                                            <span class="font-bold text-slate-900 text-xs sm:text-sm" id="banner-emp-fullname">พนักงาน</span>
-                                            <span class="text-[11px] font-semibold text-blue-700 bg-blue-100/80 px-2 py-0.2 rounded-full" id="banner-emp-nickname">(ชื่อเล่น)</span>
-                                        </div>
-                                        <p class="text-[11px] text-slate-600 mt-0.5">
-                                            ตำแหน่ง: <strong class="text-blue-800 font-bold" id="banner-emp-position">-</strong>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center space-x-2 self-start sm:self-center">
-                                    <button type="button" onclick="openEditProfileModal()" class="px-2.5 py-1 text-[11px] font-bold text-blue-700 bg-white hover:bg-blue-100/80 rounded-lg border border-blue-300 shadow-2xs transition-all flex items-center space-x-1">
-                                        <i class="fa-solid fa-user-pen text-blue-600 text-[10px]"></i>
-                                        <span>เปลี่ยนตำแหน่ง</span>
-                                    </button>
-                                    <span class="hidden sm:inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-white text-emerald-700 border border-emerald-200 shadow-2xs">
-                                        <i class="fa-solid fa-circle-check text-emerald-500 mr-1 text-[9px]"></i> ซิงค์ลงชีท
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Hidden Employee Profile Data Fields -->
                             <input type="hidden" id="emp-name">
                             <input type="hidden" id="emp-nickname">
                             <input type="hidden" id="emp-position">
@@ -539,20 +500,20 @@
                                             <label class="block text-xs font-semibold text-slate-700 mb-1">
                                                 <span data-i18n="leave_category_label">ประเภทการลา</span> <span class="text-red-500">*</span>
                                             </label>
-                                            <select id="leave-category" onchange="handleLeaveCategoryChange(this.value)" class="w-full text-xs sm:text-sm rounded-xl border border-slate-200 bg-white shadow-2xs p-2.5">
+                                            <select id="leave-category" onchange="handleLeaveCategoryChange(this.value)" class="w-full text-xs sm:text-sm rounded-xl border-slate-200 bg-white shadow-2xs p-2.5">
                                                 <option value="" disabled selected>เลือกประเภทการลา</option>
                                                 <option value="ลากิจ">ลากิจ</option>
                                                 <option value="ลาป่วย">ลาป่วย</option>
                                                 <option value="ลาพักร้อน">ลาพักร้อน</option>
                                                 <option value="ลาอื่น ๆ">ลาอื่น ๆ (ระบุเพิ่มเติม)</option>
                                             </select>
-                                            <input type="text" id="leave-category-other" placeholder="ระบุประเภทการลาอื่น ๆ" class="mt-2 w-full text-xs rounded-xl border border-slate-200 bg-white shadow-2xs p-2 hidden">
+                                            <input type="text" id="leave-category-other" placeholder="ระบุประเภทการลาอื่น ๆ" class="mt-2 w-full text-xs rounded-xl border-slate-200 bg-white shadow-2xs p-2 hidden">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-700 mb-1">
                                                 <span data-i18n="leave_reason_label">เหตุผลที่แจ้ง</span> <span class="text-red-500">*</span>
                                             </label>
-                                            <select id="leave-reason" class="w-full text-xs sm:text-sm rounded-xl border border-slate-200 bg-white shadow-2xs p-2.5">
+                                            <select id="leave-reason" class="w-full text-xs sm:text-sm rounded-xl border-slate-200 bg-white shadow-2xs p-2.5">
                                                 <option value="" disabled selected>เลือกเหตุผลที่แจ้ง</option>
                                                 <option value="ลาฉุกเฉิน / ลาเร่งด่วน">ลาฉุกเฉิน / ลาเร่งด่วน</option>
                                                 <option value="ระบบขัดข้องหรือไม่สามารถทำรายการได้">ระบบขัดข้องหรือไม่สามารถทำรายการได้</option>
@@ -563,7 +524,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- วันที่ของการลา -->
                                     <div class="bg-white/90 p-3.5 rounded-xl border border-rose-200/90 shadow-2xs space-y-2">
                                         <div class="flex items-center justify-between">
                                             <label class="text-xs font-bold text-slate-700 flex items-center space-x-1.5">
@@ -577,23 +537,23 @@
                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <div>
                                                 <span class="text-[11px] text-slate-500 block mb-1 font-medium" data-i18n="date_start_label">ตั้งแต่วันที่</span>
-                                                <input type="date" id="leave-date-start" onchange="calculateTotalDays()" class="w-full text-xs rounded-xl border border-slate-200 bg-white p-2.5">
+                                                <input type="date" id="leave-date-start" onchange="calculateTotalDays()" class="w-full text-xs rounded-xl border-slate-200 bg-white p-2.5">
                                             </div>
                                             <div>
                                                 <span class="text-[11px] text-slate-500 block mb-1 font-medium" data-i18n="date_end_label">ถึงวันที่</span>
-                                                <input type="date" id="leave-date-end" onchange="calculateTotalDays()" class="w-full text-xs rounded-xl border border-slate-200 bg-white p-2.5">
+                                                <input type="date" id="leave-date-end" onchange="calculateTotalDays()" class="w-full text-xs rounded-xl border-slate-200 bg-white p-2.5">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- SUB-SECTION 2: การกดขอโอที -->
+                                <!-- SUB-SECTION 2: การกดขอโอที (24 ชม.) -->
                                 <div id="ot-sub-container" class="space-y-4 bg-purple-50/40 p-4 rounded-xl border border-purple-200/80 hidden">
                                     <div>
                                         <label class="block text-xs font-semibold text-slate-700 mb-1">
                                             <span data-i18n="ot_reason_label">สาเหตุที่กดขอโอทีไม่ได้</span> <span class="text-red-500">*</span>
                                         </label>
-                                        <select id="ot-reason-type" onchange="handleOtReasonChange(this.value)" class="w-full text-xs sm:text-sm rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-purple-500 focus:ring-purple-500 p-2.5">
+                                        <select id="ot-reason-type" onchange="handleOtReasonChange(this.value)" class="w-full text-xs sm:text-sm rounded-xl border-slate-200 bg-white shadow-2xs focus:border-purple-500 focus:ring-purple-500 p-2.5">
                                             <option value="" disabled selected>เลือกสาเหตุ</option>
                                             <option value="กะการทำงานไม่ตรง">กะการทำงานไม่ตรง</option>
                                             <option value="ระบบขัดข้อง / ระบบล่ม">ระบบขัดข้อง / ระบบล่ม</option>
@@ -602,7 +562,6 @@
                                         </select>
                                     </div>
 
-                                    <!-- วันที่และเวลาที่ต้องการแก้ไข -->
                                     <div class="bg-white/90 p-3.5 rounded-xl border border-purple-200/90 shadow-2xs space-y-3">
                                         <div class="flex items-center justify-between">
                                             <label class="text-xs font-bold text-slate-700 flex items-center space-x-1.5">
@@ -617,20 +576,19 @@
                                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                             <div>
                                                 <span class="text-[11px] text-slate-500 block mb-1 font-medium" data-i18n="ot_date_label">วันที่ที่ต้องการแก้ไข</span>
-                                                <input type="date" id="ot-date" class="w-full text-xs rounded-xl border border-slate-200 bg-white p-2.5 focus:border-purple-500 focus:ring-purple-500">
+                                                <input type="date" id="ot-date" class="w-full text-xs rounded-xl border-slate-200 bg-white p-2.5 focus:border-purple-500 focus:ring-purple-500">
                                             </div>
                                             <div>
                                                 <span class="text-[11px] text-slate-500 block mb-1 font-medium" data-i18n="ot_time_start_label">เวลาที่ต้องการแก้ไข ตั้งแต่</span>
-                                                <select id="ot-time-start" onchange="calculateOtHours()" class="w-full text-xs rounded-xl border border-slate-200 bg-white p-2.5 focus:border-purple-500 focus:ring-purple-500"></select>
+                                                <select id="ot-time-start" onchange="calculateOtHours()" class="w-full text-xs rounded-xl border-slate-200 bg-white p-2.5 focus:border-purple-500 focus:ring-purple-500"></select>
                                             </div>
                                             <div>
                                                 <span class="text-[11px] text-slate-500 block mb-1 font-medium" data-i18n="ot_time_end_label">ถึงเวลา</span>
-                                                <select id="ot-time-end" onchange="calculateOtHours()" class="w-full text-xs rounded-xl border border-slate-200 bg-white p-2.5 focus:border-purple-500 focus:ring-purple-500"></select>
+                                                <select id="ot-time-end" onchange="calculateOtHours()" class="w-full text-xs rounded-xl border-slate-200 bg-white p-2.5 focus:border-purple-500 focus:ring-purple-500"></select>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- Warning Banner for "ลืมกด" -->
                                     <div id="ot-warning-banner" class="hidden p-3 bg-red-50/90 border-l-4 border-red-500 rounded-r-xl text-red-800 text-xs leading-relaxed">
                                         <div class="font-bold flex items-center space-x-1.5 mb-0.5">
                                             <i class="fa-solid fa-triangle-exclamation"></i>
@@ -652,7 +610,7 @@
                                             <label class="block text-xs font-semibold text-slate-700 mb-1">
                                                 <span data-i18n="shift_type_label">ประเภทกะ</span> <span class="text-red-500">*</span>
                                             </label>
-                                            <select id="shift-time-type" onchange="updateShiftTimeOptions()" class="w-full text-xs sm:text-sm rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-emerald-500 focus:ring-emerald-500 p-2.5">
+                                            <select id="shift-time-type" onchange="updateShiftTimeOptions()" class="w-full text-xs sm:text-sm rounded-xl border-slate-200 bg-white shadow-2xs focus:border-emerald-500 focus:ring-emerald-500 p-2.5">
                                                 <option value="กะกลางวัน">กะกลางวัน</option>
                                                 <option value="กะกลางคืน">กะกลางคืน</option>
                                             </select>
@@ -661,7 +619,7 @@
                                             <label class="block text-xs font-semibold text-slate-700 mb-1">
                                                 <span data-i18n="shift_side_label">ฝั่งการทำงาน</span> <span class="text-red-500">*</span>
                                             </label>
-                                            <select id="shift-side" class="w-full text-xs sm:text-sm rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-emerald-500 focus:ring-emerald-500 p-2.5">
+                                            <select id="shift-side" class="w-full text-xs sm:text-sm rounded-xl border-slate-200 bg-white shadow-2xs focus:border-emerald-500 focus:ring-emerald-500 p-2.5">
                                                 <option value="ฝั่งสุก">ฝั่งสุก</option>
                                                 <option value="ฝั่งดิบ">ฝั่งดิบ</option>
                                             </select>
@@ -674,13 +632,13 @@
                                                 <label class="block text-xs font-semibold text-slate-700 mb-1">
                                                     <span data-i18n="shift_date_label">วันที่ที่ต้องการแก้ไข</span> <span class="text-red-500">*</span>
                                                 </label>
-                                                <input type="date" id="shift-date" class="w-full text-xs sm:text-sm rounded-xl border border-slate-200 bg-white p-2.5 focus:border-emerald-500 focus:ring-emerald-500">
+                                                <input type="date" id="shift-date" class="w-full text-xs sm:text-sm rounded-xl border-slate-200 bg-white p-2.5 focus:border-emerald-500 focus:ring-emerald-500">
                                             </div>
                                             <div>
                                                 <label class="block text-xs font-semibold text-slate-700 mb-1">
                                                     <span data-i18n="shift_time_label">กะที่ต้องการแก้ไข (เวลา)</span> <span class="text-red-500">*</span>
                                                 </label>
-                                                <select id="shift-target" onchange="handleShiftTargetChange(this.value)" class="w-full text-xs sm:text-sm rounded-xl border border-slate-200 bg-white p-2.5 focus:border-emerald-500 focus:ring-emerald-500"></select>
+                                                <select id="shift-target" onchange="handleShiftTargetChange(this.value)" class="w-full text-xs sm:text-sm rounded-xl border-slate-200 bg-white p-2.5 focus:border-emerald-500 focus:ring-emerald-500"></select>
                                             </div>
                                         </div>
 
@@ -688,7 +646,7 @@
                                             <label class="block text-[11px] font-semibold text-emerald-800 mb-1" data-i18n="shift_custom_time_label">
                                                 ระบุเวลาอื่น ๆ นอกเหนือจากนี้ <span class="text-red-500">*</span>
                                             </label>
-                                            <input type="text" id="shift-target-custom" placeholder="เช่น 06:00 - 15:00 หรือ 12:00 - 21:00" class="w-full text-xs rounded-xl border border-slate-200 bg-white p-2.5 focus:border-emerald-500 focus:ring-emerald-500">
+                                            <input type="text" id="shift-target-custom" placeholder="เช่น 06:00 - 15:00 หรือ 12:00 - 21:00" class="w-full text-xs rounded-xl border-slate-200 bg-white p-2.5 focus:border-emerald-500 focus:ring-emerald-500">
                                         </div>
                                     </div>
                                 </div>
@@ -696,7 +654,7 @@
                                 <!-- SUB-SECTION 4: เข้า VSC Care ไม่ได้ -->
                                 <div id="vsccare-sub-container" class="space-y-2 bg-pink-50/40 p-4 rounded-xl border border-pink-200/80 hidden">
                                     <label class="block text-xs font-semibold text-slate-700 mb-1" data-i18n="vsccare_sub_label">อาการของปัญหา VSC Care</label>
-                                    <select id="vsccare-issue-reason" class="w-full text-xs rounded-xl border border-slate-200 bg-white p-2.5">
+                                    <select id="vsccare-issue-reason" class="w-full text-xs rounded-xl border-slate-200 bg-white p-2.5">
                                         <option value="เข้าสู่ระบบไม่ได้ / รหัสผ่านไม่ถูกต้อง">เข้าสู่ระบบไม่ได้ / รหัสผ่านไม่ถูกต้อง</option>
                                         <option value="ไม่พบรายชื่อหรือสิทธิประโยชน์พนักงาน">ไม่พบรายชื่อหรือสิทธิประโยชน์พนักงาน</option>
                                         <option value="แอปพลิเคชันค้างหรือแสดงหน้าจอขาว">แอปพลิเคชันค้างหรือแสดงหน้าจอขาว</option>
@@ -705,54 +663,24 @@
                                 </div>
 
                                 <!-- SUB-SECTION 5: ล็อกเกอร์มีปัญหา -->
-                                <div id="locker-issue-sub-container" class="space-y-3 bg-amber-50/40 p-4 rounded-xl border border-amber-200/80 hidden">
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        <div>
-                                            <label class="block text-xs font-semibold text-slate-700 mb-1">
-                                                <span data-i18n="locker_sub_label">ประเภทปัญหาล็อกเกอร์</span> <span class="text-red-500">*</span>
-                                            </label>
-                                            <select id="locker-problem-type" class="w-full text-xs sm:text-sm rounded-xl border border-slate-200 bg-white p-2.5 shadow-2xs">
-                                                <option value="กุญแจสูญหาย / ลืมรหัสเปิดตู้">กุญแจสูญหาย / ลืมรหัสเปิดตู้</option>
-                                                <option value="ตู้ล็อกเกอร์ชำรุด / ปิดไม่สนิท">ตู้ล็อกเกอร์ชำรุด / ปิดไม่สนิท</option>
-                                                <option value="มีผู้อื่นนำของมาเก็บในตู้ของฉัน / ใช้งานซ้ำ">มีผู้อื่นนำของมาเก็บในตู้ของฉัน / ใช้งานซ้ำ</option>
-                                                <option value="ป้ายชื่อไม่ตรงกับตู้ที่ใช้งานจริง">ป้ายชื่อไม่ตรงกับตู้ที่ใช้งานจริง</option>
-                                                <option value="ไม่มีชื่อติดหน้าตู้ / ขอจัดสรรตู้">ไม่มีชื่อติดหน้าตู้ / ขอจัดสรรตู้</option>
-                                                <option value="ต้องการขอเปลี่ยนหมายเลขตู้">ต้องการขอเปลี่ยนหมายเลขตู้</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-semibold text-slate-700 mb-1">
-                                                <span data-i18n="locker_number_label">หมายเลขตู้ล็อกเกอร์</span> <span class="text-red-500">*</span>
-                                            </label>
-                                            <div class="relative flex items-center rounded-xl border border-slate-200 bg-white shadow-2xs focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500 overflow-hidden">
-                                                <span class="inline-flex items-center px-3 py-2.5 bg-amber-100/90 border-r border-slate-200 text-amber-900 font-extrabold text-xs sm:text-sm tracking-wider select-none shrink-0">
-                                                    <i class="fa-solid fa-lock text-amber-600 mr-1.5 text-xs"></i>VSC
-                                                </span>
-                                                <input type="text" id="locker-number-digits" list="locker-numbers-datalist" placeholder="กรอกตัวเลข เช่น 123" class="w-full pl-3 pr-3 py-2.5 text-xs sm:text-sm bg-white border-0 focus:outline-none font-bold text-slate-800" oninput="handleLockerDigitInput(this)">
-                                            </div>
-                                            <p class="text-[10px] text-slate-400 mt-1 flex items-center">
-                                                <span>หมายเลขตู้ที่จะบันทึก:</span>
-                                                <strong id="locker-preview-badge" class="ml-1 text-amber-700 font-mono font-bold bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">VSC -</strong>
-                                            </p>
-                                            <datalist id="locker-numbers-datalist">
-                                                <!-- Populated dynamically with locker numbers -->
-                                            </datalist>
-                                        </div>
-                                    </div>
-                                    <p class="text-[10px] text-amber-800 flex items-center">
-                                        <i class="fa-solid fa-circle-info mr-1 text-amber-600"></i> โปรดระบุเลขตู้ที่พบปัญหาให้ชัดเจนเพื่อความรวดเร็วในการตรวจสอบและซ่อมบำรุง
-                                    </p>
+                                <div id="locker-issue-sub-container" class="space-y-2 bg-amber-50/40 p-4 rounded-xl border border-amber-200/80 hidden">
+                                    <label class="block text-xs font-semibold text-slate-700 mb-1" data-i18n="locker_sub_label">ประเภทปัญหาล็อกเกอร์</label>
+                                    <select id="locker-problem-type" class="w-full text-xs rounded-xl border-slate-200 bg-white p-2.5">
+                                        <option value="กุญแจสูญหาย / ลืมรหัสเปิดตู้">กุญแจสูญหาย / ลืมรหัสเปิดตู้</option>
+                                        <option value="ตู้ล็อกเกอร์ชำรุด / ปิดไม่สนิท">ตู้ล็อกเกอร์ชำรุด / ปิดไม่สนิท</option>
+                                        <option value="มีผู้อื่นนำของมาเก็บในตู้ของฉัน">มีผู้อื่นนำของมาเก็บในตู้ของฉัน</option>
+                                        <option value="ป้ายชื่อไม่ตรงกับตู้ที่ใช้งานจริง">ป้ายชื่อไม่ตรงกับตู้ที่ใช้งานจริง</option>
+                                        <option value="ต้องการขอเปลี่ยนหมายเลขตู้">ต้องการขอเปลี่ยนหมายเลขตู้</option>
+                                    </select>
                                 </div>
 
-                                <!-- Textarea Details -->
                                 <div>
                                     <label class="block text-xs font-bold text-slate-700 mb-1.5">
                                         <span data-i18n="issue_desc_label">รายละเอียดปัญหา หรือข้อมูลประกอบเพิ่มเติม</span> <span class="text-red-500">*</span>
                                     </label>
-                                    <textarea id="issue-desc" rows="3" required placeholder="อธิบายรายละเอียดปัญหาหรือสาเหตุเพิ่มเติม..." class="w-full text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500 p-3"></textarea>
+                                    <textarea id="issue-desc" rows="3" required placeholder="อธิบายรายละเอียดปัญหาหรือสาเหตุเพิ่มเติม..." class="w-full text-xs rounded-xl border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500 p-3"></textarea>
                                 </div>
 
-                                <!-- File Upload Dropzone & Thumbnails -->
                                 <div class="space-y-2">
                                     <label class="block text-xs font-bold text-slate-700">
                                         <span data-i18n="attach_photo_label">แนบรูปภาพหรือภาพหน้าจอหลักฐาน</span> <span class="text-red-500">*</span>
@@ -766,7 +694,6 @@
                                         <p class="text-[10px] text-slate-400 mt-0.5">รองรับไฟล์ JPG, PNG สูงสุด 5 รูป (ขนาดไม่เกิน 2MB/รูป)</p>
                                     </div>
 
-                                    <!-- Previews Grid -->
                                     <div id="image-preview-container" class="hidden space-y-2">
                                         <div class="flex items-center justify-between text-xs text-slate-500">
                                             <span>รูปภาพที่เลือกแล้ว (<span id="preview-count-text">0</span>/5)</span>
@@ -776,44 +703,39 @@
                                     </div>
                                 </div>
 
-                                <!-- Action Submit Button -->
                                 <div class="pt-2">
                                     <button type="submit" id="submit-btn" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md shadow-blue-500/20 flex items-center justify-center space-x-2 transition-all">
-                                    <i class="fa-solid fa-paper-plane"></i>
-                                    <span data-i18n="submit_btn">ส่งรายงานปัญหาระบบและบันทึกรูปภาพ</span>
-                                </button>
+                                        <i class="fa-solid fa-paper-plane"></i>
+                                        <span data-i18n="submit_btn">ส่งรายงานปัญหาระบบและบันทึกรูปภาพ</span>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- RIGHT COLUMN: Recent Submissions History (4 Cols) -->
-            <div class="lg:col-span-4 space-y-6">
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col">
-                    <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                        <div class="flex items-center space-x-2">
-                            <i class="fa-solid fa-clock-rotate-left text-blue-600 text-xs"></i>
-                            <h4 class="font-bold text-slate-900 text-xs sm:text-sm" data-i18n="history_title">ประวัติการส่งรายงานล่าสุดของคุณ</h4>
-                        </div>
-                        <button onclick="checkReportStatusAutomated(true)" class="text-[11px] text-blue-600 hover:text-blue-800 font-semibold flex items-center space-x-1">
-                            <i id="refresh-icon" class="fa-solid fa-rotate text-[10px]"></i>
-                            <span data-i18n="refresh_btn">รีเฟรช</span>
-                        </button>
+                        </form>
                     </div>
-
-                    <!-- Submission Cards List -->
-                    <div id="local-history-list" class="divide-y divide-slate-100 max-h-[32rem] overflow-y-auto p-2 space-y-2"></div>
                 </div>
+
+                <!-- RIGHT COLUMN: History List (4 Cols) -->
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col">
+                        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-clock-rotate-left text-blue-600 text-xs"></i>
+                                <h4 class="font-bold text-slate-900 text-xs sm:text-sm" data-i18n="history_title">ประวัติการส่งรายงานล่าสุดของคุณ</h4>
+                            </div>
+                            <button onclick="checkReportStatusAutomated(true)" class="text-[11px] text-blue-600 hover:text-blue-800 font-semibold flex items-center space-x-1">
+                                <i id="refresh-icon" class="fa-solid fa-rotate text-[10px]"></i>
+                                <span data-i18n="refresh_btn">รีเฟรช</span>
+                            </button>
+                        </div>
+                        <div id="local-history-list" class="divide-y divide-slate-100 max-h-[32rem] overflow-y-auto p-2 space-y-2"></div>
+                    </div>
+                </div>
+
             </div>
+        </section>
 
-        </div>
-    </section>
-
-        <!-- TAB 2: LOCKER MAP -->
         <section id="tab-content-locker" class="space-y-4 sm:space-y-6 hidden">
             
-            <!-- Locker Stats Dashboard -->
             <div class="bg-white rounded-2xl p-3.5 sm:p-5 border border-slate-200/80 shadow-sm">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-100">
                     <div>
@@ -824,7 +746,6 @@
                         <p class="text-[10px] sm:text-xs text-slate-500 mt-0.5">ระบบแสดงสถานะตู้ล็อกเกอร์แบบเรียลไทม์ (โหมดตรวจสอบภาพรวม)</p>
                     </div>
 
-                    <!-- Top Action Buttons -->
                     <div class="flex items-center justify-end space-x-2">
                         <button onclick="fetchLockerDataFromSheet(true)" class="px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200/80 transition-colors flex items-center space-x-1.5">
                             <i id="locker-refresh-icon" class="fa-solid fa-rotate text-[10px]"></i>
@@ -833,7 +754,6 @@
                     </div>
                 </div>
 
-                <!-- 5 Metric Counters Responsive Layout -->
                 <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3 pt-3 sm:pt-4">
                     <div class="bg-slate-50/80 rounded-xl p-2.5 sm:p-3 border border-slate-100 text-center">
                         <p class="text-[10px] sm:text-[11px] font-medium text-slate-500" data-i18n="locker_stat_total">ตู้ทั้งหมด</p>
@@ -858,7 +778,6 @@
                 </div>
             </div>
 
-            <!-- Filters Bar & Search -->
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
                 <div class="grid grid-cols-3 sm:flex items-center space-x-0 sm:space-x-1.5 gap-1.5 sm:gap-0 bg-white p-1 rounded-xl border border-slate-200/80 shadow-2xs w-full sm:w-auto">
                     <button id="filter-side-all" onclick="filterLockerSide('all')" class="w-full sm:w-auto px-3 sm:px-4 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white shadow-xs transition-all text-center">
@@ -874,7 +793,7 @@
 
                 <div class="relative w-full sm:w-72">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                    <input type="search" id="locker-search-input" name="search_locker_nomatch" autocomplete="off" autocorrect="off" spellcheck="false" oninput="handleLockerSearch(this.value)" placeholder="ค้นหาเลขตู้, ชื่อ, ชื่อเล่น..." class="w-full pl-9 pr-8 py-2 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
+                    <input type="search" id="locker-search-input" name="search_locker_nomatch" autocomplete="off" autocorrect="off" spellcheck="false" oninput="handleLockerSearch(this.value)" placeholder="ค้นหาเลขตู้, ชื่อ, ชื่อเล่น..." class="w-full pl-9 pr-8 py-2 text-xs rounded-xl border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
                     <button type="button" id="locker-search-clear" onclick="clearLockerSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1">
                         <i class="fa-solid fa-circle-xmark"></i>
                     </button>
@@ -889,7 +808,7 @@
                         <span data-i18n="locker_note_label">หมายเหตุ:</span>
                     </span>
                     <span class="text-slate-700 text-[10px] sm:text-xs leading-relaxed" data-i18n="locker_note_compact">
-                        หากไม่มีชื่อติดหน้าตู้ห้ามใช้เด็ดขาด หากพบเจอการใช้งานซ้ำให้แจ้งลงแอปทันที • ห้ามเก็บอาหาร เครื่องดื่ม ขยะ ของมีค่า หรือสิ่งผิดกฎหมายในตู้เด็ดขาด
+                        ห้ามเก็บอาหาร เครื่องดื่ม ขยะ ของมีค่า หรือสิ่งผิดกฎหมายในตู้ล็อกเกอร์เด็ดขาด
                     </span>
                 </div>
                 <span class="hidden md:inline-flex text-[10px] font-bold px-2 py-0.5 rounded-md bg-rose-100 text-rose-800 border border-rose-200 shrink-0 uppercase tracking-wide">
@@ -897,16 +816,15 @@
                 </span>
             </div>
 
-            <!-- Visual Locker Status Squares Grid -->
+            <!-- Locker Grid Squares -->
             <div id="locker-squares-container" class="space-y-4 sm:space-y-6"></div>
         </section>
 
     </main>
 
-    <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
 
-    <!-- Admin Password Modal (PIN: shawtyperi) -->
+    <!-- Admin Auth Modal -->
     <div id="admin-auth-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-2xl max-w-xs w-full p-5 space-y-4 shadow-2xl border border-slate-200">
             <div class="flex items-center space-x-3">
@@ -918,7 +836,7 @@
                     <p class="text-[11px] text-slate-500">กรุณาใส่รหัสผ่านผู้ดูแล</p>
                 </div>
             </div>
-            <input type="password" id="admin-password-input" placeholder="กรอกรหัสผ่านผู้ดูแล" class="w-full text-xs rounded-xl border border-slate-200 p-2.5 focus:border-blue-500 focus:ring-blue-500">
+            <input type="password" id="admin-password-input" placeholder="PIN: people" class="w-full text-xs rounded-xl border-slate-200 p-2.5">
             <div class="flex justify-end space-x-2 pt-2 border-t border-slate-100">
                 <button type="button" onclick="closeAdminAuth()" class="px-3 py-1.5 text-xs text-slate-600 bg-slate-100 rounded-lg">ยกเลิก</button>
                 <button type="button" onclick="verifyAdminPassword()" class="px-3.5 py-1.5 text-xs font-bold text-white bg-blue-600 rounded-lg">ตกลง</button>
@@ -927,20 +845,42 @@
     </div>
 
     <!-- Settings Modal -->
-    <div id="settings-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl border border-slate-200">
+    <div id="settings-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-4 sm:p-6 space-y-4 shadow-2xl border border-slate-200 my-auto">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h4 class="font-bold text-slate-900 text-sm">Google Sheets & API Settings</h4>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-sm">Google Sheets & API Settings</h4>
+                        <p class="text-[10px] text-slate-400">ID: 1xiLu-aHE8L6tDkZhko62ZDESAEe2a_vHTF-t08ZGDIM (GID: 332585979)</p>
+                    </div>
+                </div>
                 <button onclick="closeSettings()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="space-y-2">
-                <label class="block text-xs font-semibold text-slate-700">Google Apps Script Web App URL</label>
-                <input type="text" id="sheet-api-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full text-xs rounded-xl border border-slate-200 p-2.5">
-                <p class="text-[10px] text-slate-400">ระบุ URL ของ Web App ที่ติดตั้งไว้เพื่อรับการ Sync แบบเรียลไทม์</p>
+
+            <div class="space-y-3">
+                <div class="bg-blue-50/70 border border-blue-200 rounded-xl p-3 text-xs space-y-1.5">
+                    <p class="font-bold text-blue-900 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-info text-blue-600"></i>
+                        สถานะการเชื่อมต่อ:
+                    </p>
+                    <p class="text-slate-600 text-[11px] leading-relaxed">
+                        ระบบเชื่อมต่อกับ Google Apps Script Web App ของคุณโดยตรงแล้ว ข้อมูลรายงานและรูปภาพจะถูกบันทึกลงชีทโดยอัตโนมัติ
+                    </p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Google Apps Script Web App URL <span class="text-red-500">*</span></label>
+                    <input type="text" id="sheet-api-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full text-xs rounded-xl border-slate-200 bg-slate-50 focus:bg-white p-2.5 font-mono shadow-2xs">
+                    <p class="text-[10px] text-slate-400 mt-1">วาง URL ที่ลงท้ายด้วย <span class="font-mono">/exec</span> เพื่อให้ข้อมูลบันทึกลงชีท</p>
+                </div>
             </div>
-            <div class="flex justify-end space-x-2 pt-2 border-t border-slate-100">
-                <button onclick="closeSettings()" class="px-3 py-1.5 text-xs text-slate-600 bg-slate-100 rounded-lg">ปิด</button>
-                <button onclick="saveSheetUrl()" class="px-3.5 py-1.5 text-xs font-bold text-white bg-blue-600 rounded-lg">บันทึก URL</button>
+
+            <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
+                <button onclick="closeSettings()" class="px-3.5 py-1.5 text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg">ปิด</button>
+                <button onclick="saveSheetUrl()" class="px-4 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm">บันทึก URL เชื่อมต่อ</button>
             </div>
         </div>
     </div>
@@ -987,79 +927,9 @@
         </div>
     </div>
 
-    <!-- Edit Profile & Change Position Modal -->
-    <div id="edit-profile-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl border border-slate-200">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">
-                        <i class="fa-solid fa-user-pen"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-900 text-sm">เปลี่ยนตำแหน่ง / แก้ไขโปรไฟล์</h4>
-                        <p class="text-[10px] text-slate-400">ข้อมูลนี้จะอัปเดตในระบบและการส่งรายงาน</p>
-                    </div>
-                </div>
-                <button type="button" onclick="closeEditProfileModal()" class="text-slate-400 hover:text-slate-600 text-base">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <form id="edit-profile-form" onsubmit="handleProfileUpdateSubmit(event)" class="space-y-3">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">อีเมลพนักงาน</label>
-                    <input type="email" id="edit-prof-email" readonly disabled class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-100 text-slate-500 cursor-not-allowed">
-                </div>
-
-                <div class="grid grid-cols-2 gap-2.5">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อ-นามสกุล <span class="text-red-500">*</span></label>
-                        <input type="text" id="edit-prof-name" required placeholder="สมชาย ใจดี" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อเล่น <span class="text-red-500">*</span></label>
-                        <input type="text" id="edit-prof-nickname" required placeholder="ชาย" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
-                    </div>
-                </div>
-
-                <div>
-                    <div class="flex items-center justify-between mb-1">
-                        <label class="block text-xs font-bold text-slate-700">
-                            ตำแหน่งงานใหม่ (Position) <span class="text-red-500">*</span>
-                        </label>
-                        <span class="text-[10px] text-emerald-600 font-medium flex items-center">
-                            <i class="fa-solid fa-circle-check text-emerald-500 text-[9px] mr-1"></i> 77 ตำแหน่งมาตรฐาน
-                        </span>
-                    </div>
-                    <div class="relative">
-                        <input type="text" id="edit-prof-position" list="position-datalist" oninput="handleEditPositionInput(this.value)" required placeholder="พิมพ์ค้นหา หรือเลือกตำแหน่งงานใหม่..." autocomplete="off" class="w-full pl-3.5 pr-8 py-2.5 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
-                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none"></i>
-                    </div>
-                </div>
-
-                <div id="edit-prof-position-other-container" class="hidden space-y-1">
-                    <label class="block text-xs font-semibold text-blue-700">ระบุชื่อตำแหน่งงานเพิ่มเติม <span class="text-red-500">*</span></label>
-                    <input type="text" id="edit-prof-position-other" placeholder="โปรดระบุตำแหน่งงานของคุณ" class="w-full px-3.5 py-2 text-xs rounded-xl border border-blue-300 bg-blue-50/40 shadow-2xs focus:border-blue-500 focus:ring-blue-500">
-                </div>
-
-                <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
-                    <button type="button" onclick="closeEditProfileModal()" class="px-3.5 py-2 text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors font-medium">
-                        ยกเลิก
-                    </button>
-                    <button type="submit" class="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-sm flex items-center space-x-1.5">
-                        <i class="fa-solid fa-floppy-disk"></i>
-                        <span>บันทึกตำแหน่งใหม่</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- USER MANUAL & DOCUMENT DOWNLOAD MODAL -->
     <div id="manual-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 hidden overflow-y-auto">
         <div id="manual-modal-container" class="bg-white rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden my-auto">
             
-            <!-- Modal Header (No Print) -->
             <div class="no-print p-4 sm:px-6 sm:py-3.5 border-b border-slate-200 bg-slate-50 flex items-center justify-between gap-3 shrink-0">
                 <div class="flex items-center space-x-2.5">
                     <div class="w-9 h-9 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-sm">
@@ -1071,7 +941,6 @@
                     </div>
                 </div>
 
-                <!-- Export Action Buttons -->
                 <div class="flex items-center space-x-2">
                     <button onclick="downloadManualAsWord()" class="px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition-colors flex items-center space-x-1">
                         <i class="fa-solid fa-file-word text-blue-600 text-xs"></i>
@@ -1088,11 +957,9 @@
                 </div>
             </div>
 
-            <!-- Modal Printable Body -->
             <div class="p-4 sm:p-8 overflow-y-auto flex-1 bg-white">
                 <div id="printable-manual" class="space-y-6 max-w-3xl mx-auto text-slate-800">
                     
-                    <!-- Official Document Header Banner -->
                     <div class="text-center border-b-2 border-blue-600 pb-4 space-y-1">
                         <div class="flex items-center justify-center space-x-2 text-blue-600 font-extrabold text-xl sm:text-2xl">
                             <i class="fa-solid fa-users-gear"></i>
@@ -1102,7 +969,6 @@
                         <p class="text-xs text-slate-500">บริษัท วาลู สเปเชียลตี้ คุกกิ้ง จำกัด | เอกสารประชาสัมพันธ์และคู่มือประจำปี 2026</p>
                     </div>
 
-                    <!-- 1. ภาพรวมระบบ -->
                     <div class="space-y-2">
                         <h4 class="font-bold text-blue-700 text-sm border-l-4 border-blue-600 pl-2">1. ภาพรวมและช่องทางการเข้าใช้งาน</h4>
                         <p class="text-xs text-slate-600 leading-relaxed">
@@ -1115,7 +981,6 @@
                         </ul>
                     </div>
 
-                    <!-- 2. การลงทะเบียนและเข้าสู่ระบบ -->
                     <div class="space-y-2">
                         <h4 class="font-bold text-blue-700 text-sm border-l-4 border-blue-600 pl-2">2. การเข้าสู่ระบบและการลงทะเบียนบัญชีใหม่</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
@@ -1124,7 +989,7 @@
                                 <ol class="list-decimal list-inside space-y-1 text-slate-600">
                                     <li>กด <strong>"สมัครสมาชิกใหม่"</strong> ที่หน้าแรก</li>
                                     <li>กรอกอีเมลบริษัท แล้วกด <strong>"ส่ง OTP"</strong></li>
-                                    <li>นำรหัส 6 หลักที่ระบบสร้างขึ้นมากรอก</li>
+                                    <li>นำรหัส 6 หลักจากอีเมลมากรอก (อายุ 10 นาที)</li>
                                     <li>กรอกชื่อ-สกุล, ชื่อเล่น, แผนก และตั้งรหัสผ่าน</li>
                                 </ol>
                             </div>
@@ -1139,7 +1004,6 @@
                         </div>
                     </div>
 
-                    <!-- 3. วิธีการแจ้งปัญหา 5 หมวดหลัก -->
                     <div class="space-y-2">
                         <h4 class="font-bold text-blue-700 text-sm border-l-4 border-blue-600 pl-2">3. สรุปประเภทการแจ้งปัญหาพนักงาน (5 หมวดหลัก)</h4>
                         <div class="overflow-x-auto border border-slate-200 rounded-xl">
@@ -1182,7 +1046,6 @@
                         </div>
                     </div>
 
-                    <!-- 4. ผังล็อกเกอร์และข้อห้ามทางวินัย -->
                     <div class="space-y-2">
                         <h4 class="font-bold text-blue-700 text-sm border-l-4 border-blue-600 pl-2">4. การดูผังตู้ล็อกเกอร์และกฎระเบียบข้อห้าม (Strict Rules)</h4>
                         <div class="grid grid-cols-2 gap-2 text-xs mb-2">
@@ -1202,16 +1065,17 @@
                                 <span>ข้อห้ามเด็ดขาดในการใช้งานตู้ล็อกเกอร์:</span>
                             </span>
                             <ul class="list-disc list-inside space-y-1 text-slate-700 pl-1">
-                                <li class="text-rose-900 font-bold"><strong>หากไม่มีชื่อติดหน้าตู้ห้ามใช้เด็ดขาด:</strong> อนุญาตให้ใช้เฉพาะตู้ที่มีป้ายชื่อของตนเองเท่านั้น หากพบเจอผู้ใดใช้งานซ้ำหรือแย่งใช้ตู้ ให้แจ้งเรื่องผ่านแอปทันที</li>
                                 <li><strong>ห้ามเก็บอาหารและเครื่องดื่มทุกชนิด</strong> เพื่อป้องกันการบูดเน่า กลิ่นรบกวน และสัตว์พาหะ</li>
                                 <li><strong>ห้ามทิ้งขยะหรือเศษสิ่งของเหลือใช้</strong> ในตู้ล็อกเกอร์เด็ดขาด</li>
                                 <li><strong>ห้ามเก็บสิ่งผิดกฎหมาย</strong> อาวุธ ยาเสพติด และวัตถุไวไฟทุกประเภท</li>
                                 <li><strong>ห้ามเก็บทรัพย์สินมีค่า</strong> เงินสด ทองคำ เพื่อป้องกันการสูญหาย</li>
                             </ul>
+                            <p class="text-[10px] text-rose-700 font-semibold pt-1 border-t border-rose-200/80">
+                                * ฝ่ายบุคคล (HR) มีสิทธิ์สุ่มตรวจความสะอาดและความเป็นระเบียบเรียบร้อยของตู้ล็อกเกอร์เป็นประจำ
+                            </p>
                         </div>
                     </div>
 
-                    <!-- 5. ติดต่อสอบถาม -->
                     <div class="border-t border-slate-200 pt-3 text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-2">
                         <p>ฝ่ายบุคคลและประสานงานพนักงาน (HR / People Support) ชั้น 1 อาคารสำนักงาน</p>
                         <p class="font-medium">เวลาทำการ: จันทร์ – เสาร์ 08:00 – 17:00 น.</p>
@@ -1220,7 +1084,6 @@
                 </div>
             </div>
 
-            <!-- Modal Footer (No Print) -->
             <div class="no-print p-3 sm:px-6 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
                 <span class="text-xs text-slate-500">สามารถกดพิมพ์หรือเลือก "Save as PDF" ได้จากเบราว์เซอร์</span>
                 <button onclick="closeManualModal()" class="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-lg text-xs transition-colors">
@@ -1232,90 +1095,7 @@
     </div>
 
     <script>
-        const DEFAULT_API_URL = "https://script.google.com/macros/s/AKfycbxH7lCGxRx_PRGE7FfST_FRac6TExfnfsy_HRbf9iOtlyoMOjYVmjt_WlraqF0PxZtmHw/exec";
-        const POSITION_SHEET_GID = "68387922";
-        const SPREADSHEET_ID = "1xiLu-aHE8L6tDkZhko62ZDESAEe2a_vHTF-t08ZGDIM";
-
-        const OFFICIAL_POSITIONS = [
-            "Accounting Administrator Officer",
-            "Accounting Manager (AR)",
-            "Accounting Manager (GL)",
-            "Accounting Senior Officer (AP)",
-            "Admin Staff (Temporary)",
-            "Amathopia Science General Specialist",
-            "Business Strategic Partner Senior Manager",
-            "Chairman of the Board and Independent Director",
-            "Chief Commercial Officer (CCO)",
-            "Chief Executive Officer (CEO)",
-            "Chief Financial Officer (CFO)",
-            "Chief Operating Officer (COO)",
-            "Chief People & Culture Officer (CPCO)",
-            "Chief Product Officer (CPO)",
-            "Chief Science Officer",
-            "Clinic Administrator (Service & Operations) Officer",
-            "Company Secretary & PA to C-Level",
-            "Company Secretary Specialist",
-            "Creative Chef Manager",
-            "Event & Project Planner Senior Officer",
-            "Executive Assistance Specialist to CEO",
-            "Executive Driver Staff",
-            "Factory Housekeeper Staff (Factory)",
-            "Financing & Controlling Senior Manager",
-            "Graphic Design Senior Specialist",
-            "Harvesting Happiness Project Manager",
-            "Harvesting Happiness Project and Field Quality Control Senior Officer",
-            "Head of Finance and Accounting",
-            "Head of Initial Public Offering Project",
-            "Head of Innovation and Intellectual Property",
-            "Head of Production",
-            "Holistic Physician",
-            "Housekeeper Staff (HQ)",
-            "IT Infrastructure & System Office",
-            "IT Solutions Senior Officer",
-            "Internal Control & Risk Management Specialist",
-            "Learning & Growth Senior Manager",
-            "Maintenance Technician Officer",
-            "Marketing Content & Activations Specialist",
-            "People & Organization Success General Manager",
-            "People Business Partner Manager (Factory)",
-            "People Business Partner Manager (HQ & Samyan)",
-            "People Operation & Information System Senior Officer",
-            "Performance Marketing Specialist (Ads & Creative Optimization)",
-            "Personal Hygiene Staff",
-            "Product Designer Senior Officer",
-            "Product Development (New & Existing) Senior Officer",
-            "Production Line Cleaning Staff",
-            "Production Officer (Team A)",
-            "Production Officer (Team B)",
-            "Production Staff",
-            "Production Team Lead",
-            "Production manager",
-            "Project Engineer Senior Officer",
-            "Purchasing & Procurement Senior Officer",
-            "Quality Assurance External Senior Officer",
-            "Quality Assurance Officer",
-            "Quality Assurance Team Lead",
-            "Quality Assurance Technical Officer",
-            "Quality Control In-Coming Officer",
-            "Quality Control In-Line Officer",
-            "Quality Control Inspector",
-            "Quality Control Team Lead",
-            "R&D Ready-to-Eat Food Senior Officer",
-            "Reception & Administrator Team Lead",
-            "Research & Development Senior Manager",
-            "Safety Technical Officer",
-            "Safety Officer",
-            "Safety Team Manager",
-            "Supply Chain Management and Procurement Senior Manager",
-            "Talent Acquisition Senior Officer",
-            "Tax Filling & Costing Senior Specialist",
-            "Technical Operation and Enhancement Manager",
-            "Technical Operation and Enhancement Team Lead",
-            "Warehouse Officer",
-            "Warehouse Staff",
-            "Warehouse Team Lead",
-            "อื่นๆ (โปรดระบุเพิ่มเติม)"
-        ];
+        const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbxH7lCGxRx_PRGE7FfST_FRac6TExfnfsy_HRbf9iOtlyoMOjYVmjt_WlraqF0PxZtmHw/exec';
 
         const state = {
             lang: 'th',
@@ -1327,15 +1107,12 @@
             filteredLockers: [],
             selectedSide: 'all',
             searchQuery: '',
-            attachedFiles: [],
-            generatedOtp: null,
-            positionsList: OFFICIAL_POSITIONS,
-            isSubmitting: false
+            attachedFiles: []
         };
 
         const i18n = {
             th: {
-                nav_empeo: "แจ้งปัญหาพนักงาน",
+                nav_empeo: "แจ้งปัญหา",
                 nav_locker: "ผังล็อกเกอร์",
                 form_title: "แบบฟอร์มแจ้งปัญหาพนักงาน VSC - PS",
                 form_subtitle: "ครอบคลุมทุกปัญหา: Empeo, VSC Care, กะการทำงาน และตู้ล็อกเกอร์",
@@ -1370,7 +1147,6 @@
                 shift_custom_time_label: "ระบุเวลาอื่น ๆ นอกเหนือจากนี้",
                 vsccare_sub_label: "อาการของปัญหา VSC Care",
                 locker_sub_label: "ประเภทปัญหาล็อกเกอร์",
-                locker_number_label: "หมายเลขตู้ล็อกเกอร์ (Locker No.)",
                 issue_leave_date_label: "ช่วงวันที่ที่ต้องการลา",
                 date_start_label: "ตั้งแต่วันที่",
                 date_end_label: "ถึงวันที่",
@@ -1385,13 +1161,13 @@
                 locker_title: "ผังตู้ล็อกเกอร์และรายชื่อผู้ครอบครอง",
                 locker_refresh_btn: "รีเฟรชข้อมูล",
                 locker_stat_total: "ตู้ทั้งหมด",
-                locker_stat_available: "ตู้ว่างทั้งหมด (เขียว)",
+                locker_stat_available: "ว่างทั้งหมด (เขียว)",
                 locker_stat_occupied: "ใช้งานแล้ว (แดง)",
                 side_all_btn: "ทั้งหมด",
                 side_raw_btn: "ฝั่งดิบ",
                 side_cooked_btn: "ฝั่งสุก",
-                locker_note_label: "หมายเหตุ / ข้อห้ามสำคัญ:",
-                locker_note_compact: "ห้ามเก็บอาหาร เครื่องดื่ม ขยะ ของมีค่า หรือสิ่งผิดกฎหมายในตู้ล็อกเกอร์เด็ดขาด (HR มีสิทธิ์สุ่มตรวจความสะอาดเป็นประจำ)",
+                locker_note_label: "หมายเหตุ:",
+                locker_note_compact: "ห้ามเก็บอาหาร เครื่องดื่ม ขยะ ของมีค่า หรือสิ่งผิดกฎหมายในตู้ล็อกเกอร์เด็ดขาด",
                 history_empty: "ยังไม่มีประวัติการส่งรายงานปัญหา",
                 status_pending: "รอดำเนินการ",
                 status_done: "ดำเนินการเรียบร้อย",
@@ -1404,8 +1180,8 @@
                 alert_file_size: "ขนาดรูปภาพต้องไม่เกิน 2MB ต่อรูป"
             },
             my: {
-                nav_empeo: "ဝန်ထမ်းပြဿနာတင်ရန်",
-                nav_locker: "လော့ကာဇယား",
+                nav_empeo: "แจ้งปัญหา",
+                nav_locker: "ผังล็อกเกอร์",
                 form_title: "VSC - PS (People Support) ဝန်ထမ်းပြဿနာတင်သွင်းလွှာ",
                 form_subtitle: "Empeo, VSC Care, ဆိုင်းပြောင်းခြင်းနှင့် လော့ကာပြဿနာအားလုံးကို တင်ပြနိုင်ပါသည်",
                 issue_type_label: "၁. တင်ပြလိုသော ပြဿနာကို ရွေးချယ်ပါ",
@@ -1439,7 +1215,6 @@
                 shift_custom_time_label: "သတ်မှတ်ချိန်ပြင်ပ အခြားအချိန် ဖော်ပြရန်",
                 vsccare_sub_label: "VSC Care ပြဿနာအမျိုးအစား",
                 locker_sub_label: "လော့ကာပြဿနာအမျိုးအစား",
-                locker_number_label: "လော့ကာနံပါတ် (Locker No.)",
                 issue_leave_date_label: "ခွင့်ယူလိုသည့် ရက်အပိုင်းအခြား",
                 date_start_label: "စတင်သည့်နေ့",
                 date_end_label: "ပြီးဆုံးသည့်နေ့",
@@ -1459,8 +1234,8 @@
                 side_all_btn: "အားလုံး",
                 side_raw_btn: "အစိမ်း",
                 side_cooked_btn: "ချက်ပြီး",
-                locker_note_label: "အရေးကြီးသော မှတ်ချက် / တားမြစ်ချက်:",
-                locker_note_compact: "လော့ကာအတွင်း အစားအစာ၊ အဖျော်ယမကာ၊ အမှိုက်၊ တန်ဖိုးကြီးပစ္စည်းနှင့် တရားမဝင်ပစ္စည်းများ လုံးဝမထားရပါ (HR မှ အခါအားလျော်စွာ စစ်ဆေးခွင့်ရှိသည်)",
+                locker_note_label: "အရေးကြီးသော မှတ်ချက်:",
+                locker_note_compact: "လော့ကာအတွင်း အစားအစာ၊ အဖျော်ယမကာ၊ အမှိုက်၊ တန်ဖိုးကြီးပစ္စည်းနှင့် တရားမဝင်ပစ္စည်းများ လုံးဝမထားရပါ",
                 history_empty: "တင်ပြထားသော မှတ်တမ်းမရှိသေးပါ",
                 status_pending: "စောင့်ဆိုင်းဆဲ",
                 status_done: "ပြီးစီးပါပြီ",
@@ -1482,10 +1257,8 @@
             if (mode === 'register') {
                 document.getElementById('register-section').classList.remove('hidden');
                 document.getElementById('register-form').reset();
-                const posOtherContainer = document.getElementById('reg-position-other-container');
-                if (posOtherContainer) posOtherContainer.classList.add('hidden');
+                document.getElementById('reg-position-other-container').classList.add('hidden');
                 document.getElementById('reg-otp-container').classList.add('hidden');
-                loadCuratedPositions();
             } else if (mode === 'forgot') {
                 document.getElementById('forgot-section').classList.remove('hidden');
                 document.getElementById('forgot-form').reset();
@@ -1496,181 +1269,22 @@
             }
         }
 
-        function loadCuratedPositions() {
-            state.positionsList = [...OFFICIAL_POSITIONS];
-            renderPositionDatalist(OFFICIAL_POSITIONS);
-
-            const statusEl = document.getElementById('pos-sync-status');
-            if (statusEl) {
-                statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500 text-[9px] mr-1"></i> 77 ตำแหน่งมาตรฐาน`;
-            }
-        }
-
-        async function fetchPositionsFromSheet() {
-            // Keep strictly to the verified 77 official positions
-            loadCuratedPositions();
-        }
-
-        function renderPositionDatalist(list) {
-            const datalist = document.getElementById('position-datalist');
-            if (!datalist) return;
-            datalist.innerHTML = list.map(pos => `<option value="${pos}"></option>`).join('');
-        }
-
-        /* Handle dynamic detection of "อื่นๆ" in position input */
-        function handlePositionInput(val) {
-            const container = document.getElementById('reg-position-other-container');
-            const otherInput = document.getElementById('reg-position-other');
-            if (!container) return;
-
-            if (val.includes('อื่นๆ') || val.includes('โปรดระบุ')) {
-                container.classList.remove('hidden');
-                if (otherInput) otherInput.required = true;
-            } else {
-                container.classList.add('hidden');
-                if (otherInput) {
-                    otherInput.required = false;
-                    otherInput.value = '';
-                }
-            }
-        }
-
-        /* Handle Edit Profile & Position Modal */
-        function openEditProfileModal() {
-            if (!state.currentUser) return;
-
-            const modal = document.getElementById('edit-profile-modal');
-            const emailInput = document.getElementById('edit-prof-email');
-            const nameInput = document.getElementById('edit-prof-name');
-            const nicknameInput = document.getElementById('edit-prof-nickname');
-            const posInput = document.getElementById('edit-prof-position');
-            const otherContainer = document.getElementById('edit-prof-position-other-container');
-            const otherInput = document.getElementById('edit-prof-position-other');
-
-            if (emailInput) emailInput.value = state.currentUser.email || '';
-            if (nameInput) nameInput.value = state.currentUser.name || '';
-            if (nicknameInput) nicknameInput.value = state.currentUser.nickname || '';
-            if (posInput) posInput.value = state.currentUser.position || '';
-
-            if (otherContainer) otherContainer.classList.add('hidden');
-            if (otherInput) {
-                otherInput.value = '';
-                otherInput.required = false;
-            }
-
-            if (modal) modal.classList.remove('hidden');
-            loadCuratedPositions();
-        }
-
-        function closeEditProfileModal() {
-            const modal = document.getElementById('edit-profile-modal');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        function handleEditPositionInput(val) {
-            const container = document.getElementById('edit-prof-position-other-container');
-            const otherInput = document.getElementById('edit-prof-position-other');
-            if (!container) return;
-
-            if (val.includes('อื่นๆ') || val.includes('โปรดระบุ')) {
-                container.classList.remove('hidden');
-                if (otherInput) otherInput.required = true;
-            } else {
-                container.classList.add('hidden');
-                if (otherInput) {
-                    otherInput.required = false;
-                    otherInput.value = '';
-                }
-            }
-        }
-
-        async function handleProfileUpdateSubmit(event) {
-            event.preventDefault();
-            if (!state.currentUser) return;
-
-            const newName = document.getElementById('edit-prof-name').value.trim();
-            const newNickname = document.getElementById('edit-prof-nickname').value.trim();
-            const rawPos = document.getElementById('edit-prof-position').value.trim();
-            const otherPos = document.getElementById('edit-prof-position-other')?.value.trim();
-
-            const finalPosition = (rawPos.includes('อื่นๆ') && otherPos) ? otherPos : rawPos;
-
-            if (!newName || !newNickname || !finalPosition) {
-                showNotification('กรุณากรอกข้อมูลและเลือกตำแหน่งงานให้ครบถ้วน', 'warning');
-                return;
-            }
-
-            // Update in-memory state
-            state.currentUser.name = newName;
-            state.currentUser.nickname = newNickname;
-            state.currentUser.position = finalPosition;
-
-            // Update current user cache and user database
-            localStorage.setItem('empeo_current_user', JSON.stringify(state.currentUser));
-            const userDb = JSON.parse(localStorage.getItem('vsc_users_db') || '{}');
-            if (userDb[state.currentUser.email]) {
-                userDb[state.currentUser.email].name = newName;
-                userDb[state.currentUser.email].nickname = newNickname;
-                userDb[state.currentUser.email].position = finalPosition;
-                localStorage.setItem('vsc_users_db', JSON.stringify(userDb));
-            }
-
-            // Update UI elements immediately
-            const bannerName = document.getElementById('banner-emp-fullname');
-            const bannerNick = document.getElementById('banner-emp-nickname');
-            const bannerPos = document.getElementById('banner-emp-position');
-            const displayNameEl = document.getElementById('user-display-name');
-
-            if (bannerName) bannerName.innerText = newName;
-            if (bannerNick) bannerNick.innerText = `(${newNickname})`;
-            if (bannerPos) bannerPos.innerText = finalPosition;
-            if (displayNameEl) displayNameEl.innerText = newNickname || newName;
-
-            const formName = document.getElementById('emp-name');
-            const formNick = document.getElementById('emp-nickname');
-            const formPos = document.getElementById('emp-position');
-            if (formName) formName.value = newName;
-            if (formNick) formNick.value = newNickname;
-            if (formPos) formPos.value = finalPosition;
-
-            closeEditProfileModal();
-            showNotification(`อัปเดตตำแหน่งเป็น "${finalPosition}" เรียบร้อยแล้ว!`, 'success');
-        }
-
-        /* Initializing user session safely with DOM null-guards */
         function initUserSession() {
             document.getElementById('auth-container').classList.add('hidden');
             document.getElementById('login-section').classList.add('hidden');
             document.getElementById('register-section').classList.add('hidden');
             document.getElementById('forgot-section').classList.add('hidden');
             document.getElementById('main-application-section').classList.remove('hidden');
+            document.getElementById('user-profile-badge').classList.remove('hidden');
             
-            const badge = document.getElementById('user-profile-badge');
-            if (badge) badge.classList.remove('hidden');
-            
-            const displayNameEl = document.getElementById('user-display-name');
-            if (displayNameEl && state.currentUser) {
-                displayNameEl.innerText = state.currentUser.nickname || state.currentUser.name || 'User';
+            const userDisplay = document.getElementById('user-display-name');
+            if (userDisplay && state.currentUser) {
+                userDisplay.innerText = state.currentUser.nickname || state.currentUser.name;
             }
 
-            if (state.currentUser) {
-                const nameInput = document.getElementById('emp-name');
-                const nickInput = document.getElementById('emp-nickname');
-                const posInput = document.getElementById('emp-position');
-
-                if (nameInput) nameInput.value = state.currentUser.name || '';
-                if (nickInput) nickInput.value = state.currentUser.nickname || '';
-                if (posInput) posInput.value = state.currentUser.position || '';
-
-                // Update visual banner inside Issue Reporting Form
-                const bannerName = document.getElementById('banner-emp-fullname');
-                const bannerNick = document.getElementById('banner-emp-nickname');
-                const bannerPos = document.getElementById('banner-emp-position');
-
-                if (bannerName) bannerName.innerText = state.currentUser.name || 'พนักงาน';
-                if (bannerNick) bannerNick.innerText = state.currentUser.nickname ? `(${state.currentUser.nickname})` : '';
-                if (bannerPos) bannerPos.innerText = state.currentUser.position || 'พนักงานปฏิบัติการ';
-            }
+            document.getElementById('emp-name').value = state.currentUser ? (state.currentUser.name || '') : '';
+            document.getElementById('emp-nickname').value = state.currentUser ? (state.currentUser.nickname || '') : '';
+            document.getElementById('emp-position').value = state.currentUser ? (state.currentUser.position || '') : '';
 
             clearLockerSearch();
             fetchUserHistoryFromSheets();
@@ -1682,22 +1296,25 @@
             document.getElementById('register-section').classList.add('hidden');
             document.getElementById('forgot-section').classList.add('hidden');
             document.getElementById('main-application-section').classList.add('hidden');
-            
-            const badge = document.getElementById('user-profile-badge');
-            if (badge) badge.classList.add('hidden');
-
-            const loginForm = document.getElementById('login-form');
-            if (loginForm) loginForm.reset();
+            document.getElementById('user-profile-badge').classList.add('hidden');
+            document.getElementById('login-form').reset();
             state.localHistory = [];
             clearLockerSearch();
             renderLocalHistory();
         }
 
         function toggleRegPositionOther(val) {
-            handlePositionInput(val);
+            const container = document.getElementById('reg-position-other-container');
+            if (val === 'อื่นๆ') {
+                container.classList.remove('hidden');
+                document.getElementById('reg-position-other').required = true;
+            } else {
+                container.classList.add('hidden');
+                document.getElementById('reg-position-other').required = false;
+            }
         }
 
-        function sendRegisterOTP() {
+        async function sendRegisterOTP() {
             const email = document.getElementById('reg-email').value.trim();
             if (!email) {
                 showNotification('กรุณากรอกอีเมลพนักงาน', 'warning');
@@ -1707,23 +1324,39 @@
             const sendBtn = document.getElementById('reg-send-otp-btn');
             const originalText = sendBtn.innerText;
             sendBtn.disabled = true;
-            sendBtn.innerText = 'สร้าง OTP...';
+            sendBtn.innerText = 'กำลังส่ง...';
 
-            // Generate verified 6-digit OTP
-            const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-            state.generatedOtp = otpCode;
+            const otpInput = document.getElementById('reg-otp');
+            if (otpInput) otpInput.value = ''; // เคลียร์ช่องให้ว่างเสมอ ให้ผู้ใช้เปิดดูในอีเมลจริง
 
-            setTimeout(() => {
-                document.getElementById('reg-otp-container').classList.remove('hidden');
-                document.getElementById('reg-otp').value = otpCode;
-                startOTPTimer('reg-otp-timer');
-                showNotification(`รหัส OTP ของคุณคือ: ${otpCode} (กรอกในช่องเรียบร้อย)`, 'info');
+            try {
+                const response = await fetch(state.googleSheetUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'sendRegisterOTP',
+                        email: email
+                    })
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    showNotification(`ส่งรหัส OTP ไปที่อีเมล ${email} เรียบร้อยแล้ว กรุณาเปิดกล่องจดหมาย`, 'success');
+                    document.getElementById('reg-otp-container').classList.remove('hidden');
+                    startOTPTimer('reg-otp-timer');
+                    if (otpInput) otpInput.focus();
+                } else {
+                    showNotification(data.message || 'ไม่สามารถส่ง OTP ไปยังอีเมลนี้ได้', 'error');
+                }
+            } catch (err) {
+                console.error('OTP send failed:', err);
+                showNotification('ไม่สามารถเชื่อมต่อระบบส่งอีเมลได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต', 'error');
+            } finally {
                 sendBtn.disabled = false;
                 sendBtn.innerText = originalText;
-            }, 500);
+            }
         }
 
-        function sendForgotOTP() {
+        async function sendForgotOTP() {
             const email = document.getElementById('forgot-email').value.trim();
             if (!email) {
                 showNotification('กรุณากรอกอีเมล', 'warning');
@@ -1733,19 +1366,36 @@
             const sendBtn = document.getElementById('forgot-send-otp-btn');
             const originalText = sendBtn.innerText;
             sendBtn.disabled = true;
-            sendBtn.innerText = 'สร้าง OTP...';
+            sendBtn.innerText = 'กำลังส่ง...';
 
-            const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-            state.generatedOtp = otpCode;
+            const forgotOtpInput = document.getElementById('forgot-otp');
+            if (forgotOtpInput) forgotOtpInput.value = ''; // เคลียร์ช่องให้ว่างเสมอ
 
-            setTimeout(() => {
-                document.getElementById('forgot-otp-container').classList.remove('hidden');
-                document.getElementById('forgot-otp').value = otpCode;
-                startOTPTimer('forgot-otp-timer');
-                showNotification(`รหัส OTP รีเซ็ตของคุณคือ: ${otpCode}`, 'info');
+            try {
+                const response = await fetch(state.googleSheetUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'sendResetOTP',
+                        email: email
+                    })
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    showNotification(`ส่งรหัส OTP ไปที่อีเมล ${email} เรียบร้อยแล้ว กรุณาเปิดกล่องจดหมาย`, 'success');
+                    document.getElementById('forgot-otp-container').classList.remove('hidden');
+                    startOTPTimer('forgot-otp-timer');
+                    if (forgotOtpInput) forgotOtpInput.focus();
+                } else {
+                    showNotification(data.message || 'ไม่สามารถส่ง OTP ไปยังอีเมลนี้ได้', 'error');
+                }
+            } catch (err) {
+                console.error('Forgot OTP send failed:', err);
+                showNotification('ไม่สามารถเชื่อมต่อระบบส่งอีเมลได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต', 'error');
+            } finally {
                 sendBtn.disabled = false;
                 sendBtn.innerText = originalText;
-            }, 500);
+            }
         }
 
         let otpInterval = null;
@@ -1754,7 +1404,7 @@
             if (!element) return;
             if (otpInterval) clearInterval(otpInterval);
 
-            let timeRemaining = 600; // 10 minutes
+            let timeRemaining = 600;
             otpInterval = setInterval(() => {
                 const minutes = Math.floor(timeRemaining / 60);
                 const seconds = timeRemaining % 60;
@@ -1770,71 +1420,61 @@
 
         async function handleLoginSubmit(event) {
             event.preventDefault();
-            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value.trim();
-
-            if (!email || !password) {
-                showNotification('กรุณากรอกอีเมลและรหัสผ่าน', 'warning');
-                return;
-            }
 
             const submitBtn = event.target.querySelector('button[type="submit"]');
             const originalHtml = submitBtn.innerHTML;
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> กำลังเข้าสู่ระบบ...`;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> กำลังตรวจสอบบัญชี...`;
 
-            // ตรวจสอบใน User Database ประจำเครื่องก่อน
-            const userDb = JSON.parse(localStorage.getItem('vsc_users_db') || '{}');
-            let userProfile = null;
+            try {
+                const response = await fetch(state.googleSheetUrl, {
+                    method: 'POST',
+                    mode: 'cors',
+                    body: JSON.stringify({
+                        action: 'login',
+                        email: email,
+                        password: password
+                    })
+                });
+                const data = await response.json();
 
-            if (userDb[email]) {
-                if (userDb[email].password === password) {
-                    userProfile = userDb[email];
+                if (data.status === 'success' && data.user) {
+                    state.currentUser = data.user;
+                    localStorage.setItem('empeo_current_user', JSON.stringify(state.currentUser));
+                    showNotification('Sign in successful!', 'success');
+                    initUserSession();
                 } else {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalHtml;
-                    showNotification('รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง หรือกดลืมรหัสผ่าน', 'error');
-                    return;
+                    showNotification(data.message || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง', 'error');
                 }
-            } else {
-                // หากยังไม่เคยลงทะเบียน ให้สร้างบัญชีอัตโนมัติจากอีเมลเพื่อความสะดวก
-                const cleanNickname = email.split('@')[0].split('.')[0];
-                userProfile = {
+            } catch (e) {
+                const nickname = email.split('@')[0];
+                state.currentUser = {
+                    name: nickname,
+                    nickname: nickname,
                     email: email,
-                    name: cleanNickname.charAt(0).toUpperCase() + cleanNickname.slice(1),
-                    nickname: cleanNickname,
-                    position: "พนักงานปฏิบัติการ",
-                    password: password
+                    position: "พนักงานปฏิบัติการ"
                 };
-                userDb[email] = userProfile;
-                localStorage.setItem('vsc_users_db', JSON.stringify(userDb));
-            }
-
-            state.currentUser = userProfile;
-            localStorage.setItem('empeo_current_user', JSON.stringify(state.currentUser));
-
-            setTimeout(() => {
+                localStorage.setItem('empeo_current_user', JSON.stringify(state.currentUser));
+                showNotification('เข้าสู่ระบบสำเร็จ (Offline Mode)', 'info');
+                initUserSession();
+            } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalHtml;
-                showNotification(`ยินดีต้อนรับคุณ ${state.currentUser.nickname || state.currentUser.name}! เข้าสู่ระบบสำเร็จ`, 'success');
-                initUserSession();
-            }, 400);
+            }
         }
 
         async function handleRegisterSubmit(event) {
             event.preventDefault();
-            const email = document.getElementById('reg-email').value.trim().toLowerCase();
+            const email = document.getElementById('reg-email').value.trim();
             const password = document.getElementById('reg-password').value.trim();
             const otp = document.getElementById('reg-otp').value.trim();
             const name = document.getElementById('reg-name').value.trim();
             const nickname = document.getElementById('reg-nickname').value.trim();
-            const rawPosition = document.getElementById('reg-position').value.trim();
             
-            // หากเลือก "อื่นๆ" หรือมีข้อความอื่นๆ ให้ใช้ค่าจากช่องระบุเพิ่มเติม
-            const customPosInput = document.getElementById('reg-position-other');
-            const position = (rawPosition.includes('อื่นๆ') && customPosInput?.value.trim()) 
-                ? customPosInput.value.trim() 
-                : rawPosition;
+            const positionSel = document.getElementById('reg-position').value;
+            const position = positionSel === 'อื่นๆ' ? document.getElementById('reg-position-other').value.trim() : positionSel;
 
             if (!otp) {
                 showNotification(i18n[state.lang].alert_otp_enter, 'warning');
@@ -1844,32 +1484,44 @@
             const submitBtn = event.target.querySelector('button[type="submit"]');
             const originalHtml = submitBtn.innerHTML;
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> บันทึกข้อมูลพนักงาน...`;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Registering...`;
 
-            // บันทึกบัญชีเข้าคลังผู้ใช้งาน พร้อมชื่อ-สกุล, ชื่อเล่น และตำแหน่งงาน
-            const userDb = JSON.parse(localStorage.getItem('vsc_users_db') || '{}');
-            userDb[email] = {
-                email: email,
-                name: name,
-                nickname: nickname,
-                position: position,
-                password: password
-            };
-            localStorage.setItem('vsc_users_db', JSON.stringify(userDb));
+            try {
+                const response = await fetch(state.googleSheetUrl, {
+                    method: 'POST',
+                    mode: 'cors',
+                    body: JSON.stringify({
+                        action: 'register',
+                        email: email,
+                        password: password,
+                        otp: otp,
+                        name: name,
+                        nickname: nickname,
+                        position: position
+                    })
+                });
+                const data = await response.json();
 
-            setTimeout(() => {
+                if (data.status === 'success') {
+                    showNotification('Registration successful! Please login with your new account.', 'success');
+                    switchAuthMode('login');
+                    document.getElementById('login-email').value = email;
+                } else {
+                    showNotification(data.message || 'Registration failed.', 'error');
+                }
+            } catch (e) {
+                showNotification('Registration completed (Demo). Please login.', 'info');
+                switchAuthMode('login');
+                document.getElementById('login-email').value = email;
+            } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalHtml;
-                showNotification('ลงทะเบียนสำเร็จเรียบร้อย! ตำแหน่งงานถูกบันทึกแล้ว', 'success');
-                state.currentUser = userDb[email];
-                localStorage.setItem('empeo_current_user', JSON.stringify(state.currentUser));
-                initUserSession();
-            }, 500);
+            }
         }
 
         async function handleResetSubmit(event) {
             event.preventDefault();
-            const email = document.getElementById('forgot-email').value.trim().toLowerCase();
+            const email = document.getElementById('forgot-email').value.trim();
             const otp = document.getElementById('forgot-otp').value.trim();
             const newPassword = document.getElementById('forgot-new-password').value.trim();
 
@@ -1878,24 +1530,39 @@
                 return;
             }
 
-            const userDb = JSON.parse(localStorage.getItem('vsc_users_db') || '{}');
-            if (userDb[email]) {
-                userDb[email].password = newPassword;
-            } else {
-                userDb[email] = {
-                    email: email,
-                    name: email.split('@')[0],
-                    nickname: email.split('@')[0],
-                    position: "พนักงานปฏิบัติการ",
-                    password: newPassword
-                };
-            }
-            localStorage.setItem('vsc_users_db', JSON.stringify(userDb));
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalHtml = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Updating password...`;
 
-            showNotification('เปลี่ยนรหัสผ่านเรียบร้อย! สามารถเข้าสู่ระบบด้วยรหัสใหม่ได้ทันที', 'success');
-            switchAuthMode('login');
-            document.getElementById('login-email').value = email;
-            document.getElementById('login-password').value = newPassword;
+            try {
+                const response = await fetch(state.googleSheetUrl, {
+                    method: 'POST',
+                    mode: 'cors',
+                    body: JSON.stringify({
+                        action: 'resetPassword',
+                        email: email,
+                        otp: otp,
+                        newPassword: newPassword
+                    })
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showNotification('Password updated successfully!', 'success');
+                    switchAuthMode('login');
+                    document.getElementById('login-email').value = email;
+                } else {
+                    showNotification(data.message || 'ไม่สามารถรีเซ็ตรหัสผ่านได้', 'error');
+                }
+            } catch (err) {
+                showNotification('Password reset completed (Demo).', 'info');
+                switchAuthMode('login');
+                document.getElementById('login-email').value = email;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHtml;
+            }
         }
 
         function handleLogout() {
@@ -1903,206 +1570,64 @@
             state.currentUser = null;
             state.localHistory = [];
             showLoginScreen();
-            showNotification('ออกจากระบบเรียบร้อย', 'info');
+            showNotification('Session cleared. ออกจากระบบเรียบร้อย', 'info');
         }
 
-        /* ตรวจสอบค่าสถานะ Done หรือ แก้ไขแล้ว อย่างครอบคลุม */
-        function checkIsDoneStatus(colJVal, allCells) {
-            const s = String(colJVal || '').toLowerCase().trim();
-            if (
-                s === 'done' || 
-                s.includes('done') || 
-                s.includes('แก้ไขแล้ว') || 
-                s.includes('เรียบร้อย') || 
-                s.includes('เสร็จ') || 
-                s === 'completed' || 
-                s === 'true'
-            ) {
-                return true;
-            }
-            // ตรวจสอบเพิ่มเติมว่ามีเซลล์ใดในแถวนี้ที่ระบุว่า Done หรือ แก้ไขแล้ว หรือไม่
-            return (allCells || []).some(c => {
-                const cs = String(c || '').toLowerCase().trim();
-                return cs === 'done' || 
-                       cs === 'แก้ไขแล้ว' || 
-                       cs.includes('แก้ไขแล้ว') || 
-                       cs.includes('เรียบร้อยแล้ว') || 
-                       cs === 'completed';
-            });
-        }
-
-        /* ดึงประวัติและซิงค์สถานะจาก Google Sheet gid=0 คอลัมน์ J:J */
-        async function fetchUserHistoryFromSheets(isManual = false) {
+        async function fetchUserHistoryFromSheets() {
             if (!state.currentUser) return;
 
-            const userEmail = (state.currentUser.email || '').toLowerCase().trim();
-            const userName = (state.currentUser.name || '').toLowerCase().trim();
-            const userNickname = (state.currentUser.nickname || '').toLowerCase().trim();
-            const emailPrefix = userEmail ? userEmail.split('@')[0] : '';
-
-            const cachedHistory = localStorage.getItem(`history_${userEmail}`);
-            if (cachedHistory) {
-                try {
-                    state.localHistory = JSON.parse(cachedHistory);
-                } catch (e) {
+            if (!state.googleSheetUrl) {
+                const cachedHistory = localStorage.getItem(`history_${state.currentUser.email}`);
+                if (cachedHistory) {
+                    try {
+                        state.localHistory = JSON.parse(cachedHistory);
+                    } catch (e) {
+                        state.localHistory = [];
+                    }
+                } else {
                     state.localHistory = [];
                 }
-            } else {
-                state.localHistory = [];
+                renderLocalHistory();
+                return;
             }
 
-            // ซิงค์สถานะแบบเรียลไทม์จาก Google Sheet gid=0 คอลัมน์ J (Status)
-            const sheetId = SPREADSHEET_ID;
-            const gid = "0";
-            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${gid}&_=${Date.now()}`;
-
             try {
-                const response = await fetch(url);
-                const text = await response.text();
-                const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-                const data = JSON.parse(jsonText);
-                const rows = data.table?.rows || [];
+                const fetchUrl = `${state.googleSheetUrl}?action=getHistory&email=${encodeURIComponent(state.currentUser.email)}`;
+                const response = await fetch(fetchUrl);
+                const result = await response.json();
 
-                // ค้นหาตำแหน่งคอลัมน์ J (Column J) จากโครงสร้างข้อมูล GViz อย่างแม่นยำ
-                let colJIndex = -1;
-                if (data.table?.cols && Array.isArray(data.table.cols)) {
-                    colJIndex = data.table.cols.findIndex(c => c && (
-                        c.id === 'J' || 
-                        c.label === 'J' || 
-                        (c.label && (c.label.includes('สถานะ') || c.label.toLowerCase().includes('status')))
-                    ));
+                if (result.status === 'success' && result.history) {
+                    state.localHistory = result.history;
+                    localStorage.setItem(`history_${state.currentUser.email}`, JSON.stringify(state.localHistory));
+                    renderLocalHistory();
                 }
-                if (colJIndex === -1) colJIndex = 9; // คอลัมน์ที่ 10 (J: A=0, B=1, ... J=9)
-
-                let hasUpdated = false;
-                const parsedSheetRows = [];
-
-                rows.forEach((r, idx) => {
-                    if (!r || !r.c) return;
-                    const cells = r.c.map(cell => {
-                        if (!cell) return '';
-                        if (cell.v !== undefined && cell.v !== null) return String(cell.v).trim();
-                        if (cell.f !== undefined && cell.f !== null) return String(cell.f).trim();
-                        return '';
-                    });
-                    if (cells.length === 0 || cells.every(v => v === '')) return;
-
-                    const rowText = cells.join(' ');
-                    // ข้ามแถวหัวตาราง
-                    if (cells[0] && (cells[0].includes('ประทับเวลา') || cells[0].includes('Timestamp') || cells[0] === 'ID')) return;
-
-                    // ค่าในคอลัมน์ J (หรือคอลัมน์สถานะ)
-                    const colJStatus = (colJIndex !== -1 && cells[colJIndex] !== undefined && cells[colJIndex] !== '') 
-                        ? cells[colJIndex] 
-                        : (cells[9] || '');
-
-                    const isDone = checkIsDoneStatus(colJStatus, cells);
-
-                    parsedSheetRows.push({
-                        idx,
-                        cells,
-                        rowText,
-                        colJStatus,
-                        isDone
-                    });
-                });
-
-                // 1. อัปเดตรายการเดิมที่มีอยู่ใน state.localHistory
-                state.localHistory.forEach(item => {
-                    // จับคู่ด้วย ID หรือประเภทปัญหา + วันที่
-                    const matched = parsedSheetRows.find(sr => {
-                        const idMatch = item.id && (sr.rowText.includes(item.id) || sr.cells.some(c => c === item.id));
-                        if (idMatch) return true;
-
-                        // ถ้าไม่มี ID ให้จับคู่ด้วยประเภทปัญหา + วันที่แจ้ง
-                        const typeMatch = item.issueType && sr.rowText.includes(item.issueType);
-                        const dateMatch = (item.issueDate && sr.rowText.includes(item.issueDate)) ||
-                                          (item.createdTime && sr.rowText.includes(item.createdTime.split(' ')[0]));
-                        return typeMatch && dateMatch;
-                    });
-
-                    if (matched) {
-                        if (matched.isDone) {
-                            if (item.status !== 'ดำเนินการเรียบร้อย') {
-                                item.status = 'ดำเนินการเรียบร้อย';
-                                hasUpdated = true;
-                            }
-                        } else if (matched.colJStatus && matched.colJStatus !== item.status) {
-                            item.status = matched.colJStatus;
-                            hasUpdated = true;
-                        }
-                    }
-                });
-
-                // 2. ดึงรายการจาก Google Sheet ที่เป็นของผู้ใช้คนนี้เข้ามาเพิ่มเติม (กรณีเปิดเครื่องใหม่หรือล้างแคช)
-                parsedSheetRows.forEach(sr => {
-                    const rowLower = sr.rowText.toLowerCase();
-                    const isUserRow = (userEmail && rowLower.includes(userEmail)) ||
-                                      (emailPrefix && emailPrefix.length >= 3 && rowLower.includes(emailPrefix)) ||
-                                      (userName && userName.length >= 2 && rowLower.includes(userName)) ||
-                                      (userNickname && userNickname.length >= 2 && rowLower.includes(userNickname));
-
-                    if (isUserRow) {
-                        // ค้นหารหัส REP- ในแถว
-                        const foundIdMatch = sr.rowText.match(/REP-\d+/);
-                        const id = foundIdMatch ? foundIdMatch[0] : (sr.cells.find(c => c.startsWith('REP-')) || `REP-${sr.idx + 1000}`);
-
-                        const alreadyExists = state.localHistory.some(h => 
-                            h.id === id || 
-                            (h.issueType && sr.rowText.includes(h.issueType) && sr.rowText.includes(h.issueDate))
-                        );
-
-                        if (!alreadyExists) {
-                            const issueTypeVal = ['การลางาน', 'การกดขอโอที', 'กะการทำงานไม่ตรง', 'เข้า VSC Care ไม่ได้', 'ล็อกเกอร์มีปัญหา'].find(t => sr.rowText.includes(t)) || sr.cells[4] || 'แจ้งปัญหา';
-                            const dateMatch = sr.rowText.match(/\d{4}-\d{2}-\d{2}/);
-                            const issueDateVal = dateMatch ? dateMatch[0] : (sr.cells[5] || new Date().toISOString().split('T')[0]);
-
-                            state.localHistory.push({
-                                id: id,
-                                issueType: issueTypeVal,
-                                issueDate: issueDateVal,
-                                createdTime: sr.cells[0] || issueDateVal,
-                                status: sr.isDone ? 'ดำเนินการเรียบร้อย' : (sr.colJStatus || 'รอดำเนินการ'),
-                                syncStatus: 'Synced'
-                            });
-                            hasUpdated = true;
-                        }
-                    }
-                });
-
-                if (hasUpdated || state.localHistory.length > 0) {
-                    localStorage.setItem(`history_${userEmail}`, JSON.stringify(state.localHistory));
+            } catch (e) {
+                const cachedHistory = localStorage.getItem(`history_${state.currentUser.email}`);
+                if (cachedHistory) {
+                    state.localHistory = JSON.parse(cachedHistory);
+                    renderLocalHistory();
                 }
-            } catch (err) {
-                console.warn('Real-time sync from sheet gid=0 note:', err);
-            } finally {
-                renderLocalHistory();
             }
         }
 
         function openAdminAuth() {
             document.getElementById('admin-auth-modal').classList.remove('hidden');
-            const passInput = document.getElementById('admin-password-input');
-            if (passInput) {
-                passInput.value = '';
-                passInput.focus();
-            }
+            document.getElementById('admin-password-input').focus();
         }
 
         function closeAdminAuth() {
             document.getElementById('admin-auth-modal').classList.add('hidden');
-            const passInput = document.getElementById('admin-password-input');
-            if (passInput) passInput.value = '';
+            document.getElementById('admin-password-input').value = '';
         }
 
         function verifyAdminPassword() {
             const pin = document.getElementById('admin-password-input').value.trim();
-            if (pin === 'shawtyperi') {
+            if (pin === 'people') {
                 closeAdminAuth();
                 document.getElementById('sheet-api-url').value = state.googleSheetUrl || DEFAULT_API_URL;
                 document.getElementById('settings-modal').classList.remove('hidden');
             } else {
-                showNotification('Unauthorized Admin Access! รหัสผ่านผู้ดูแลไม่ถูกต้อง', 'error');
+                showNotification('Unauthorized Admin Access! รหัสผ่านไม่ถูกต้อง', 'error');
             }
         }
 
@@ -2129,9 +1654,58 @@
             localStorage.setItem('empeo_portal_sheet_url', rawUrl);
             showNotification('Google Cloud Engine connected successfully!', 'success');
             closeSettings();
+            if (state.currentUser) {
+                fetchUserHistoryFromSheets();
+            }
         }
 
-        /* 24-Hour Pure Select Options Generator */
+        function handleIssueTypeSelect(value) {
+            const detailsContainer = document.getElementById('issue-details-container');
+            if (detailsContainer) detailsContainer.classList.remove('hidden');
+
+            const leaveSub = document.getElementById('leave-sub-container');
+            const otSub = document.getElementById('ot-sub-container');
+            const shiftSub = document.getElementById('shift-sub-container');
+            const vscSub = document.getElementById('vsccare-sub-container');
+            const lockerSub = document.getElementById('locker-issue-sub-container');
+
+            if (leaveSub) leaveSub.classList.add('hidden');
+            if (otSub) otSub.classList.add('hidden');
+            if (shiftSub) shiftSub.classList.add('hidden');
+            if (vscSub) vscSub.classList.add('hidden');
+            if (lockerSub) lockerSub.classList.add('hidden');
+
+            const leaveStart = document.getElementById('leave-date-start');
+            const leaveEnd = document.getElementById('leave-date-end');
+            const otDate = document.getElementById('ot-date');
+            const shiftDate = document.getElementById('shift-date');
+
+            if (leaveStart) leaveStart.required = false;
+            if (leaveEnd) leaveEnd.required = false;
+            if (otDate) otDate.required = false;
+            if (shiftDate) shiftDate.required = false;
+
+            if (value === 'การลางาน') {
+                if (leaveSub) leaveSub.classList.remove('hidden');
+                if (leaveStart) leaveStart.required = true;
+                if (leaveEnd) leaveEnd.required = true;
+                calculateTotalDays();
+            } else if (value === 'การกดขอโอที') {
+                if (otSub) otSub.classList.remove('hidden');
+                if (otDate) otDate.required = true;
+                handleOtReasonChange(document.getElementById('ot-reason-type').value);
+                calculateOtHours();
+            } else if (value === 'กะการทำงานไม่ตรง') {
+                if (shiftSub) shiftSub.classList.remove('hidden');
+                if (shiftDate) shiftDate.required = true;
+                updateShiftTimeOptions();
+            } else if (value === 'เข้า VSC Care ไม่ได้') {
+                if (vscSub) vscSub.classList.remove('hidden');
+            } else if (value === 'ล็อกเกอร์มีปัญหา') {
+                if (lockerSub) lockerSub.classList.remove('hidden');
+            }
+        }
+
         function init24HourTimeSelects() {
             const startSel = document.getElementById('ot-time-start');
             const endSel = document.getElementById('ot-time-end');
@@ -2152,7 +1726,6 @@
             calculateOtHours();
         }
 
-        /* Calculate overtime total hours */
         function calculateOtHours() {
             const startInput = document.getElementById('ot-time-start');
             const endInput = document.getElementById('ot-time-end');
@@ -2169,7 +1742,7 @@
             let endMinutes = endH * 60 + endM;
 
             if (endMinutes < startMinutes) {
-                endMinutes += 24 * 60; // Overnight shift
+                endMinutes += 24 * 60;
             }
 
             const diffMinutes = endMinutes - startMinutes;
@@ -2180,7 +1753,6 @@
             return formatted;
         }
 
-        /* Calculate total leave days */
         function calculateTotalDays() {
             const startInput = document.getElementById('leave-date-start');
             const endInput = document.getElementById('leave-date-end');
@@ -2206,7 +1778,6 @@
             return total;
         }
 
-        /* Display warning for forgotten OT requests */
         function handleOtReasonChange(value) {
             const warningBanner = document.getElementById('ot-warning-banner');
             if (warningBanner) {
@@ -2215,68 +1786,6 @@
                 } else {
                     warningBanner.classList.add('hidden');
                 }
-            }
-        }
-
-        function handleIssueTypeSelect(value) {
-            const detailsContainer = document.getElementById('issue-details-container');
-            if (detailsContainer) detailsContainer.classList.remove('hidden');
-
-            const leaveSub = document.getElementById('leave-sub-container');
-            const otSub = document.getElementById('ot-sub-container');
-            const shiftSub = document.getElementById('shift-sub-container');
-            const vscSub = document.getElementById('vsccare-sub-container');
-            const lockerSub = document.getElementById('locker-issue-sub-container');
-
-            if (leaveSub) leaveSub.classList.add('hidden');
-            if (otSub) otSub.classList.add('hidden');
-            if (shiftSub) shiftSub.classList.add('hidden');
-            if (vscSub) vscSub.classList.add('hidden');
-            if (lockerSub) lockerSub.classList.add('hidden');
-
-            const leaveStart = document.getElementById('leave-date-start');
-            const leaveEnd = document.getElementById('leave-date-end');
-            const otDate = document.getElementById('ot-date');
-            const shiftDate = document.getElementById('shift-date');
-            const lockerDigits = document.getElementById('locker-number-digits');
-
-            if (leaveStart) leaveStart.required = false;
-            if (leaveEnd) leaveEnd.required = false;
-            if (otDate) otDate.required = false;
-            if (shiftDate) shiftDate.required = false;
-            if (lockerDigits) lockerDigits.required = false;
-
-            if (value === 'การลางาน') {
-                if (leaveSub) leaveSub.classList.remove('hidden');
-                if (leaveStart) leaveStart.required = true;
-                if (leaveEnd) leaveEnd.required = true;
-                calculateTotalDays();
-            } else if (value === 'การกดขอโอที') {
-                if (otSub) otSub.classList.remove('hidden');
-                if (otDate) otDate.required = true;
-                handleOtReasonChange(document.getElementById('ot-reason-type').value);
-                calculateOtHours();
-            } else if (value === 'กะการทำงานไม่ตรง') {
-                if (shiftSub) shiftSub.classList.remove('hidden');
-                if (shiftDate) shiftDate.required = true;
-                updateShiftTimeOptions();
-            } else if (value === 'เข้า VSC Care ไม่ได้') {
-                if (vscSub) vscSub.classList.remove('hidden');
-            } else if (value === 'ล็อกเกอร์มีปัญหา') {
-                if (lockerSub) lockerSub.classList.remove('hidden');
-                if (lockerDigits) {
-                    lockerDigits.required = true;
-                    lockerDigits.focus();
-                }
-            }
-        }
-
-        /* Realtime format display for VSC number */
-        function handleLockerDigitInput(inputEl) {
-            let val = inputEl.value.trim().replace(/^VSC\s*[-_]?\s*/i, '');
-            const badge = document.getElementById('locker-preview-badge');
-            if (badge) {
-                badge.innerText = val ? `VSC ${val}` : 'VSC -';
             }
         }
 
@@ -2428,9 +1937,9 @@
             if (refreshIcon) refreshIcon.classList.add('fa-spin');
 
             try {
-                await fetchUserHistoryFromSheets(isManual);
+                await fetchUserHistoryFromSheets();
                 if (isManual) {
-                    showNotification('รีเฟรชข้อมูลและสถานะล่าสุดจาก Google Sheet เรียบร้อย', 'success');
+                    showNotification('Status records synchronized!', 'success');
                 }
             } catch (e) {
                 if (isManual) showNotification('Network sync failure.', 'error');
@@ -2439,15 +1948,11 @@
             }
         }
 
-        /* ฟังก์ชันส่งข้อมูลลงชีท: กรอกข้อมูลให้เสร็จก่อน แล้วเอาข้อมูลที่กรอกเสร็จลงชีทเพียง 1 ครั้ง */
         async function handleFormSubmit(event) {
             event.preventDefault();
 
-            // ป้องกันการกดส่งซ้ำซ้อนขณะกำลังซิงค์
-            if (state.isSubmitting) return;
-
             if (state.attachedFiles.length === 0) {
-                showNotification('กรุณาแนบภาพถ่ายหรือภาพหน้าจอหลักฐานอย่างน้อย 1 รูป', 'warning');
+                showNotification('Please attach at least 1 screenshot evidence.', 'warning');
                 document.getElementById('file-dropzone').focus();
                 return;
             }
@@ -2460,11 +1965,9 @@
 
             const issueType = checkedTypeNode.value;
             const rawDescription = document.getElementById('issue-desc').value.trim();
-            
-            // ดึงข้อมูลตรงจากข้อมูลที่พนักงานสมัครไว้
-            const employeeName = state.currentUser ? state.currentUser.name : (document.getElementById('emp-name')?.value || 'Unknown');
-            const nickname = state.currentUser ? state.currentUser.nickname : (document.getElementById('emp-nickname')?.value || 'Unknown');
-            const position = state.currentUser ? state.currentUser.position : (document.getElementById('emp-position')?.value || 'พนักงานปฏิบัติการ');
+            const employeeName = state.currentUser ? state.currentUser.name : 'Unknown';
+            const nickname = state.currentUser ? state.currentUser.nickname : 'Unknown';
+            const position = state.currentUser ? state.currentUser.position : 'พนักงานปฏิบัติการ';
             const userEmail = state.currentUser ? state.currentUser.email : 'offline@vsc.co.th';
 
             let issueDate = new Date().toISOString().split('T')[0];
@@ -2500,15 +2003,11 @@
                 formattedDetails = `[อาการ: ${vscReason}]\n`;
             } else if (issueType === 'ล็อกเกอร์มีปัญหา') {
                 const lockerProblem = document.getElementById('locker-problem-type').value;
-                const rawDigits = document.getElementById('locker-number-digits')?.value.trim() || '';
-                const cleanDigits = rawDigits.replace(/^VSC\s*[-_]?\s*/i, '');
-                const lockerNoVal = cleanDigits ? `VSC ${cleanDigits}` : '-';
-                formattedDetails = `[ปัญหาล็อกเกอร์: ${lockerProblem} | หมายเลขตู้: ${lockerNoVal}]\n`;
+                formattedDetails = `[ปัญหาล็อกเกอร์: ${lockerProblem}]\n`;
             }
 
+            const description = `${formattedDetails}รายละเอียดเพิ่มเติม: ${rawDescription}`;
             const reportId = 'REP-' + Math.floor(1000 + Math.random() * 9000);
-            // แนบรหัสอ้างอิงและตำแหน่งลงในรายละเอียดเพื่อการจับคู่ที่แม่นยำ 100% กับ Google Sheet
-            const description = `[รหัสอ้างอิง: ${reportId}]\n[ตำแหน่ง: ${position}]\n${formattedDetails}รายละเอียดเพิ่มเติม: ${rawDescription}`;
             const now = new Date();
             const createdTime = now.getFullYear() + '-' + 
                 String(now.getMonth() + 1).padStart(2, '0') + '-' + 
@@ -2517,42 +2016,29 @@
                 String(now.getMinutes()).padStart(2, '0') + ':' + 
                 String(now.getSeconds()).padStart(2, '0');
 
-            // บรรจุข้อมูลทั้งหมดที่กรอกเสร็จสิ้นสมบูรณ์เพื่อเตรียมส่งลงชีท 1 ครั้ง
             const payload = {
                 id: reportId,
-                employeeName: employeeName,
-                name: employeeName,
-                nickname: nickname,
-                position: position,
-                issueType: issueType,
-                issueDate: issueDate,
-                description: description,
+                employeeName,
+                nickname,
+                position,
+                issueType,
+                issueDate,
+                description,
                 status: 'รอดำเนินการ',
                 screenshots: state.attachedFiles,
-                createdTime: createdTime,
+                createdTime,
                 email: userEmail
             };
 
             const submitBtn = document.getElementById('submit-btn');
             const originalHtml = submitBtn.innerHTML;
-            
-            // ล็อคปุ่มส่งทันทีเพื่อป้องกันการกดเบิ้ล
-            state.isSubmitting = true;
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> กำลังบันทึกข้อมูลลงชีท...`;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> บันทึกข้อมูลและอัปโหลด...`;
 
             let isSyncSuccess = false;
-            const targetUrl = state.googleSheetUrl || DEFAULT_API_URL;
-            if (targetUrl) {
+            if (state.googleSheetUrl) {
                 try {
-                    // ส่งข้อมูลที่กรอกเสร็จลง Google Sheet 1 ครั้งถ้วน
-                    await fetch(targetUrl, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'text/plain' },
-                        body: JSON.stringify(payload)
-                    });
-                    isSyncSuccess = true;
+                    isSyncSuccess = await sendToGoogleSheetWithRetry(payload, state.googleSheetUrl);
                 } catch (err) {
                     console.error('Failed to write spreadsheet API', err);
                 }
@@ -2564,31 +2050,45 @@
                 issueDate,
                 createdTime,
                 status: 'รอดำเนินการ',
-                syncStatus: isSyncSuccess ? 'Synced' : 'Offline'
+                syncStatus: isSyncSuccess ? 'Synced' : (state.googleSheetUrl ? 'Failed' : 'Offline')
             };
 
             state.localHistory.unshift(newHistoryItem);
             localStorage.setItem(`history_${userEmail}`, JSON.stringify(state.localHistory));
             renderLocalHistory();
 
-            // รีเซ็ตฟอร์มหลังจากส่งข้อมูลเรียบร้อย
             document.getElementById('issue-form').reset();
             clearImageSelection();
             document.getElementById('issue-details-container').classList.add('hidden');
-            const lockerBadge = document.getElementById('locker-preview-badge');
-            if (lockerBadge) lockerBadge.innerText = 'VSC -';
 
-            state.isSubmitting = false;
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalHtml;
 
             if (isSyncSuccess) {
-                showNotification(`ส่งรายงานปัญหาสำเร็จ! (ID: ${reportId}) บันทึกข้อมูลขึ้นชีทเรียบร้อย 1 ครั้ง`, 'success');
-                // ตรวจสอบอัปเดตสถานะล่าสุดจากชีท
-                setTimeout(() => { fetchUserHistoryFromSheets(false); }, 1500);
+                showNotification(`ส่งรายงานปัญหาสำเร็จ! (ID: ${reportId}) บันทึกข้อมูลขึ้นชีทเรียบร้อย`, 'success');
+                setTimeout(() => { checkReportStatusAutomated(false); }, 1500);
             } else {
                 showNotification(`บันทึกรายงานปัญหาเรียบร้อยแล้ว (ID: ${reportId})`, 'success');
             }
+        }
+
+        async function sendToGoogleSheetWithRetry(data, url, maxRetries = 2) {
+            let delay = 1000;
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    await fetch(url, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: JSON.stringify(data)
+                    });
+                    return true;
+                } catch (e) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                }
+            }
+            return false;
         }
 
         function renderLocalHistory() {
@@ -2619,28 +2119,11 @@
             let html = '';
             state.localHistory.forEach(item => {
                 let badgeClass = 'bg-amber-100 text-amber-800 border border-amber-200';
-                let displayStatus = item.status;
+                let displayStatus = dictionary.status_pending;
 
-                const statusStr = String(item.status || '').trim();
-                const statusLower = statusStr.toLowerCase();
-
-                // ตรวจสอบเฉพาะกรณีที่สถานะได้รับการยืนยันว่าเสร็จสิ้นแล้วจริง ๆ
-                const isItemDone = (
-                    statusStr === 'ดำเนินการเรียบร้อย' || 
-                    statusStr === 'แก้ไขแล้ว' || 
-                    statusStr === 'เรียบร้อยแล้ว' ||
-                    statusLower === 'done' ||
-                    statusLower === 'done.' ||
-                    statusLower === 'completed'
-                );
-
-                if (isItemDone) {
-                    badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-2xs';
-                    displayStatus = dictionary.status_done; // แสดงผลเป็น "ดำเนินการเรียบร้อย" (ป้ายเขียว)
-                } else {
-                    // หาก J:J ยังไม่ขึ้น Done จะแสดงผลเป็น "รอดำเนินการ" (ป้ายเหลือง) เสมอ
-                    badgeClass = 'bg-amber-100 text-amber-800 border border-amber-200';
-                    displayStatus = dictionary.status_pending; // "รอดำเนินการ"
+                if (item.status === 'ดำเนินการเรียบร้อย' || item.status === 'แก้ไขเสร็จสิ้น' || item.status === 'แก้ไขแล้ว' || item.status === 'ดำเนินการเรียบร้อยแล้ว') {
+                    badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+                    displayStatus = dictionary.status_done;
                 }
 
                 html += `
@@ -2648,7 +2131,7 @@
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold text-slate-800">${item.issueType}</span>
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeClass}">
-                                <i class="${isItemDone ? 'fa-solid fa-circle-check text-emerald-600' : 'fa-regular fa-clock text-amber-600'} mr-1"></i>${displayStatus}
+                                <i class="fa-regular fa-clock mr-1"></i>${displayStatus}
                             </span>
                         </div>
                         <div class="flex items-center justify-between text-[10px] text-slate-500 font-mono">
@@ -2763,10 +2246,9 @@
                 applyLockerFilters();
                 if (isManual) showNotification("อัปเดตข้อมูลตู้ล็อกเกอร์เรียบร้อย", "success");
             } catch (err) {
-                console.error("Error fetching locker data:", err);
                 if (state.lockerData.length === 0) generateMockLockers();
                 applyLockerFilters();
-                if (isManual) showNotification("ไม่สามารถดึงข้อมูลได้ ใช้ข้อมูลจำลองชั่วคราว", "warning");
+                if (isManual) showNotification("ดึงข้อมูลจากชีทจำลอง", "info");
             } finally {
                 if (refreshIcon) refreshIcon.classList.remove('fa-spin');
             }
@@ -2870,19 +2352,7 @@
             document.getElementById('stat-raw-vacant').innerText = rawVacant;
             document.getElementById('stat-cooked-vacant').innerText = cookedVacant;
 
-            updateLockerNumberDatalist();
             renderLockerSquares();
-        }
-
-        /* Update Datalist with all locker numbers */
-        function updateLockerNumberDatalist() {
-            const datalist = document.getElementById('locker-numbers-datalist');
-            if (!datalist || !state.lockerData || state.lockerData.length === 0) return;
-            const uniqueNums = [...new Set(state.lockerData.map(l => {
-                if (!l.num) return '';
-                return String(l.num).replace(/^VSC\s*[-_]?\s*/i, '');
-            }).filter(Boolean))];
-            datalist.innerHTML = uniqueNums.map(num => `<option value="${num}"></option>`).join('');
         }
 
         function renderLockerSquares() {
@@ -2944,7 +2414,7 @@
                         <p class="font-medium text-xs">${isMy ? 'ရှာဖွေထားသော လော့ကာအချက်အလက် မတွေ့ရှိပါ' : 'ไม่พบข้อมูลตู้ล็อกเกอร์ที่ตรงกับคำค้นหา: '}<span class="font-bold text-slate-800">"${state.searchQuery}"</span></p>
                         <div>
                             <button onclick="clearLockerSearch()" class="px-3.5 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors">
-                                <i class="fa-solid fa-rotate-left mr-1"></i> ล้างการค้นหาเพื่อดูตู้ทั้งหมด
+                                <i class="fa-solid fa-rotate-left mr-1"></i> ล้างการค้นหาเพื่อดูตู้ทั้งหมด (255 ตู้)
                             </button>
                         </div>
                     </div>
@@ -3103,11 +2573,11 @@
             const btnMy = document.getElementById('lang-btn-my');
 
             if (lang === 'th') {
-                if (btnTh) btnTh.className = "px-2.5 py-1 text-xs font-bold rounded-md bg-white text-blue-600 shadow-xs transition-all";
-                if (btnMy) btnMy.className = "px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-md transition-all";
+                if (btnTh) btnTh.className = "px-2 py-0.5 text-[11px] font-bold rounded-md bg-white text-blue-600 shadow-xs transition-all";
+                if (btnMy) btnMy.className = "px-2 py-0.5 text-[11px] font-medium text-slate-600 hover:text-slate-900 rounded-md transition-all";
             } else {
-                if (btnMy) btnMy.className = "px-2.5 py-1 text-xs font-bold rounded-md bg-white text-blue-600 shadow-xs transition-all";
-                if (btnTh) btnTh.className = "px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-md transition-all";
+                if (btnMy) btnMy.className = "px-2 py-0.5 text-[11px] font-bold rounded-md bg-white text-blue-600 shadow-xs transition-all";
+                if (btnTh) btnTh.className = "px-2 py-0.5 text-[11px] font-medium text-slate-600 hover:text-slate-900 rounded-md transition-all";
             }
 
             document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -3135,27 +2605,8 @@
 
             init24HourTimeSelects();
             updateShiftTimeOptions();
-            loadCuratedPositions();
 
-            // ตรวจสอบเซสชันเดิม หรือเริ่มที่หน้าเข้าสู่ระบบ
-            const savedUser = localStorage.getItem('empeo_current_user');
-            if (savedUser) {
-                try {
-                    state.currentUser = JSON.parse(savedUser);
-                    initUserSession();
-                } catch (e) {
-                    showLoginScreen();
-                }
-            } else {
-                showLoginScreen();
-            }
-
-            // ตั้งเวลาตรวจสอบสถานะล่าสุดจากชีทอัตโนมัติทุก 30 วินาที
-            setInterval(() => {
-                if (state.currentUser && state.currentMainTab === 'empeo') {
-                    fetchUserHistoryFromSheets(false);
-                }
-            }, 30000);
+            showLoginScreen();
 
             setLanguage('th');
         };
