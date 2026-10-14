@@ -1147,6 +1147,7 @@
                 shift_custom_time_label: "ระบุเวลาอื่น ๆ นอกเหนือจากนี้",
                 vsccare_sub_label: "อาการของปัญหา VSC Care",
                 locker_sub_label: "ประเภทปัญหาล็อกเกอร์",
+                locker_num_label: "หมายเลขตู้ล็อกเกอร์",
                 issue_leave_date_label: "ช่วงวันที่ที่ต้องการลา",
                 date_start_label: "ตั้งแต่วันที่",
                 date_end_label: "ถึงวันที่",
@@ -1215,6 +1216,7 @@
                 shift_custom_time_label: "သတ်မှတ်ချိန်ပြင်ပ အခြားအချိန် ဖော်ပြရန်",
                 vsccare_sub_label: "VSC Care ပြဿနာအမျိုးအစား",
                 locker_sub_label: "လော့ကာပြဿနာအမျိုးအစား",
+                locker_num_label: "လော့ကာနံပါတ်",
                 issue_leave_date_label: "ခွင့်ယူလိုသည့် ရက်အပိုင်းအခြား",
                 date_start_label: "စတင်သည့်နေ့",
                 date_end_label: "ပြီးဆုံးသည့်နေ့",
@@ -1680,11 +1682,13 @@
             const leaveEnd = document.getElementById('leave-date-end');
             const otDate = document.getElementById('ot-date');
             const shiftDate = document.getElementById('shift-date');
+            const lockerNum = document.getElementById('locker-number');
 
             if (leaveStart) leaveStart.required = false;
             if (leaveEnd) leaveEnd.required = false;
             if (otDate) otDate.required = false;
             if (shiftDate) shiftDate.required = false;
+            if (lockerNum) lockerNum.required = false;
 
             if (value === 'การลางาน') {
                 if (leaveSub) leaveSub.classList.remove('hidden');
@@ -1704,6 +1708,10 @@
                 if (vscSub) vscSub.classList.remove('hidden');
             } else if (value === 'ล็อกเกอร์มีปัญหา') {
                 if (lockerSub) lockerSub.classList.remove('hidden');
+                if (lockerNum) {
+                    lockerNum.required = true;
+                    lockerNum.focus();
+                }
             }
         }
 
@@ -2004,7 +2012,10 @@
                 formattedDetails = `[อาการ: ${vscReason}]\n`;
             } else if (issueType === 'ล็อกเกอร์มีปัญหา') {
                 const lockerProblem = document.getElementById('locker-problem-type').value;
-                formattedDetails = `[ปัญหาล็อกเกอร์: ${lockerProblem}]\n`;
+                const rawNum = document.getElementById('locker-number')?.value.trim() || '';
+                const cleanDigits = rawNum.replace(/^VSC/i, '').replace(/[^0-9]/g, '');
+                const fullLockerCode = 'VSC' + (cleanDigits || rawNum);
+                formattedDetails = `[หมายเลขตู้: ${fullLockerCode} | ปัญหา: ${lockerProblem}]\n`;
             }
 
             const description = `${formattedDetails}รายละเอียดเพิ่มเติม: ${rawDescription}`;
