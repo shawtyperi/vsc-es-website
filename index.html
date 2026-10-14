@@ -1,3 +1,5 @@
+PS Updated 
+
 <!DOCTYPE html>
 <html lang="th" class="h-full bg-slate-50/80">
 <head>
@@ -69,11 +71,14 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.08);
         }
+        /* Mobile touch and overflow guards */
         html, body {
             max-width: 100%;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
+
+        /* Print Style for Official PDF / Document Export */
         @media print {
             body {
                 background: white !important;
@@ -114,7 +119,7 @@
 </head>
 <body class="min-h-full flex flex-col text-slate-800 antialiased selection:bg-blue-500 selection:text-white pb-20 md:pb-6">
 
-    <!-- Top Navigation Bar -->
+    <!-- Navigation Bar: Clean, balanced & 100% responsive for all mobile screens -->
     <header class="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 shadow-xs">
         <div class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-14 sm:h-16 gap-2">
@@ -133,7 +138,7 @@
                     </div>
                 </div>
 
-                <!-- Center: Navigation Tabs (Desktop only) -->
+                <!-- Center: Navigation Tabs (Desktop / Tablet only) -->
                 <nav class="hidden md:flex items-center p-1 bg-slate-100/90 rounded-xl border border-slate-200/70 shrink-0">
                     <button id="tab-btn-empeo" onclick="switchMainTab('empeo')" 
                             class="px-3.5 py-1.5 text-xs font-semibold rounded-lg flex items-center space-x-1.5 tab-btn-active text-blue-600 transition-all">
@@ -147,14 +152,17 @@
                     </button>
                 </nav>
 
-                <!-- Right Utilities -->
+                <!-- Right Utilities: Language Switch, Manual PDF Download, Admin Gear & Logout Badge -->
                 <div class="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
-                    <button onclick="openManualModal()" title="คู่มือการใช้งาน (PDF / Word)" 
+                    
+                    <!-- Manual / Document Download Button -->
+                    <button onclick="openManualModal()" title="ดาวน์โหลดคู่มือการใช้งาน (PDF / Word)" 
                             class="px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 flex items-center space-x-1 text-xs font-bold transition-all shadow-2xs">
                         <i class="fa-solid fa-file-pdf text-rose-600 text-xs"></i>
                         <span class="text-[11px] sm:text-xs">คู่มือ PDF</span>
                     </button>
 
+                    <!-- Language Switcher -->
                     <div class="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200/80">
                         <button id="lang-btn-th" onclick="setLanguage('th')" 
                                 class="px-2 py-0.5 text-[11px] font-bold rounded-md bg-white text-blue-600 shadow-xs transition-all">
@@ -166,12 +174,13 @@
                         </button>
                     </div>
 
+                    <!-- Admin Gear Button -->
                     <button onclick="openAdminAuth()" title="ตั้งค่าระบบ" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs transition-all border border-slate-200">
                         <i class="fa-solid fa-gear"></i>
                     </button>
 
+                    <!-- User Profile & Logout (When logged in) -->
                     <div id="user-profile-badge" class="hidden flex items-center space-x-1 pl-1 border-l border-slate-200">
-                        <span id="user-display-name" class="text-xs font-semibold text-slate-700 hidden sm:inline max-w-[120px] truncate mr-1"></span>
                         <button onclick="handleLogout()" title="ออกจากระบบ" class="w-7 h-7 sm:w-auto sm:px-2.5 sm:py-1 rounded-lg text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 flex items-center justify-center space-x-1 text-xs font-semibold transition-all">
                             <i class="fa-solid fa-arrow-right-from-bracket text-[11px]"></i>
                             <span class="hidden sm:inline text-[11px]">ออก</span>
@@ -182,11 +191,11 @@
         </div>
     </header>
 
-    <!-- Mobile Bottom Dock Navigation -->
+    <!-- Mobile Bottom Navigation Bar (Dock Bar) - สไตล์แอปมือถือที่สมดุล สวยงาม กดง่าย ไม่แย่งพื้นที่แถบบน -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-lg px-6 py-2">
         <div class="max-w-md mx-auto grid grid-cols-2 gap-3">
             <button id="mobile-nav-empeo" onclick="switchMainTab('empeo')" 
-                    class="flex flex-col items-center justify-center py-1.5 rounded-xl text-blue-600 font-bold transition-all bg-blue-50/70">
+                    class="flex flex-col items-center justify-center py-1.5 rounded-xl text-blue-600 font-bold transition-all">
                 <i class="fa-solid fa-headset text-base mb-0.5"></i>
                 <span class="text-[11px]" data-i18n="nav_empeo">แจ้งปัญหา</span>
             </button>
@@ -198,6 +207,7 @@
         </div>
     </nav>
 
+    <!-- AUTHENTICATION WRAPPER -->
     <div id="auth-container" class="max-w-md w-full mx-auto px-4 py-8">
         
         <!-- SECTION 1: LOGIN -->
@@ -273,7 +283,7 @@
                         <span id="reg-otp-timer" class="text-rose-600 font-mono text-[11px] font-bold">Expired in: 10:00</span>
                     </div>
                     <input type="text" id="reg-otp" maxlength="6" placeholder="123456" class="w-full text-center tracking-widest text-base font-bold font-mono py-2 rounded-lg border-blue-300 bg-white focus:ring-blue-500">
-                    <p class="text-[10px] text-blue-700">ระบบได้ส่งรหัส OTP ไปที่อีเมลของคุณแล้ว</p>
+                    <p class="text-[10px] text-blue-700">ระบบได้ส่งรหัส OTP ไปที่อีเมลของคุณแล้ว (หากใช้โหมดออฟไลน์ใช้รหัส 123456)</p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
@@ -370,11 +380,13 @@
 
     </div>
 
+    <!-- MAIN APPLICATION SECTION (Protected, displayed after login) -->
     <main id="main-application-section" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 hidden">
 
         <!-- TAB 1: EMPEO & PEOPLE SUPPORT (ISSUE REPORTING) -->
         <section id="tab-content-empeo" class="space-y-6">
 
+            <!-- Responsive Grid: Form (Col 1) and Recent History (Col 2) -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
                 <!-- LEFT COLUMN: Primary Issue Reporting Form (8 Cols) -->
@@ -404,6 +416,7 @@
                         <!-- Interactive Form -->
                         <form id="issue-form" onsubmit="handleFormSubmit(event)" class="p-4 sm:p-6 space-y-5 sm:space-y-6">
 
+                            <!-- Hidden Employee Profile Data Fields -->
                             <input type="hidden" id="emp-name">
                             <input type="hidden" id="emp-nickname">
                             <input type="hidden" id="emp-position">
@@ -480,6 +493,7 @@
                                 </div>
                             </div>
 
+                            <!-- Step 2: Form Details Container (Revealed upon selection) -->
                             <div id="issue-details-container" class="space-y-5 pt-4 border-t border-slate-100 hidden">
 
                                 <!-- SUB-SECTION 1: การลางาน -->
@@ -517,6 +531,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- ช่วงวันที่ของการลา: ตั้งแต่วันที่ ... ถึงวันที่ ... รวมเป็น ... วัน -->
                                     <div class="bg-white/90 p-3.5 rounded-xl border border-rose-200/90 shadow-2xs space-y-2">
                                         <div class="flex items-center justify-between">
                                             <label class="text-xs font-bold text-slate-700 flex items-center space-x-1.5">
@@ -540,7 +555,7 @@
                                     </div>
                                 </div>
 
-                                <!-- SUB-SECTION 2: การกดขอโอที (24 ชม.) -->
+                                <!-- SUB-SECTION 2: การกดขอโอที (สาเหตุ Dropdown + วันที่และเวลา 24 ชม.) -->
                                 <div id="ot-sub-container" class="space-y-4 bg-purple-50/40 p-4 rounded-xl border border-purple-200/80 hidden">
                                     <div>
                                         <label class="block text-xs font-semibold text-slate-700 mb-1">
@@ -555,6 +570,7 @@
                                         </select>
                                     </div>
 
+                                    <!-- วันที่และเวลาที่ต้องการแก้ไข (24 ชม. ไร้ AM/PM) -->
                                     <div class="bg-white/90 p-3.5 rounded-xl border border-purple-200/90 shadow-2xs space-y-3">
                                         <div class="flex items-center justify-between">
                                             <label class="text-xs font-bold text-slate-700 flex items-center space-x-1.5">
@@ -582,6 +598,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- Warning Banner for "ลืมกด" -->
                                     <div id="ot-warning-banner" class="hidden p-3 bg-red-50/90 border-l-4 border-red-500 rounded-r-xl text-red-800 text-xs leading-relaxed">
                                         <div class="font-bold flex items-center space-x-1.5 mb-0.5">
                                             <i class="fa-solid fa-triangle-exclamation"></i>
@@ -598,6 +615,7 @@
                                         <span data-i18n="shift_sub_desc">กรุณาระบุข้อมูลรายละเอียดการขอปรับปรุงกะให้ครบถ้วนเพื่อความรวดเร็วในการแก้ไข</span>
                                     </div>
 
+                                    <!-- แถวที่ 1: กะ กับฝั่งการทำงาน อยู่ด้วยกัน -->
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-700 mb-1">
@@ -619,6 +637,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- แถวที่ 2: วันที่ และกะที่ต้องการแก้ไข (เวลา) ลงมาอยู่ด้วยกัน -->
                                     <div class="bg-white/90 p-3.5 rounded-xl border border-emerald-200/90 shadow-2xs space-y-3">
                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <div>
@@ -635,6 +654,7 @@
                                             </div>
                                         </div>
 
+                                        <!-- ช่องระบุเวลาอื่น ๆ นอกเหนือจากนี้ -->
                                         <div id="shift-custom-time-container" class="hidden pt-1 border-t border-emerald-100">
                                             <label class="block text-[11px] font-semibold text-emerald-800 mb-1" data-i18n="shift_custom_time_label">
                                                 ระบุเวลาอื่น ๆ นอกเหนือจากนี้ <span class="text-red-500">*</span>
@@ -644,7 +664,7 @@
                                     </div>
                                 </div>
 
-                                <!-- SUB-SECTION 4: เข้า VSC Care ไม่ได้ -->
+                                <!-- SUB-SECTION 4: เข้า VSC Care ไม่ได้ (ไร้ช่องวันที่) -->
                                 <div id="vsccare-sub-container" class="space-y-2 bg-pink-50/40 p-4 rounded-xl border border-pink-200/80 hidden">
                                     <label class="block text-xs font-semibold text-slate-700 mb-1" data-i18n="vsccare_sub_label">อาการของปัญหา VSC Care</label>
                                     <select id="vsccare-issue-reason" class="w-full text-xs rounded-xl border-slate-200 bg-white p-2.5">
@@ -655,7 +675,7 @@
                                     </select>
                                 </div>
 
-                                <!-- SUB-SECTION 5: ล็อกเกอร์มีปัญหา -->
+                                <!-- SUB-SECTION 5: ล็อกเกอร์มีปัญหา (ไร้ช่องวันที่) -->
                                 <div id="locker-issue-sub-container" class="space-y-2 bg-amber-50/40 p-4 rounded-xl border border-amber-200/80 hidden">
                                     <label class="block text-xs font-semibold text-slate-700 mb-1" data-i18n="locker_sub_label">ประเภทปัญหาล็อกเกอร์</label>
                                     <select id="locker-problem-type" class="w-full text-xs rounded-xl border-slate-200 bg-white p-2.5">
@@ -667,6 +687,7 @@
                                     </select>
                                 </div>
 
+                                <!-- Textarea Details -->
                                 <div>
                                     <label class="block text-xs font-bold text-slate-700 mb-1.5">
                                         <span data-i18n="issue_desc_label">รายละเอียดปัญหา หรือข้อมูลประกอบเพิ่มเติม</span> <span class="text-red-500">*</span>
@@ -674,6 +695,7 @@
                                     <textarea id="issue-desc" rows="3" required placeholder="อธิบายรายละเอียดปัญหาหรือสาเหตุเพิ่มเติม..." class="w-full text-xs rounded-xl border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500 p-3"></textarea>
                                 </div>
 
+                                <!-- File Upload Dropzone & Thumbnails -->
                                 <div class="space-y-2">
                                     <label class="block text-xs font-bold text-slate-700">
                                         <span data-i18n="attach_photo_label">แนบรูปภาพหรือภาพหน้าจอหลักฐาน</span> <span class="text-red-500">*</span>
@@ -687,6 +709,7 @@
                                         <p class="text-[10px] text-slate-400 mt-0.5">รองรับไฟล์ JPG, PNG สูงสุด 5 รูป (ขนาดไม่เกิน 2MB/รูป)</p>
                                     </div>
 
+                                    <!-- Previews Grid -->
                                     <div id="image-preview-container" class="hidden space-y-2">
                                         <div class="flex items-center justify-between text-xs text-slate-500">
                                             <span>รูปภาพที่เลือกแล้ว (<span id="preview-count-text">0</span>/5)</span>
@@ -696,6 +719,7 @@
                                     </div>
                                 </div>
 
+                                <!-- Action Submit Button -->
                                 <div class="pt-2">
                                     <button type="submit" id="submit-btn" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md shadow-blue-500/20 flex items-center justify-center space-x-2 transition-all">
                                         <i class="fa-solid fa-paper-plane"></i>
@@ -707,7 +731,7 @@
                     </div>
                 </div>
 
-                <!-- RIGHT COLUMN: History List (4 Cols) -->
+                <!-- RIGHT COLUMN: Recent Submissions History (4 Cols) -->
                 <div class="lg:col-span-4 space-y-6">
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col">
                         <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
@@ -720,15 +744,21 @@
                                 <span data-i18n="refresh_btn">รีเฟรช</span>
                             </button>
                         </div>
-                        <div id="local-history-list" class="divide-y divide-slate-100 max-h-[32rem] overflow-y-auto p-2 space-y-2"></div>
+
+                        <!-- Submission Cards List -->
+                        <div id="local-history-list" class="divide-y divide-slate-100 max-h-[32rem] overflow-y-auto p-2 space-y-2">
+                            <!-- Populated dynamically -->
+                        </div>
                     </div>
                 </div>
 
             </div>
         </section>
 
+        <!-- TAB 2: LOCKER MAP -->
         <section id="tab-content-locker" class="space-y-4 sm:space-y-6 hidden">
             
+            <!-- Locker Stats Dashboard -->
             <div class="bg-white rounded-2xl p-3.5 sm:p-5 border border-slate-200/80 shadow-sm">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-100">
                     <div>
@@ -739,6 +769,7 @@
                         <p class="text-[10px] sm:text-xs text-slate-500 mt-0.5">ระบบแสดงสถานะตู้ล็อกเกอร์แบบเรียลไทม์ (โหมดตรวจสอบภาพรวม)</p>
                     </div>
 
+                    <!-- Top Action Buttons -->
                     <div class="flex items-center justify-end space-x-2">
                         <button onclick="fetchLockerDataFromSheet(true)" class="px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200/80 transition-colors flex items-center space-x-1.5">
                             <i id="locker-refresh-icon" class="fa-solid fa-rotate text-[10px]"></i>
@@ -747,6 +778,7 @@
                     </div>
                 </div>
 
+                <!-- 5 Metric Counters Responsive Layout -->
                 <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3 pt-3 sm:pt-4">
                     <div class="bg-slate-50/80 rounded-xl p-2.5 sm:p-3 border border-slate-100 text-center">
                         <p class="text-[10px] sm:text-[11px] font-medium text-slate-500" data-i18n="locker_stat_total">ตู้ทั้งหมด</p>
@@ -771,6 +803,7 @@
                 </div>
             </div>
 
+            <!-- Filters Bar & Search -->
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
                 <div class="grid grid-cols-3 sm:flex items-center space-x-0 sm:space-x-1.5 gap-1.5 sm:gap-0 bg-white p-1 rounded-xl border border-slate-200/80 shadow-2xs w-full sm:w-auto">
                     <button id="filter-side-all" onclick="filterLockerSide('all')" class="w-full sm:w-auto px-3 sm:px-4 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white shadow-xs transition-all text-center">
@@ -809,15 +842,16 @@
                 </span>
             </div>
 
-            <!-- Locker Grid Squares -->
+            <!-- Visual Locker Status Squares Grid -->
             <div id="locker-squares-container" class="space-y-4 sm:space-y-6"></div>
         </section>
 
     </main>
 
+    <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
 
-    <!-- Admin Auth Modal -->
+    <!-- Admin Password Modal -->
     <div id="admin-auth-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-2xl max-w-xs w-full p-5 space-y-4 shadow-2xl border border-slate-200">
             <div class="flex items-center space-x-3">
@@ -838,42 +872,20 @@
     </div>
 
     <!-- Settings Modal -->
-    <div id="settings-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-4 sm:p-6 space-y-4 shadow-2xl border border-slate-200 my-auto">
+    <div id="settings-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl border border-slate-200">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-900 text-sm">Google Sheets & API Settings</h4>
-                        <p class="text-[10px] text-slate-400">ID: 1xiLu-aHE8L6tDkZhko62ZDESAEe2a_vHTF-t08ZGDIM (GID: 332585979)</p>
-                    </div>
-                </div>
+                <h4 class="font-bold text-slate-900 text-sm">Google Sheets & API Settings</h4>
                 <button onclick="closeSettings()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
-            <div class="space-y-3">
-                <div class="bg-blue-50/70 border border-blue-200 rounded-xl p-3 text-xs space-y-1.5">
-                    <p class="font-bold text-blue-900 flex items-center gap-1.5">
-                        <i class="fa-solid fa-circle-info text-blue-600"></i>
-                        สถานะการเชื่อมต่อ:
-                    </p>
-                    <p class="text-slate-600 text-[11px] leading-relaxed">
-                        ระบบเชื่อมต่อกับ Google Apps Script Web App ของคุณโดยตรงแล้ว ข้อมูลรายงานและรูปภาพจะถูกบันทึกลงชีทโดยอัตโนมัติ
-                    </p>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Google Apps Script Web App URL <span class="text-red-500">*</span></label>
-                    <input type="text" id="sheet-api-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full text-xs rounded-xl border-slate-200 bg-slate-50 focus:bg-white p-2.5 font-mono shadow-2xs">
-                    <p class="text-[10px] text-slate-400 mt-1">วาง URL ที่ลงท้ายด้วย <span class="font-mono">/exec</span> เพื่อให้ข้อมูลบันทึกลงชีท</p>
-                </div>
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-700">Google Apps Script Web App URL</label>
+                <input type="text" id="sheet-api-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full text-xs rounded-xl border-slate-200 p-2.5">
+                <p class="text-[10px] text-slate-400">ระบุ URL ของ Web App ที่ติดตั้งไว้เพื่อรับการ Sync แบบเรียลไทม์</p>
             </div>
-
-            <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
-                <button onclick="closeSettings()" class="px-3.5 py-1.5 text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg">ปิด</button>
-                <button onclick="saveSheetUrl()" class="px-4 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm">บันทึก URL เชื่อมต่อ</button>
+            <div class="flex justify-end space-x-2 pt-2 border-t border-slate-100">
+                <button onclick="closeSettings()" class="px-3 py-1.5 text-xs text-slate-600 bg-slate-100 rounded-lg">ปิด</button>
+                <button onclick="saveSheetUrl()" class="px-3.5 py-1.5 text-xs font-bold text-white bg-blue-600 rounded-lg">บันทึก URL</button>
             </div>
         </div>
     </div>
@@ -920,9 +932,11 @@
         </div>
     </div>
 
+    <!-- USER MANUAL & DOCUMENT DOWNLOAD MODAL -->
     <div id="manual-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 hidden overflow-y-auto">
         <div id="manual-modal-container" class="bg-white rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden my-auto">
             
+            <!-- Modal Header (No Print) -->
             <div class="no-print p-4 sm:px-6 sm:py-3.5 border-b border-slate-200 bg-slate-50 flex items-center justify-between gap-3 shrink-0">
                 <div class="flex items-center space-x-2.5">
                     <div class="w-9 h-9 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-sm">
@@ -934,6 +948,7 @@
                     </div>
                 </div>
 
+                <!-- Export Action Buttons -->
                 <div class="flex items-center space-x-2">
                     <button onclick="downloadManualAsWord()" class="px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition-colors flex items-center space-x-1">
                         <i class="fa-solid fa-file-word text-blue-600 text-xs"></i>
@@ -950,9 +965,11 @@
                 </div>
             </div>
 
+            <!-- Modal Printable Body -->
             <div class="p-4 sm:p-8 overflow-y-auto flex-1 bg-white">
                 <div id="printable-manual" class="space-y-6 max-w-3xl mx-auto text-slate-800">
                     
+                    <!-- Official Document Header Banner -->
                     <div class="text-center border-b-2 border-blue-600 pb-4 space-y-1">
                         <div class="flex items-center justify-center space-x-2 text-blue-600 font-extrabold text-xl sm:text-2xl">
                             <i class="fa-solid fa-users-gear"></i>
@@ -962,6 +979,7 @@
                         <p class="text-xs text-slate-500">บริษัท วาลู สเปเชียลตี้ คุกกิ้ง จำกัด | เอกสารประชาสัมพันธ์และคู่มือประจำปี 2026</p>
                     </div>
 
+                    <!-- 1. ภาพรวมระบบ -->
                     <div class="space-y-2">
                         <h4 class="font-bold text-blue-700 text-sm border-l-4 border-blue-600 pl-2">1. ภาพรวมและช่องทางการเข้าใช้งาน</h4>
                         <p class="text-xs text-slate-600 leading-relaxed">
@@ -974,6 +992,7 @@
                         </ul>
                     </div>
 
+                    <!-- 2. การลงทะเบียนและเข้าสู่ระบบ -->
                     <div class="space-y-2">
                         <h4 class="font-bold text-blue-700 text-sm border-l-4 border-blue-600 pl-2">2. การเข้าสู่ระบบและการลงทะเบียนบัญชีใหม่</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
@@ -997,6 +1016,7 @@
                         </div>
                     </div>
 
+                    <!-- 3. วิธีการแจ้งปัญหา 5 หมวดหลัก -->
                     <div class="space-y-2">
                         <h4 class="font-bold text-blue-700 text-sm border-l-4 border-blue-600 pl-2">3. สรุปประเภทการแจ้งปัญหาพนักงาน (5 หมวดหลัก)</h4>
                         <div class="overflow-x-auto border border-slate-200 rounded-xl">
@@ -1037,8 +1057,12 @@
                                 </tbody>
                             </table>
                         </div>
+                        <p class="text-[11px] text-slate-500">
+                            * หมายเหตุ: ต้องแนบภาพถ่ายหรือภาพหน้าจอหลักฐานอย่างน้อย 1 รูป (สูงสุด 5 รูป, ขนาดไม่เกิน 2MB/รูป)
+                        </p>
                     </div>
 
+                    <!-- 4. ผังล็อกเกอร์และข้อห้ามทางวินัย -->
                     <div class="space-y-2">
                         <h4 class="font-bold text-blue-700 text-sm border-l-4 border-blue-600 pl-2">4. การดูผังตู้ล็อกเกอร์และกฎระเบียบข้อห้าม (Strict Rules)</h4>
                         <div class="grid grid-cols-2 gap-2 text-xs mb-2">
@@ -1069,6 +1093,7 @@
                         </div>
                     </div>
 
+                    <!-- 5. ติดต่อสอบถาม -->
                     <div class="border-t border-slate-200 pt-3 text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-2">
                         <p>ฝ่ายบุคคลและประสานงานพนักงาน (HR / People Support) ชั้น 1 อาคารสำนักงาน</p>
                         <p class="font-medium">เวลาทำการ: จันทร์ – เสาร์ 08:00 – 17:00 น.</p>
@@ -1077,6 +1102,7 @@
                 </div>
             </div>
 
+            <!-- Modal Footer (No Print) -->
             <div class="no-print p-3 sm:px-6 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
                 <span class="text-xs text-slate-500">สามารถกดพิมพ์หรือเลือก "Save as PDF" ได้จากเบราว์เซอร์</span>
                 <button onclick="closeManualModal()" class="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-lg text-xs transition-colors">
@@ -1088,13 +1114,13 @@
     </div>
 
     <script>
-        const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbxH7lCGxRx_PRGE7FfST_FRac6TExfnfsy_HRbf9iOtlyoMOjYVmjt_WlraqF0PxZtmHw/exec';
+        const DEFAULT_API_URL = "https://script.google.com/macros/s/AKfycbyfD0X8c9YqI3n8R-YjV6A0fB4n0t9fL7X/exec";
 
         const state = {
             lang: 'th',
             currentMainTab: 'empeo',
             currentUser: null,
-            googleSheetUrl: localStorage.getItem('empeo_portal_sheet_url') || DEFAULT_API_URL,
+            googleSheetUrl: localStorage.getItem('empeo_portal_sheet_url') || '',
             localHistory: [],
             lockerData: [],
             filteredLockers: [],
@@ -1105,7 +1131,7 @@
 
         const i18n = {
             th: {
-                nav_empeo: "แจ้งปัญหา",
+                nav_empeo: "แจ้งปัญหาพนักงาน",
                 nav_locker: "ผังล็อกเกอร์",
                 form_title: "แบบฟอร์มแจ้งปัญหาพนักงาน VSC - PS",
                 form_subtitle: "ครอบคลุมทุกปัญหา: Empeo, VSC Care, กะการทำงาน และตู้ล็อกเกอร์",
@@ -1154,13 +1180,13 @@
                 locker_title: "ผังตู้ล็อกเกอร์และรายชื่อผู้ครอบครอง",
                 locker_refresh_btn: "รีเฟรชข้อมูล",
                 locker_stat_total: "ตู้ทั้งหมด",
-                locker_stat_available: "ว่างทั้งหมด (เขียว)",
+                locker_stat_available: "ตู้ว่างทั้งหมด (เขียว)",
                 locker_stat_occupied: "ใช้งานแล้ว (แดง)",
                 side_all_btn: "ทั้งหมด",
                 side_raw_btn: "ฝั่งดิบ",
                 side_cooked_btn: "ฝั่งสุก",
-                locker_note_label: "หมายเหตุ:",
-                locker_note_compact: "ห้ามเก็บอาหาร เครื่องดื่ม ขยะ ของมีค่า หรือสิ่งผิดกฎหมายในตู้ล็อกเกอร์เด็ดขาด",
+                locker_note_label: "หมายเหตุ / ข้อห้ามสำคัญ:",
+                locker_note_compact: "ห้ามเก็บอาหาร เครื่องดื่ม ขยะ ของมีค่า หรือสิ่งผิดกฎหมายในตู้ล็อกเกอร์เด็ดขาด (HR มีสิทธิ์สุ่มตรวจความสะอาดเป็นประจำ)",
                 history_empty: "ยังไม่มีประวัติการส่งรายงานปัญหา",
                 status_pending: "รอดำเนินการ",
                 status_done: "ดำเนินการเรียบร้อย",
@@ -1173,8 +1199,8 @@
                 alert_file_size: "ขนาดรูปภาพต้องไม่เกิน 2MB ต่อรูป"
             },
             my: {
-                nav_empeo: "แจ้งปัญหา",
-                nav_locker: "ผังล็อกเกอร์",
+                nav_empeo: "ဝန်ထမ်းပြဿနာတင်ရန်",
+                nav_locker: "လော့ကာဇယား",
                 form_title: "VSC - PS (People Support) ဝန်ထမ်းပြဿနာတင်သွင်းလွှာ",
                 form_subtitle: "Empeo, VSC Care, ဆိုင်းပြောင်းခြင်းနှင့် လော့ကာပြဿနာအားလုံးကို တင်ပြနိုင်ပါသည်",
                 issue_type_label: "၁. တင်ပြလိုသော ပြဿနာကို ရွေးချယ်ပါ",
@@ -1227,8 +1253,8 @@
                 side_all_btn: "အားလုံး",
                 side_raw_btn: "အစိမ်း",
                 side_cooked_btn: "ချက်ပြီး",
-                locker_note_label: "အရေးကြီးသော မှတ်ချက်:",
-                locker_note_compact: "လော့ကာအတွင်း အစားအစာ၊ အဖျော်ယမကာ၊ အမှိုက်၊ တန်ဖိုးကြီးပစ္စည်းနှင့် တရားမဝင်ပစ္စည်းများ လုံးဝမထားရပါ",
+                locker_note_label: "အရေးကြီးသော မှတ်ချက် / တားမြစ်ချက်:",
+                locker_note_compact: "လော့ကာအတွင်း အစားအစာ၊ အဖျော်ယမကာ၊ အမှိုက်၊ တန်ဖိုးကြီးပစ္စည်းနှင့် တရားမဝင်ပစ္စည်းများ လုံးဝမထားရပါ (HR မှ အခါအားလျော်စွာ စစ်ဆေးခွင့်ရှိသည်)",
                 history_empty: "တင်ပြထားသော မှတ်တမ်းမရှိသေးပါ",
                 status_pending: "စောင့်ဆိုင်းဆဲ",
                 status_done: "ပြီးစီးပါပြီ",
@@ -1242,6 +1268,7 @@
             }
         };
 
+        /* Switch between login, register and forgot password views */
         function switchAuthMode(mode) {
             document.getElementById('login-section').classList.add('hidden');
             document.getElementById('register-section').classList.add('hidden');
@@ -1262,6 +1289,7 @@
             }
         }
 
+        /* UI Session Initialization */
         function initUserSession() {
             document.getElementById('auth-container').classList.add('hidden');
             document.getElementById('login-section').classList.add('hidden');
@@ -1270,16 +1298,14 @@
             document.getElementById('main-application-section').classList.remove('hidden');
             document.getElementById('user-profile-badge').classList.remove('hidden');
             
-            const userDisplay = document.getElementById('user-display-name');
-            if (userDisplay && state.currentUser) {
-                userDisplay.innerText = state.currentUser.nickname || state.currentUser.name;
-            }
+            document.getElementById('user-display-name').innerText = state.currentUser.nickname || state.currentUser.name;
+            document.getElementById('emp-name').value = state.currentUser.name || '';
+            document.getElementById('emp-nickname').value = state.currentUser.nickname || '';
+            document.getElementById('emp-position').value = state.currentUser.position || '';
 
-            document.getElementById('emp-name').value = state.currentUser ? (state.currentUser.name || '') : '';
-            document.getElementById('emp-nickname').value = state.currentUser ? (state.currentUser.nickname || '') : '';
-            document.getElementById('emp-position').value = state.currentUser ? (state.currentUser.position || '') : '';
-
+            // รีเซ็ตคำค้นหาล็อกเกอร์เพื่อป้องกันเบราว์เซอร์จำค่าอีเมลมากรอกลงช่องค้นหา
             clearLockerSearch();
+
             fetchUserHistoryFromSheets();
         }
 
@@ -1307,6 +1333,12 @@
             }
         }
 
+        function fillDemoCredentials() {
+            document.getElementById('login-email').value = 'somchai.p@vsc.co.th';
+            document.getElementById('login-password').value = '123456';
+        }
+
+        /* Send OTP for Register */
         async function sendRegisterOTP() {
             const email = document.getElementById('reg-email').value.trim();
             if (!email) {
@@ -1320,6 +1352,7 @@
             sendBtn.innerText = 'Loading...';
 
             if (!state.googleSheetUrl) {
+                // Offline demo OTP fallback
                 setTimeout(() => {
                     showNotification('Demo Mode: รหัส OTP ของคุณคือ 123456', 'info');
                     document.getElementById('reg-otp-container').classList.remove('hidden');
@@ -1348,7 +1381,7 @@
                     showNotification(data.message || 'ไม่สามารถส่ง OTP ได้', 'error');
                 }
             } catch (err) {
-                showNotification('Connection Error. OTP dispatch failed (Demo: 123456).', 'info');
+                showNotification('Connection Error. OTP dispatch failed (Demo OTP: 123456).', 'info');
                 document.getElementById('reg-otp-container').classList.remove('hidden');
                 startOTPTimer('reg-otp-timer');
             } finally {
@@ -1357,6 +1390,7 @@
             }
         }
 
+        /* Send OTP for Reset Password */
         async function sendForgotOTP() {
             const email = document.getElementById('forgot-email').value.trim();
             if (!email) {
@@ -1407,13 +1441,14 @@
             }
         }
 
+        /* OTP Countdown Timer Helper */
         let otpInterval = null;
         function startOTPTimer(elementId) {
             const element = document.getElementById(elementId);
             if (!element) return;
             if (otpInterval) clearInterval(otpInterval);
 
-            let timeRemaining = 600;
+            let timeRemaining = 600; // 10 minutes
             otpInterval = setInterval(() => {
                 const minutes = Math.floor(timeRemaining / 60);
                 const seconds = timeRemaining % 60;
@@ -1427,6 +1462,7 @@
             }, 1000);
         }
 
+        /* Handle Log in */
         async function handleLoginSubmit(event) {
             event.preventDefault();
             const email = document.getElementById('login-email').value.trim();
@@ -1436,6 +1472,25 @@
             const originalHtml = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> กำลังตรวจสอบบัญชี...`;
+
+            if (!state.googleSheetUrl) {
+                // Fallback login without backend connection
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalHtml;
+                    const nickname = email.split('@')[0];
+                    state.currentUser = {
+                        name: nickname,
+                        nickname: nickname,
+                        email: email,
+                        position: "พนักงานปฏิบัติการ"
+                    };
+                    localStorage.setItem('empeo_current_user', JSON.stringify(state.currentUser));
+                    showNotification('เข้าสู่ระบบสำเร็จ!', 'success');
+                    initUserSession();
+                }, 500);
+                return;
+            }
 
             try {
                 const response = await fetch(state.googleSheetUrl, {
@@ -1458,6 +1513,7 @@
                     showNotification(data.message || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง', 'error');
                 }
             } catch (e) {
+                showNotification('ไม่สามารถติดต่อเซิร์ฟเวอร์ได้ กำลังเข้าสู่ระบบโหมดออฟไลน์', 'warning');
                 const nickname = email.split('@')[0];
                 state.currentUser = {
                     name: nickname,
@@ -1466,7 +1522,6 @@
                     position: "พนักงานปฏิบัติการ"
                 };
                 localStorage.setItem('empeo_current_user', JSON.stringify(state.currentUser));
-                showNotification('เข้าสู่ระบบสำเร็จ (Offline Mode)', 'info');
                 initUserSession();
             } finally {
                 submitBtn.disabled = false;
@@ -1474,6 +1529,7 @@
             }
         }
 
+        /* Handle Registration */
         async function handleRegisterSubmit(event) {
             event.preventDefault();
             const email = document.getElementById('reg-email').value.trim();
@@ -1494,6 +1550,17 @@
             const originalHtml = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Registering...`;
+
+            if (!state.googleSheetUrl) {
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalHtml;
+                    showNotification('ลงทะเบียนสำเร็จ! กรุณาเข้าสู่ระบบด้วยบัญชีใหม่', 'success');
+                    switchAuthMode('login');
+                    document.getElementById('login-email').value = email;
+                }, 600);
+                return;
+            }
 
             try {
                 const response = await fetch(state.googleSheetUrl, {
@@ -1519,15 +1586,14 @@
                     showNotification(data.message || 'Registration failed.', 'error');
                 }
             } catch (e) {
-                showNotification('Registration completed (Demo). Please login.', 'info');
-                switchAuthMode('login');
-                document.getElementById('login-email').value = email;
+                showNotification('Registration crash. Please check connection or OTP code.', 'error');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalHtml;
             }
         }
 
+        /* Handle Forgot Password Reset */
         async function handleResetSubmit(event) {
             event.preventDefault();
             const email = document.getElementById('forgot-email').value.trim();
@@ -1543,6 +1609,17 @@
             const originalHtml = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Updating password...`;
+
+            if (!state.googleSheetUrl) {
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalHtml;
+                    showNotification('เปลี่ยนรหัสผ่านเรียบร้อย! กรุณาเข้าสู่ระบบ', 'success');
+                    switchAuthMode('login');
+                    document.getElementById('login-email').value = email;
+                }, 600);
+                return;
+            }
 
             try {
                 const response = await fetch(state.googleSheetUrl, {
@@ -1565,15 +1642,14 @@
                     showNotification(data.message || 'ไม่สามารถรีเซ็ตรหัสผ่านได้', 'error');
                 }
             } catch (err) {
-                showNotification('Password reset completed (Demo).', 'info');
-                switchAuthMode('login');
-                document.getElementById('login-email').value = email;
+                showNotification('Database error. Please try again later.', 'error');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalHtml;
             }
         }
 
+        /* Handle Log out */
         function handleLogout() {
             localStorage.removeItem('empeo_current_user');
             state.currentUser = null;
@@ -1582,6 +1658,7 @@
             showNotification('Session cleared. ออกจากระบบเรียบร้อย', 'info');
         }
 
+        /* Fetch User-specific History from Google Sheets API */
         async function fetchUserHistoryFromSheets() {
             if (!state.currentUser) return;
 
@@ -1594,7 +1671,16 @@
                         state.localHistory = [];
                     }
                 } else {
-                    state.localHistory = [];
+                    state.localHistory = [
+                        {
+                            id: "REP-1001",
+                            issueType: "การลางาน",
+                            issueDate: "2026-10-12",
+                            createdTime: "2026-10-12 14:30:00",
+                            status: "รอดำเนินการ",
+                            syncStatus: "Offline"
+                        }
+                    ];
                 }
                 renderLocalHistory();
                 return;
@@ -1611,6 +1697,7 @@
                     renderLocalHistory();
                 }
             } catch (e) {
+                console.error('Failed to fetch individual history', e);
                 const cachedHistory = localStorage.getItem(`history_${state.currentUser.email}`);
                 if (cachedHistory) {
                     state.localHistory = JSON.parse(cachedHistory);
@@ -1619,6 +1706,7 @@
             }
         }
 
+        /* Admin Settings Verification */
         function openAdminAuth() {
             document.getElementById('admin-auth-modal').classList.remove('hidden');
             document.getElementById('admin-password-input').focus();
@@ -1668,6 +1756,7 @@
             }
         }
 
+        /* Toggle special input on selection based on issue type */
         function handleIssueTypeSelect(value) {
             const detailsContainer = document.getElementById('issue-details-container');
             if (detailsContainer) detailsContainer.classList.remove('hidden');
@@ -1715,6 +1804,7 @@
             }
         }
 
+        /* 24-Hour Pure Select Options Generator */
         function init24HourTimeSelects() {
             const startSel = document.getElementById('ot-time-start');
             const endSel = document.getElementById('ot-time-end');
@@ -1751,7 +1841,7 @@
             let endMinutes = endH * 60 + endM;
 
             if (endMinutes < startMinutes) {
-                endMinutes += 24 * 60;
+                endMinutes += 24 * 60; // Overnight shift
             }
 
             const diffMinutes = endMinutes - startMinutes;
@@ -1812,6 +1902,7 @@
             }
         }
 
+        /* Shift Options Population */
         function updateShiftTimeOptions() {
             const shiftType = document.getElementById('shift-time-type')?.value;
             const shiftTarget = document.getElementById('shift-target');
@@ -1857,6 +1948,7 @@
             }
         }
 
+        /* File Upload and Preview Processing */
         function handleFileChange(event) {
             const files = event.target.files;
             if (!files || files.length === 0) return;
@@ -1941,6 +2033,7 @@
             renderPreviews();
         }
 
+        /* Automated Status Checking */
         async function checkReportStatusAutomated(isManual = false) {
             const refreshIcon = document.getElementById('refresh-icon');
             if (refreshIcon) refreshIcon.classList.add('fa-spin');
@@ -1951,12 +2044,14 @@
                     showNotification('Status records synchronized!', 'success');
                 }
             } catch (e) {
+                console.error('Error auto-syncing status:', e);
                 if (isManual) showNotification('Network sync failure.', 'error');
             } finally {
                 if (refreshIcon) refreshIcon.classList.remove('fa-spin');
             }
         }
 
+        /* Handling Form Submissions */
         async function handleFormSubmit(event) {
             event.preventDefault();
 
@@ -2076,6 +2171,8 @@
             if (isSyncSuccess) {
                 showNotification(`ส่งรายงานปัญหาสำเร็จ! (ID: ${reportId}) บันทึกข้อมูลขึ้นชีทเรียบร้อย`, 'success');
                 setTimeout(() => { checkReportStatusAutomated(false); }, 1500);
+            } else if (state.googleSheetUrl) {
+                showNotification(`บันทึกในเครื่องสำเร็จ แต่เชื่อมต่อคลาวด์ขัดข้อง (ID: ${reportId})`, 'warning');
             } else {
                 showNotification(`บันทึกรายงานปัญหาเรียบร้อยแล้ว (ID: ${reportId})`, 'success');
             }
@@ -2093,6 +2190,7 @@
                     });
                     return true;
                 } catch (e) {
+                    console.warn(`Retry attempt ${i+1} failed writing spreadsheet. Retrying...`, e);
                     await new Promise(resolve => setTimeout(resolve, delay));
                     delay *= 2;
                 }
@@ -2100,6 +2198,7 @@
             return false;
         }
 
+        /* UI Builder for Local Submission History */
         function renderLocalHistory() {
             const list = document.getElementById('local-history-list');
             if (!list) return;
@@ -2127,12 +2226,17 @@
 
             let html = '';
             state.localHistory.forEach(item => {
-                let badgeClass = 'bg-amber-100 text-amber-800 border border-amber-200';
-                let displayStatus = dictionary.status_pending;
+                let badgeClass = 'bg-amber-100 text-amber-800';
+                let displayStatus = item.status;
 
                 if (item.status === 'ดำเนินการเรียบร้อย' || item.status === 'แก้ไขเสร็จสิ้น' || item.status === 'แก้ไขแล้ว' || item.status === 'ดำเนินการเรียบร้อยแล้ว') {
                     badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200';
                     displayStatus = dictionary.status_done;
+                } else if (item.status === 'รอดำเนินการ') {
+                    badgeClass = 'bg-amber-100 text-amber-800 border border-amber-200';
+                    displayStatus = dictionary.status_pending;
+                } else {
+                    badgeClass = 'bg-blue-100 text-blue-800 border border-blue-200';
                 }
 
                 html += `
@@ -2154,6 +2258,7 @@
             list.innerHTML = html;
         }
 
+        /* Toast Messages Helper */
         function showNotification(message, type = 'success') {
             const container = document.getElementById('toast-container');
             if (!container) return;
@@ -2192,6 +2297,7 @@
             }, 4500);
         }
 
+        /* Fetch Locker Map Data directly from Google Sheets */
         async function fetchLockerDataFromSheet(isManual = false) {
             const refreshIcon = document.getElementById('locker-refresh-icon');
             if (refreshIcon) refreshIcon.classList.add('fa-spin');
@@ -2255,9 +2361,10 @@
                 applyLockerFilters();
                 if (isManual) showNotification("อัปเดตข้อมูลตู้ล็อกเกอร์เรียบร้อย", "success");
             } catch (err) {
+                console.error("Error fetching locker data:", err);
                 if (state.lockerData.length === 0) generateMockLockers();
                 applyLockerFilters();
-                if (isManual) showNotification("ดึงข้อมูลจากชีทจำลอง", "info");
+                if (isManual) showNotification("ไม่สามารถดึงข้อมูลได้ ใช้ข้อมูลจำลองชั่วคราว", "warning");
             } finally {
                 if (refreshIcon) refreshIcon.classList.remove('fa-spin');
             }
@@ -2483,6 +2590,7 @@
             document.getElementById('locker-detail-modal').classList.add('hidden');
         }
 
+        /* User Manual Modal and Document Download Functions */
         function openManualModal() {
             const modal = document.getElementById('manual-modal');
             if (modal) modal.classList.remove('hidden');
@@ -2494,6 +2602,7 @@
         }
 
         function printManualDocument() {
+            // Trigger browser print dialog formatted for PDF export via @media print
             window.print();
         }
 
@@ -2514,6 +2623,7 @@
                         table { border-collapse: collapse; width: 100%; margin-top: 10px; margin-bottom: 10px; }
                         th, td { border: 1px solid #cbd5e1; padding: 6px 10px; font-size: 10pt; }
                         th { background-color: #eff6ff; color: #1e3a8a; }
+                        .warn-box { background-color: #fff1f2; border: 1px solid #fecdd3; padding: 10px; border-radius: 6px; }
                     </style>
                 </head>
                 <body>
@@ -2550,6 +2660,7 @@
                 if (btnEmpeo) btnEmpeo.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg flex items-center space-x-1.5 tab-btn-active text-blue-600 transition-all";
                 if (btnLocker) btnLocker.className = "px-3.5 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-lg flex items-center space-x-1.5 transition-all";
                 
+                // Update mobile bottom nav
                 if (mBtnEmpeo) {
                     mBtnEmpeo.className = "flex flex-col items-center justify-center py-1.5 rounded-xl text-blue-600 font-bold transition-all bg-blue-50/70";
                 }
@@ -2563,6 +2674,7 @@
                 if (btnLocker) btnLocker.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg flex items-center space-x-1.5 tab-btn-active text-blue-600 transition-all";
                 if (btnEmpeo) btnEmpeo.className = "px-3.5 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-lg flex items-center space-x-1.5 transition-all";
 
+                // Update mobile bottom nav
                 if (mBtnLocker) {
                     mBtnLocker.className = "flex flex-col items-center justify-center py-1.5 rounded-xl text-blue-600 font-bold transition-all bg-blue-50/70";
                 }
@@ -2582,11 +2694,11 @@
             const btnMy = document.getElementById('lang-btn-my');
 
             if (lang === 'th') {
-                if (btnTh) btnTh.className = "px-2 py-0.5 text-[11px] font-bold rounded-md bg-white text-blue-600 shadow-xs transition-all";
-                if (btnMy) btnMy.className = "px-2 py-0.5 text-[11px] font-medium text-slate-600 hover:text-slate-900 rounded-md transition-all";
+                if (btnTh) btnTh.className = "px-2.5 py-1 text-xs font-bold rounded-md bg-white text-blue-600 shadow-xs transition-all";
+                if (btnMy) btnMy.className = "px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-md transition-all";
             } else {
-                if (btnMy) btnMy.className = "px-2 py-0.5 text-[11px] font-bold rounded-md bg-white text-blue-600 shadow-xs transition-all";
-                if (btnTh) btnTh.className = "px-2 py-0.5 text-[11px] font-medium text-slate-600 hover:text-slate-900 rounded-md transition-all";
+                if (btnMy) btnMy.className = "px-2.5 py-1 text-xs font-bold rounded-md bg-white text-blue-600 shadow-xs transition-all";
+                if (btnTh) btnTh.className = "px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-md transition-all";
             }
 
             document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -2615,6 +2727,7 @@
             init24HourTimeSelects();
             updateShiftTimeOptions();
 
+            // ปิดระบบล็อกอินอัตโนมัติ: เริ่มต้นที่หน้าเข้าสู่ระบบทุกครั้งที่เปิดหรือรีเฟรชหน้าเว็บ
             showLoginScreen();
 
             setLanguage('th');
