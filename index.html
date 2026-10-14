@@ -705,15 +705,34 @@
                                 </div>
 
                                 <!-- SUB-SECTION 5: ล็อกเกอร์มีปัญหา -->
-                                <div id="locker-issue-sub-container" class="space-y-2 bg-amber-50/40 p-4 rounded-xl border border-amber-200/80 hidden">
-                                    <label class="block text-xs font-semibold text-slate-700 mb-1" data-i18n="locker_sub_label">ประเภทปัญหาล็อกเกอร์</label>
-                                    <select id="locker-problem-type" class="w-full text-xs rounded-xl border border-slate-200 bg-white p-2.5">
-                                        <option value="กุญแจสูญหาย / ลืมรหัสเปิดตู้">กุญแจสูญหาย / ลืมรหัสเปิดตู้</option>
-                                        <option value="ตู้ล็อกเกอร์ชำรุด / ปิดไม่สนิท">ตู้ล็อกเกอร์ชำรุด / ปิดไม่สนิท</option>
-                                        <option value="มีผู้อื่นนำของมาเก็บในตู้ของฉัน">มีผู้อื่นนำของมาเก็บในตู้ของฉัน</option>
-                                        <option value="ป้ายชื่อไม่ตรงกับตู้ที่ใช้งานจริง">ป้ายชื่อไม่ตรงกับตู้ที่ใช้งานจริง</option>
-                                        <option value="ต้องการขอเปลี่ยนหมายเลขตู้">ต้องการขอเปลี่ยนหมายเลขตู้</option>
-                                    </select>
+                                <div id="locker-issue-sub-container" class="space-y-3 bg-amber-50/40 p-4 rounded-xl border border-amber-200/80 hidden">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-700 mb-1">
+                                                <span data-i18n="locker_sub_label">ประเภทปัญหาล็อกเกอร์</span> <span class="text-red-500">*</span>
+                                            </label>
+                                            <select id="locker-problem-type" class="w-full text-xs sm:text-sm rounded-xl border border-slate-200 bg-white p-2.5 shadow-2xs">
+                                                <option value="กุญแจสูญหาย / ลืมรหัสเปิดตู้">กุญแจสูญหาย / ลืมรหัสเปิดตู้</option>
+                                                <option value="ตู้ล็อกเกอร์ชำรุด / ปิดไม่สนิท">ตู้ล็อกเกอร์ชำรุด / ปิดไม่สนิท</option>
+                                                <option value="มีผู้อื่นนำของมาเก็บในตู้ของฉัน / ใช้งานซ้ำ">มีผู้อื่นนำของมาเก็บในตู้ของฉัน / ใช้งานซ้ำ</option>
+                                                <option value="ป้ายชื่อไม่ตรงกับตู้ที่ใช้งานจริง">ป้ายชื่อไม่ตรงกับตู้ที่ใช้งานจริง</option>
+                                                <option value="ไม่มีชื่อติดหน้าตู้ / ขอจัดสรรตู้">ไม่มีชื่อติดหน้าตู้ / ขอจัดสรรตู้</option>
+                                                <option value="ต้องการขอเปลี่ยนหมายเลขตู้">ต้องการขอเปลี่ยนหมายเลขตู้</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-700 mb-1">
+                                                <span data-i18n="locker_number_label">หมายเลขตู้ล็อกเกอร์</span> <span class="text-red-500">*</span>
+                                            </label>
+                                            <div class="relative">
+                                                <i class="fa-solid fa-hashtag absolute left-3 top-1/2 -translate-y-1/2 text-amber-500 text-xs pointer-events-none"></i>
+                                                <input type="text" id="locker-number" placeholder="เช่น R-05, C-12 หรือระบุเลขตู้" class="w-full pl-8 pr-3 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-amber-500 focus:ring-amber-500">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="text-[10px] text-amber-800 flex items-center">
+                                        <i class="fa-solid fa-circle-info mr-1 text-amber-600"></i> โปรดระบุเลขตู้ที่พบปัญหาให้ชัดเจนเพื่อความรวดเร็วในการตรวจสอบและซ่อมบำรุง
+                                    </p>
                                 </div>
 
                                 <!-- Textarea Details -->
@@ -861,7 +880,7 @@
                         <span data-i18n="locker_note_label">หมายเหตุ:</span>
                     </span>
                     <span class="text-slate-700 text-[10px] sm:text-xs leading-relaxed" data-i18n="locker_note_compact">
-                        ห้ามเก็บอาหาร เครื่องดื่ม ขยะ ของมีค่า หรือสิ่งผิดกฎหมายในตู้ล็อกเกอร์เด็ดขาด
+                        หากไม่มีชื่อติดหน้าตู้ห้ามใช้เด็ดขาด หากพบเจอการใช้งานซ้ำให้แจ้งลงแอปทันที • ห้ามเก็บอาหาร เครื่องดื่ม ขยะ ของมีค่า หรือสิ่งผิดกฎหมายในตู้เด็ดขาด
                     </span>
                 </div>
                 <span class="hidden md:inline-flex text-[10px] font-bold px-2 py-0.5 rounded-md bg-rose-100 text-rose-800 border border-rose-200 shrink-0 uppercase tracking-wide">
@@ -1174,6 +1193,7 @@
                                 <span>ข้อห้ามเด็ดขาดในการใช้งานตู้ล็อกเกอร์:</span>
                             </span>
                             <ul class="list-disc list-inside space-y-1 text-slate-700 pl-1">
+                                <li class="text-rose-900 font-bold"><strong>หากไม่มีชื่อติดหน้าตู้ห้ามใช้เด็ดขาด:</strong> อนุญาตให้ใช้เฉพาะตู้ที่มีป้ายชื่อของตนเองเท่านั้น หากพบเจอผู้ใดใช้งานซ้ำหรือแย่งใช้ตู้ ให้แจ้งเรื่องผ่านแอปทันที</li>
                                 <li><strong>ห้ามเก็บอาหารและเครื่องดื่มทุกชนิด</strong> เพื่อป้องกันการบูดเน่า กลิ่นรบกวน และสัตว์พาหะ</li>
                                 <li><strong>ห้ามทิ้งขยะหรือเศษสิ่งของเหลือใช้</strong> ในตู้ล็อกเกอร์เด็ดขาด</li>
                                 <li><strong>ห้ามเก็บสิ่งผิดกฎหมาย</strong> อาวุธ ยาเสพติด และวัตถุไวไฟทุกประเภท</li>
@@ -1341,6 +1361,7 @@
                 shift_custom_time_label: "ระบุเวลาอื่น ๆ นอกเหนือจากนี้",
                 vsccare_sub_label: "อาการของปัญหา VSC Care",
                 locker_sub_label: "ประเภทปัญหาล็อกเกอร์",
+                locker_number_label: "หมายเลขตู้ล็อกเกอร์ (Locker No.)",
                 issue_leave_date_label: "ช่วงวันที่ที่ต้องการลา",
                 date_start_label: "ตั้งแต่วันที่",
                 date_end_label: "ถึงวันที่",
@@ -1409,6 +1430,7 @@
                 shift_custom_time_label: "သတ်မှတ်ချိန်ပြင်ပ အခြားအချိန် ဖော်ပြရန်",
                 vsccare_sub_label: "VSC Care ပြဿနာအမျိုးအစား",
                 locker_sub_label: "လော့ကာပြဿနာအမျိုးအစား",
+                locker_number_label: "လော့ကာနံပါတ် (Locker No.)",
                 issue_leave_date_label: "ခွင့်ယူလိုသည့် ရက်အပိုင်းအခြား",
                 date_start_label: "စတင်သည့်နေ့",
                 date_end_label: "ပြီးဆုံးသည့်နေ့",
@@ -2100,53 +2122,7 @@
             closeSettings();
         }
 
-        function handleIssueTypeSelect(value) {
-            const detailsContainer = document.getElementById('issue-details-container');
-            if (detailsContainer) detailsContainer.classList.remove('hidden');
-
-            const leaveSub = document.getElementById('leave-sub-container');
-            const otSub = document.getElementById('ot-sub-container');
-            const shiftSub = document.getElementById('shift-sub-container');
-            const vscSub = document.getElementById('vsccare-sub-container');
-            const lockerSub = document.getElementById('locker-issue-sub-container');
-
-            if (leaveSub) leaveSub.classList.add('hidden');
-            if (otSub) otSub.classList.add('hidden');
-            if (shiftSub) shiftSub.classList.add('hidden');
-            if (vscSub) vscSub.classList.add('hidden');
-            if (lockerSub) lockerSub.classList.add('hidden');
-
-            const leaveStart = document.getElementById('leave-date-start');
-            const leaveEnd = document.getElementById('leave-date-end');
-            const otDate = document.getElementById('ot-date');
-            const shiftDate = document.getElementById('shift-date');
-
-            if (leaveStart) leaveStart.required = false;
-            if (leaveEnd) leaveEnd.required = false;
-            if (otDate) otDate.required = false;
-            if (shiftDate) shiftDate.required = false;
-
-            if (value === 'การลางาน') {
-                if (leaveSub) leaveSub.classList.remove('hidden');
-                if (leaveStart) leaveStart.required = true;
-                if (leaveEnd) leaveEnd.required = true;
-                calculateTotalDays();
-            } else if (value === 'การกดขอโอที') {
-                if (otSub) otSub.classList.remove('hidden');
-                if (otDate) otDate.required = true;
-                handleOtReasonChange(document.getElementById('ot-reason-type').value);
-                calculateOtHours();
-            } else if (value === 'กะการทำงานไม่ตรง') {
-                if (shiftSub) shiftSub.classList.remove('hidden');
-                if (shiftDate) shiftDate.required = true;
-                updateShiftTimeOptions();
-            } else if (value === 'เข้า VSC Care ไม่ได้') {
-                if (vscSub) vscSub.classList.remove('hidden');
-            } else if (value === 'ล็อกเกอร์มีปัญหา') {
-                if (lockerSub) lockerSub.classList.remove('hidden');
-            }
-        }
-
+        /* 24-Hour Pure Select Options Generator */
         function init24HourTimeSelects() {
             const startSel = document.getElementById('ot-time-start');
             const endSel = document.getElementById('ot-time-end');
@@ -2167,6 +2143,7 @@
             calculateOtHours();
         }
 
+        /* Calculate overtime total hours */
         function calculateOtHours() {
             const startInput = document.getElementById('ot-time-start');
             const endInput = document.getElementById('ot-time-end');
@@ -2183,7 +2160,7 @@
             let endMinutes = endH * 60 + endM;
 
             if (endMinutes < startMinutes) {
-                endMinutes += 24 * 60;
+                endMinutes += 24 * 60; // Overnight shift
             }
 
             const diffMinutes = endMinutes - startMinutes;
@@ -2194,6 +2171,7 @@
             return formatted;
         }
 
+        /* Calculate total leave days */
         function calculateTotalDays() {
             const startInput = document.getElementById('leave-date-start');
             const endInput = document.getElementById('leave-date-end');
@@ -2219,6 +2197,7 @@
             return total;
         }
 
+        /* Display warning for forgotten OT requests */
         function handleOtReasonChange(value) {
             const warningBanner = document.getElementById('ot-warning-banner');
             if (warningBanner) {
@@ -2226,6 +2205,59 @@
                     warningBanner.classList.remove('hidden');
                 } else {
                     warningBanner.classList.add('hidden');
+                }
+            }
+        }
+
+        function handleIssueTypeSelect(value) {
+            const detailsContainer = document.getElementById('issue-details-container');
+            if (detailsContainer) detailsContainer.classList.remove('hidden');
+
+            const leaveSub = document.getElementById('leave-sub-container');
+            const otSub = document.getElementById('ot-sub-container');
+            const shiftSub = document.getElementById('shift-sub-container');
+            const vscSub = document.getElementById('vsccare-sub-container');
+            const lockerSub = document.getElementById('locker-issue-sub-container');
+
+            if (leaveSub) leaveSub.classList.add('hidden');
+            if (otSub) otSub.classList.add('hidden');
+            if (shiftSub) shiftSub.classList.add('hidden');
+            if (vscSub) vscSub.classList.add('hidden');
+            if (lockerSub) lockerSub.classList.add('hidden');
+
+            const leaveStart = document.getElementById('leave-date-start');
+            const leaveEnd = document.getElementById('leave-date-end');
+            const otDate = document.getElementById('ot-date');
+            const shiftDate = document.getElementById('shift-date');
+            const lockerNumber = document.getElementById('locker-number');
+
+            if (leaveStart) leaveStart.required = false;
+            if (leaveEnd) leaveEnd.required = false;
+            if (otDate) otDate.required = false;
+            if (shiftDate) shiftDate.required = false;
+            if (lockerNumber) lockerNumber.required = false;
+
+            if (value === 'การลางาน') {
+                if (leaveSub) leaveSub.classList.remove('hidden');
+                if (leaveStart) leaveStart.required = true;
+                if (leaveEnd) leaveEnd.required = true;
+                calculateTotalDays();
+            } else if (value === 'การกดขอโอที') {
+                if (otSub) otSub.classList.remove('hidden');
+                if (otDate) otDate.required = true;
+                handleOtReasonChange(document.getElementById('ot-reason-type').value);
+                calculateOtHours();
+            } else if (value === 'กะการทำงานไม่ตรง') {
+                if (shiftSub) shiftSub.classList.remove('hidden');
+                if (shiftDate) shiftDate.required = true;
+                updateShiftTimeOptions();
+            } else if (value === 'เข้า VSC Care ไม่ได้') {
+                if (vscSub) vscSub.classList.remove('hidden');
+            } else if (value === 'ล็อกเกอร์มีปัญหา') {
+                if (lockerSub) lockerSub.classList.remove('hidden');
+                if (lockerNumber) {
+                    lockerNumber.required = true;
+                    lockerNumber.focus();
                 }
             }
         }
@@ -2450,7 +2482,8 @@
                 formattedDetails = `[อาการ: ${vscReason}]\n`;
             } else if (issueType === 'ล็อกเกอร์มีปัญหา') {
                 const lockerProblem = document.getElementById('locker-problem-type').value;
-                formattedDetails = `[ปัญหาล็อกเกอร์: ${lockerProblem}]\n`;
+                const lockerNoVal = document.getElementById('locker-number')?.value.trim() || '-';
+                formattedDetails = `[ปัญหาล็อกเกอร์: ${lockerProblem} | หมายเลขตู้: ${lockerNoVal}]\n`;
             }
 
             const reportId = 'REP-' + Math.floor(1000 + Math.random() * 9000);
