@@ -294,7 +294,12 @@
 
                 <div>
                     <div class="flex items-center justify-between mb-1">
-                        <label class="block text-xs font-bold text-slate-700">ตำแหน่ง (Position) <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-bold text-slate-700 flex items-center">
+                            <span>ตำแหน่ง (Position)</span> <span class="text-red-500 ml-0.5">*</span>
+                            <span id="pos-sync-status" class="text-[10px] text-blue-600 font-normal ml-2 flex items-center">
+                                <i class="fa-solid fa-arrows-rotate text-[9px] mr-1"></i> เชื่อมต่อ Google Sheet
+                            </span>
+                        </label>
                         <span class="text-[10px] text-slate-400">พิมพ์ค้นหา เลือก หรือพิมพ์เองได้</span>
                     </div>
                     <div class="relative">
@@ -302,84 +307,7 @@
                         <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none"></i>
                     </div>
                     <datalist id="position-datalist">
-                        <option value="Accounting Administrator Officer"></option>
-                        <option value="Accounting Manager (AR)"></option>
-                        <option value="Accounting Manager (GL)"></option>
-                        <option value="Accounting Senior Officer (AP)"></option>
-                        <option value="Admin Staff (Temporary)"></option>
-                        <option value="Amathopia Science General Specialist"></option>
-                        <option value="Business Strategic Partner Senior Manager"></option>
-                        <option value="Chairman of the Board and Independent Director"></option>
-                        <option value="Chief Commercial Officer (CCO)"></option>
-                        <option value="Chief Executive Officer (CEO)"></option>
-                        <option value="Chief Financial Officer (CFO)"></option>
-                        <option value="Chief Operating Officer (COO)"></option>
-                        <option value="Chief People & Culture Officer (CPCO)"></option>
-                        <option value="Chief Product Officer (CPO)"></option>
-                        <option value="Chief Science Officer"></option>
-                        <option value="Clinic Administrator (Service & Operations) Officer"></option>
-                        <option value="Company Secretary & PA to C-Level"></option>
-                        <option value="Company Secretary Specialist"></option>
-                        <option value="Creative Chef Manager"></option>
-                        <option value="Event & Project Planner Senior Officer"></option>
-                        <option value="Executive Assistance Specialist to CEO"></option>
-                        <option value="Executive Driver Staff"></option>
-                        <option value="Factory Housekeeper Staff (Factory)"></option>
-                        <option value="Financing & Controlling Senior Manager"></option>
-                        <option value="Graphic Design Senior Specialist"></option>
-                        <option value="Harvesting Happiness Project Manager"></option>
-                        <option value="Harvesting Happiness Project and Field Quality Control Senior Officer"></option>
-                        <option value="Head of Finance and Accounting"></option>
-                        <option value="Head of Initial Public Offering Project"></option>
-                        <option value="Head of Innovation and Intellectual Property"></option>
-                        <option value="Head of Production"></option>
-                        <option value="Holistic Physician"></option>
-                        <option value="Housekeeper Staff (HQ)"></option>
-                        <option value="IT Infrastructure & System Office"></option>
-                        <option value="IT Solutions Senior Officer"></option>
-                        <option value="Internal Control & Risk Management Specialist"></option>
-                        <option value="Learning & Growth Senior Manager"></option>
-                        <option value="Maintenance Technician Officer"></option>
-                        <option value="Marketing Content & Activations Specialist"></option>
-                        <option value="People & Organization Success General Manager"></option>
-                        <option value="People Business Partner Manager (Factory)"></option>
-                        <option value="People Business Partner Manager (HQ & Samyan)"></option>
-                        <option value="People Operation & Information System Senior Officer"></option>
-                        <option value="Performance Marketing Specialist (Ads & Creative Optimization)"></option>
-                        <option value="Personal Hygiene Staff"></option>
-                        <option value="Product Designer Senior Officer"></option>
-                        <option value="Product Development (New & Existing) Senior Officer"></option>
-                        <option value="Production Line Cleaning Staff"></option>
-                        <option value="Production Officer (Team A)"></option>
-                        <option value="Production Officer (Team B)"></option>
-                        <option value="Production Staff"></option>
-                        <option value="Production Team Lead"></option>
-                        <option value="Production manager"></option>
-                        <option value="Project Engineer Senior Officer"></option>
-                        <option value="Purchasing & Procurement Senior Officer"></option>
-                        <option value="Quality Assurance External Senior Officer"></option>
-                        <option value="Quality Assurance Officer"></option>
-                        <option value="Quality Assurance Team Lead"></option>
-                        <option value="Quality Assurance Technical Officer"></option>
-                        <option value="Quality Control In-Coming Officer"></option>
-                        <option value="Quality Control In-Line Officer"></option>
-                        <option value="Quality Control Inspector"></option>
-                        <option value="Quality Control Team Lead"></option>
-                        <option value="R&D Ready-to-Eat Food Senior Officer"></option>
-                        <option value="Reception & Administrator Team Lead"></option>
-                        <option value="Research & Development Senior Manager"></option>
-                        <option value="Safety Technical Officer"></option>
-                        <option value="Safety Officer"></option>
-                        <option value="Safety Team Manager"></option>
-                        <option value="Supply Chain Management and Procurement Senior Manager"></option>
-                        <option value="Talent Acquisition Senior Officer"></option>
-                        <option value="Tax Filling & Costing Senior Specialist"></option>
-                        <option value="Technical Operation and Enhancement Manager"></option>
-                        <option value="Technical Operation and Enhancement Team Lead"></option>
-                        <option value="Warehouse Officer"></option>
-                        <option value="Warehouse Staff"></option>
-                        <option value="Warehouse Team Lead"></option>
-                        <option value="อื่นๆ (โปรดระบุเพิ่มเติม)"></option>
+                        <!-- Populated dynamically from Google Sheet (gid=68387922) with local fallback -->
                     </datalist>
                 </div>
 
@@ -1198,6 +1126,89 @@
 
     <script>
         const DEFAULT_API_URL = "https://script.google.com/macros/s/AKfycbxH7lCGxRx_PRGE7FfST_FRac6TExfnfsy_HRbf9iOtlyoMOjYVmjt_WlraqF0PxZtmHw/exec";
+        const POSITION_SHEET_GID = "68387922";
+        const SPREADSHEET_ID = "1xiLu-aHE8L6tDkZhko62ZDESAEe2a_vHTF-t08ZGDIM";
+
+        const DEFAULT_POSITIONS = [
+            "Accounting Administrator Officer",
+            "Accounting Manager (AR)",
+            "Accounting Manager (GL)",
+            "Accounting Senior Officer (AP)",
+            "Admin Staff (Temporary)",
+            "Amathopia Science General Specialist",
+            "Business Strategic Partner Senior Manager",
+            "Chairman of the Board and Independent Director",
+            "Chief Commercial Officer (CCO)",
+            "Chief Executive Officer (CEO)",
+            "Chief Financial Officer (CFO)",
+            "Chief Operating Officer (COO)",
+            "Chief People & Culture Officer (CPCO)",
+            "Chief Product Officer (CPO)",
+            "Chief Science Officer",
+            "Clinic Administrator (Service & Operations) Officer",
+            "Company Secretary & PA to C-Level",
+            "Company Secretary Specialist",
+            "Creative Chef Manager",
+            "Event & Project Planner Senior Officer",
+            "Executive Assistance Specialist to CEO",
+            "Executive Driver Staff",
+            "Factory Housekeeper Staff (Factory)",
+            "Financing & Controlling Senior Manager",
+            "Graphic Design Senior Specialist",
+            "Harvesting Happiness Project Manager",
+            "Harvesting Happiness Project and Field Quality Control Senior Officer",
+            "Head of Finance and Accounting",
+            "Head of Initial Public Offering Project",
+            "Head of Innovation and Intellectual Property",
+            "Head of Production",
+            "Holistic Physician",
+            "Housekeeper Staff (HQ)",
+            "IT Infrastructure & System Office",
+            "IT Solutions Senior Officer",
+            "Internal Control & Risk Management Specialist",
+            "Learning & Growth Senior Manager",
+            "Maintenance Technician Officer",
+            "Marketing Content & Activations Specialist",
+            "People & Organization Success General Manager",
+            "People Business Partner Manager (Factory)",
+            "People Business Partner Manager (HQ & Samyan)",
+            "People Operation & Information System Senior Officer",
+            "Performance Marketing Specialist (Ads & Creative Optimization)",
+            "Personal Hygiene Staff",
+            "Product Designer Senior Officer",
+            "Product Development (New & Existing) Senior Officer",
+            "Production Line Cleaning Staff",
+            "Production Officer (Team A)",
+            "Production Officer (Team B)",
+            "Production Staff",
+            "Production Team Lead",
+            "Production manager",
+            "Project Engineer Senior Officer",
+            "Purchasing & Procurement Senior Officer",
+            "Quality Assurance External Senior Officer",
+            "Quality Assurance Officer",
+            "Quality Assurance Team Lead",
+            "Quality Assurance Technical Officer",
+            "Quality Control In-Coming Officer",
+            "Quality Control In-Line Officer",
+            "Quality Control Inspector",
+            "Quality Control Team Lead",
+            "R&D Ready-to-Eat Food Senior Officer",
+            "Reception & Administrator Team Lead",
+            "Research & Development Senior Manager",
+            "Safety Technical Officer",
+            "Safety Officer",
+            "Safety Team Manager",
+            "Supply Chain Management and Procurement Senior Manager",
+            "Talent Acquisition Senior Officer",
+            "Tax Filling & Costing Senior Specialist",
+            "Technical Operation and Enhancement Manager",
+            "Technical Operation and Enhancement Team Lead",
+            "Warehouse Officer",
+            "Warehouse Staff",
+            "Warehouse Team Lead",
+            "อื่นๆ (โปรดระบุเพิ่มเติม)"
+        ];
 
         const state = {
             lang: 'th',
@@ -1210,7 +1221,8 @@
             selectedSide: 'all',
             searchQuery: '',
             attachedFiles: [],
-            generatedOtp: null
+            generatedOtp: null,
+            positionsList: []
         };
 
         const i18n = {
@@ -1363,6 +1375,7 @@
                 const posOtherContainer = document.getElementById('reg-position-other-container');
                 if (posOtherContainer) posOtherContainer.classList.add('hidden');
                 document.getElementById('reg-otp-container').classList.add('hidden');
+                fetchPositionsFromSheet();
             } else if (mode === 'forgot') {
                 document.getElementById('forgot-section').classList.remove('hidden');
                 document.getElementById('forgot-form').reset();
@@ -1371,6 +1384,67 @@
                 document.getElementById('login-section').classList.remove('hidden');
                 document.getElementById('login-form').reset();
             }
+        }
+
+        async function fetchPositionsFromSheet() {
+            const statusEl = document.getElementById('pos-sync-status');
+            if (statusEl) {
+                statusEl.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-[9px] mr-1"></i> กำลังซิงค์ตำแหน่งจากชีท...`;
+            }
+
+            const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&gid=${POSITION_SHEET_GID}&_=${Date.now()}`;
+
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+                const data = JSON.parse(jsonText);
+                const rows = data.table?.rows || [];
+
+                const sheetPositions = [];
+
+                rows.forEach(r => {
+                    const cells = (r.c || []).map(cell => (cell?.v !== undefined && cell?.v !== null) ? String(cell.v).trim() : '');
+                    cells.forEach(val => {
+                        if (!val) return;
+                        // Skip sequence numbers and typical header identifiers
+                        if (/^\d+$/.test(val)) return;
+                        const lower = val.toLowerCase();
+                        if (val.includes('ตำแหน่ง') || lower.includes('position') || lower === 'no' || lower === 'ลำดับ' || lower === 'id') return;
+
+                        if (!sheetPositions.includes(val) && val !== 'อื่นๆ' && !val.includes('โปรดระบุเพิ่มเติม')) {
+                            sheetPositions.push(val);
+                        }
+                    });
+                });
+
+                if (sheetPositions.length > 0) {
+                    sheetPositions.sort((a, b) => a.localeCompare(b, 'th'));
+                    sheetPositions.push("อื่นๆ (โปรดระบุเพิ่มเติม)");
+                    state.positionsList = sheetPositions;
+                    renderPositionDatalist(sheetPositions);
+                    if (statusEl) {
+                        statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500 text-[9px] mr-1"></i> ซิงค์สด (${sheetPositions.length - 1} ตำแหน่ง)`;
+                    }
+                } else {
+                    renderPositionDatalist(DEFAULT_POSITIONS);
+                    if (statusEl) {
+                        statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-blue-500 text-[9px] mr-1"></i> รายการมาตรฐาน`;
+                    }
+                }
+            } catch (err) {
+                console.warn("Could not fetch positions from sheet, using fallback default list:", err);
+                renderPositionDatalist(DEFAULT_POSITIONS);
+                if (statusEl) {
+                    statusEl.innerHTML = `<i class="fa-solid fa-cloud-arrow-down text-slate-400 text-[9px] mr-1"></i> ใช้รายการแคช`;
+                }
+            }
+        }
+
+        function renderPositionDatalist(list) {
+            const datalist = document.getElementById('position-datalist');
+            if (!datalist) return;
+            datalist.innerHTML = list.map(pos => `<option value="${pos}"></option>`).join('');
         }
 
         /* Handle dynamic detection of "อื่นๆ" in position input */
@@ -2692,6 +2766,7 @@
 
             init24HourTimeSelects();
             updateShiftTimeOptions();
+            fetchPositionsFromSheet();
 
             // ตรวจสอบเซสชันเดิม หรือเริ่มที่หน้าเข้าสู่ระบบ
             const savedUser = localStorage.getItem('empeo_current_user');
