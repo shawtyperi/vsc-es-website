@@ -2624,26 +2624,23 @@
                 const statusStr = String(item.status || '').trim();
                 const statusLower = statusStr.toLowerCase();
 
-                // รองรับเงื่อนไข Done หรือ แก้ไขแล้ว หรือ ดำเนินการเรียบร้อย ในทุกรูปแบบ
-                if (
+                // ตรวจสอบเฉพาะกรณีที่สถานะได้รับการยืนยันว่าเสร็จสิ้นแล้วจริง ๆ
+                const isItemDone = (
                     statusStr === 'ดำเนินการเรียบร้อย' || 
-                    statusStr === 'แก้ไขเสร็จสิ้น' || 
                     statusStr === 'แก้ไขแล้ว' || 
-                    statusStr === 'ดำเนินการเรียบร้อยแล้ว' ||
+                    statusStr === 'เรียบร้อยแล้ว' ||
                     statusLower === 'done' ||
-                    statusLower.includes('done') ||
-                    statusLower.includes('แก้ไขแล้ว') ||
-                    statusLower.includes('เรียบร้อย') ||
-                    statusLower === 'completed' ||
-                    statusLower === 'true'
-                ) {
+                    statusLower === 'done.' ||
+                    statusLower === 'completed'
+                );
+
+                if (isItemDone) {
                     badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-2xs';
-                    displayStatus = dictionary.status_done; // แสดงผลเป็น "ดำเนินการเรียบร้อย"
-                } else if (statusStr === 'รอดำเนินการ' || statusLower === 'pending') {
-                    badgeClass = 'bg-amber-100 text-amber-800 border border-amber-200';
-                    displayStatus = dictionary.status_pending;
+                    displayStatus = dictionary.status_done; // แสดงผลเป็น "ดำเนินการเรียบร้อย" (ป้ายเขียว)
                 } else {
-                    badgeClass = 'bg-blue-100 text-blue-800 border border-blue-200';
+                    // หาก J:J ยังไม่ขึ้น Done จะแสดงผลเป็น "รอดำเนินการ" (ป้ายเหลือง) เสมอ
+                    badgeClass = 'bg-amber-100 text-amber-800 border border-amber-200';
+                    displayStatus = dictionary.status_pending; // "รอดำเนินการ"
                 }
 
                 html += `
@@ -2651,7 +2648,7 @@
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold text-slate-800">${item.issueType}</span>
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeClass}">
-                                <i class="${displayStatus === dictionary.status_done ? 'fa-solid fa-circle-check text-emerald-600' : 'fa-regular fa-clock text-amber-600'} mr-1"></i>${displayStatus}
+                                <i class="${isItemDone ? 'fa-solid fa-circle-check text-emerald-600' : 'fa-regular fa-clock text-amber-600'} mr-1"></i>${displayStatus}
                             </span>
                         </div>
                         <div class="flex items-center justify-between text-[10px] text-slate-500 font-mono">
