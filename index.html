@@ -293,19 +293,33 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">ตำแหน่ง / ฝ่าย <span class="text-red-500">*</span></label>
-                    <select id="reg-position" onchange="toggleRegPositionOther(this.value)" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs">
-                        <option value="ฝ่ายผลิต (ดิบ)">ฝ่ายผลิต (ดิบ)</option>
-                        <option value="ฝ่ายบรรจุ (สุก)">ฝ่ายบรรจุ (สุก)</option>
-                        <option value="ฝ่ายคลังสินค้า (Warehouse)">ฝ่ายคลังสินค้า (Warehouse)</option>
-                        <option value="ฝ่ายควบคุมคุณภาพ (QA/QC)">ฝ่ายควบคุมคุณภาพ (QA/QC)</option>
-                        <option value="ฝ่ายบุคคล / ธุรการ">ฝ่ายบุคคล / ธุรการ</option>
-                        <option value="อื่นๆ">อื่นๆ (ระบุ)</option>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">ตำแหน่ง (Position) <span class="text-red-500">*</span></label>
+                    <input type="text" id="reg-position" required placeholder="เช่น พนักงานปฏิบัติการ, หัวหน้างาน, Supervisor" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">ฝ่าย (Division / Section) <span class="text-red-500">*</span></label>
+                    <select id="reg-department" onchange="toggleRegDeptOther(this.value)" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
+                        <option value="Amathopia Division">Amathopia Division</option>
+                        <option value="Board of Directors">Board of Directors</option>
+                        <option value="Board of Executives">Board of Executives</option>
+                        <option value="Company Secretary Section">Company Secretary Section</option>
+                        <option value="Corporate Synergy">Corporate Synergy</option>
+                        <option value="Creative & Innovation Product and Service">Creative & Innovation Product and Service</option>
+                        <option value="Creative & Innovation Product and Service Division">Creative & Innovation Product and Service Division</option>
+                        <option value="Executive Office">Executive Office</option>
+                        <option value="People & Organization Success Division">People & Organization Success Division</option>
+                        <option value="Production Division">Production Division</option>
+                        <option value="Quality Chain Management Division">Quality Chain Management Division</option>
+                        <option value="Reo's Deli BU (P&L) Division">Reo's Deli BU (P&L) Division</option>
+                        <option value="Supply Chain Management Division">Supply Chain Management Division</option>
+                        <option value="Throughput Accounting & Operations Division">Throughput Accounting & Operations Division</option>
+                        <option value="อื่นๆ">อื่นๆ (ระบุเพิ่มเติม)</option>
                     </select>
                 </div>
 
-                <div id="reg-position-other-container" class="hidden">
-                    <input type="text" id="reg-position-other" placeholder="โปรดระบุตำแหน่งของคุณ" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs">
+                <div id="reg-department-other-container" class="hidden">
+                    <input type="text" id="reg-department-other" placeholder="โปรดระบุชื่อฝ่ายของคุณ" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs">
                 </div>
 
                 <div>
@@ -410,10 +424,33 @@
                         <!-- Interactive Form -->
                         <form id="issue-form" onsubmit="handleFormSubmit(event)" class="p-4 sm:p-6 space-y-5 sm:space-y-6">
 
+                            <!-- Employee Profile Identity Sync Banner -->
+                            <div class="bg-blue-50/70 border border-blue-200/90 rounded-xl p-3 sm:p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-xs">
+                                        <i class="fa-solid fa-id-badge"></i>
+                                    </div>
+                                    <div class="leading-snug">
+                                        <div class="flex items-center space-x-1.5 flex-wrap">
+                                            <span class="font-bold text-slate-900 text-xs sm:text-sm" id="banner-emp-fullname">พนักงาน</span>
+                                            <span class="text-[11px] font-semibold text-blue-700 bg-blue-100/80 px-2 py-0.2 rounded-full" id="banner-emp-nickname">(ชื่อเล่น)</span>
+                                        </div>
+                                        <p class="text-[11px] text-slate-600 mt-0.5">
+                                            ตำแหน่ง: <strong class="text-slate-800" id="banner-emp-position">-</strong> | 
+                                            ฝ่าย: <strong class="text-blue-800" id="banner-emp-dept">-</strong>
+                                        </p>
+                                    </div>
+                                </div>
+                                <span class="inline-flex items-center self-start sm:self-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-white text-emerald-700 border border-emerald-200 shadow-2xs">
+                                    <i class="fa-solid fa-circle-check text-emerald-500 mr-1 text-[9px]"></i> ซิงค์โปรไฟล์นี้ลงชีท
+                                </span>
+                            </div>
+
                             <!-- Hidden Employee Profile Data Fields -->
                             <input type="hidden" id="emp-name">
                             <input type="hidden" id="emp-nickname">
                             <input type="hidden" id="emp-position">
+                            <input type="hidden" id="emp-department">
 
                             <!-- Step 1: Select Issue Category -->
                             <div class="space-y-2.5 sm:space-y-3">
@@ -1259,7 +1296,8 @@
             if (mode === 'register') {
                 document.getElementById('register-section').classList.remove('hidden');
                 document.getElementById('register-form').reset();
-                document.getElementById('reg-position-other-container').classList.add('hidden');
+                const otherContainer = document.getElementById('reg-department-other-container');
+                if (otherContainer) otherContainer.classList.add('hidden');
                 document.getElementById('reg-otp-container').classList.add('hidden');
             } else if (mode === 'forgot') {
                 document.getElementById('forgot-section').classList.remove('hidden');
@@ -1268,6 +1306,22 @@
             } else {
                 document.getElementById('login-section').classList.remove('hidden');
                 document.getElementById('login-form').reset();
+            }
+        }
+
+        function toggleRegDeptOther(val) {
+            const container = document.getElementById('reg-department-other-container');
+            const otherInput = document.getElementById('reg-department-other');
+            if (!container) return;
+            if (val === 'อื่นๆ') {
+                container.classList.remove('hidden');
+                if (otherInput) otherInput.required = true;
+            } else {
+                container.classList.add('hidden');
+                if (otherInput) {
+                    otherInput.required = false;
+                    otherInput.value = '';
+                }
             }
         }
 
@@ -1291,9 +1345,23 @@
                 const nameInput = document.getElementById('emp-name');
                 const nickInput = document.getElementById('emp-nickname');
                 const posInput = document.getElementById('emp-position');
+                const deptInput = document.getElementById('emp-department');
+
                 if (nameInput) nameInput.value = state.currentUser.name || '';
                 if (nickInput) nickInput.value = state.currentUser.nickname || '';
                 if (posInput) posInput.value = state.currentUser.position || '';
+                if (deptInput) deptInput.value = state.currentUser.department || '';
+
+                // Update visual banner inside Issue Reporting Form
+                const bannerName = document.getElementById('banner-emp-fullname');
+                const bannerNick = document.getElementById('banner-emp-nickname');
+                const bannerPos = document.getElementById('banner-emp-position');
+                const bannerDept = document.getElementById('banner-emp-dept');
+
+                if (bannerName) bannerName.innerText = state.currentUser.name || 'พนักงาน';
+                if (bannerNick) bannerNick.innerText = state.currentUser.nickname ? `(${state.currentUser.nickname})` : '';
+                if (bannerPos) bannerPos.innerText = state.currentUser.position || 'พนักงานปฏิบัติการ';
+                if (bannerDept) bannerDept.innerText = state.currentUser.department || 'Production Division';
             }
 
             clearLockerSearch();
@@ -1318,18 +1386,7 @@
         }
 
         function toggleRegPositionOther(val) {
-            const container = document.getElementById('reg-position-other-container');
-            const otherInput = document.getElementById('reg-position-other');
-            if (val === 'อื่นๆ') {
-                container.classList.remove('hidden');
-                if (otherInput) otherInput.required = true;
-            } else {
-                container.classList.add('hidden');
-                if (otherInput) {
-                    otherInput.required = false;
-                    otherInput.value = '';
-                }
-            }
+            toggleRegDeptOther(val);
         }
 
         function sendRegisterOTP() {
@@ -1432,13 +1489,14 @@
                     return;
                 }
             } else {
-                // หากยังไม่เคยลงทะเบียน ให้สร้างบัญชีอัตโนมัติจากอีเมลเพื่อความสะดวกรวดเร็วในการทำงาน
+                // หากยังไม่เคยลงทะเบียน ให้สร้างบัญชีอัตโนมัติจากอีเมลเพื่อความสะดวก
                 const cleanNickname = email.split('@')[0].split('.')[0];
                 userProfile = {
                     email: email,
                     name: cleanNickname.charAt(0).toUpperCase() + cleanNickname.slice(1),
                     nickname: cleanNickname,
                     position: "พนักงานปฏิบัติการ",
+                    department: "Production Division",
                     password: password
                 };
                 userDb[email] = userProfile;
@@ -1463,9 +1521,10 @@
             const otp = document.getElementById('reg-otp').value.trim();
             const name = document.getElementById('reg-name').value.trim();
             const nickname = document.getElementById('reg-nickname').value.trim();
+            const position = document.getElementById('reg-position').value.trim();
             
-            const positionSel = document.getElementById('reg-position').value;
-            const position = positionSel === 'อื่นๆ' ? document.getElementById('reg-position-other').value.trim() : positionSel;
+            const deptSel = document.getElementById('reg-department').value;
+            const department = deptSel === 'อื่นๆ' ? (document.getElementById('reg-department-other')?.value.trim() || 'อื่นๆ') : deptSel;
 
             if (!otp) {
                 showNotification(i18n[state.lang].alert_otp_enter, 'warning');
@@ -1477,13 +1536,14 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> บันทึกข้อมูลพนักงาน...`;
 
-            // บันทึกบัญชีเข้าคลังผู้ใช้งาน
+            // บันทึกบัญชีเข้าคลังผู้ใช้งาน พร้อมชื่อ-สกุล, ชื่อเล่น, ตำแหน่ง และฝ่ายที่เลือก
             const userDb = JSON.parse(localStorage.getItem('vsc_users_db') || '{}');
             userDb[email] = {
                 email: email,
                 name: name,
                 nickname: nickname,
                 position: position,
+                department: department,
                 password: password
             };
             localStorage.setItem('vsc_users_db', JSON.stringify(userDb));
@@ -1491,7 +1551,7 @@
             setTimeout(() => {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalHtml;
-                showNotification('ลงทะเบียนสำเร็จเรียบร้อย! กำลังนำคุณเข้าสู่ระบบ...', 'success');
+                showNotification('ลงทะเบียนสำเร็จเรียบร้อย! ข้อมูลฝ่ายและตำแหน่งถูกบันทึกแล้ว', 'success');
                 state.currentUser = userDb[email];
                 localStorage.setItem('empeo_current_user', JSON.stringify(state.currentUser));
                 initUserSession();
@@ -1919,9 +1979,12 @@
 
             const issueType = checkedTypeNode.value;
             const rawDescription = document.getElementById('issue-desc').value.trim();
-            const employeeName = state.currentUser ? state.currentUser.name : 'Unknown';
-            const nickname = state.currentUser ? state.currentUser.nickname : 'Unknown';
-            const position = state.currentUser ? state.currentUser.position : 'พนักงานปฏิบัติการ';
+            
+            // ดึงข้อมูลตรงจากข้อมูลที่พนักงานสมัครไว้
+            const employeeName = state.currentUser ? state.currentUser.name : (document.getElementById('emp-name')?.value || 'Unknown');
+            const nickname = state.currentUser ? state.currentUser.nickname : (document.getElementById('emp-nickname')?.value || 'Unknown');
+            const position = state.currentUser ? state.currentUser.position : (document.getElementById('emp-position')?.value || 'พนักงานปฏิบัติการ');
+            const department = state.currentUser ? (state.currentUser.department || 'Production Division') : (document.getElementById('emp-department')?.value || 'Production Division');
             const userEmail = state.currentUser ? state.currentUser.email : 'offline@vsc.co.th';
 
             let issueDate = new Date().toISOString().split('T')[0];
@@ -1960,7 +2023,7 @@
                 formattedDetails = `[ปัญหาล็อกเกอร์: ${lockerProblem}]\n`;
             }
 
-            const description = `${formattedDetails}รายละเอียดเพิ่มเติม: ${rawDescription}`;
+            const description = `[ฝ่าย: ${department} | ตำแหน่ง: ${position}]\n${formattedDetails}รายละเอียดเพิ่มเติม: ${rawDescription}`;
             const reportId = 'REP-' + Math.floor(1000 + Math.random() * 9000);
             const now = new Date();
             const createdTime = now.getFullYear() + '-' + 
@@ -1972,15 +2035,18 @@
 
             const payload = {
                 id: reportId,
-                employeeName,
-                nickname,
-                position,
-                issueType,
-                issueDate,
-                description,
+                employeeName: employeeName,
+                name: employeeName,
+                nickname: nickname,
+                position: position,
+                department: department,
+                division: department,
+                issueType: issueType,
+                issueDate: issueDate,
+                description: description,
                 status: 'รอดำเนินการ',
                 screenshots: state.attachedFiles,
-                createdTime,
+                createdTime: createdTime,
                 email: userEmail
             };
 
