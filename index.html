@@ -295,10 +295,10 @@
                 <div>
                     <div class="flex items-center justify-between mb-1">
                         <label class="block text-xs font-bold text-slate-700">ตำแหน่ง (Position) <span class="text-red-500">*</span></label>
-                        <span class="text-[10px] text-slate-400">พิมพ์ค้นหาหรือคลิกเลือก</span>
+                        <span class="text-[10px] text-slate-400">พิมพ์ค้นหา เลือก หรือพิมพ์เองได้</span>
                     </div>
                     <div class="relative">
-                        <input type="text" id="reg-position" list="position-datalist" required placeholder="พิมพ์ค้นหา หรือเลือกตำแหน่งงานของคุณ..." autocomplete="off" class="w-full pl-3.5 pr-8 py-2.5 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
+                        <input type="text" id="reg-position" list="position-datalist" oninput="handlePositionInput(this.value)" required placeholder="พิมพ์ค้นหา หรือเลือกตำแหน่งงานของคุณ..." autocomplete="off" class="w-full pl-3.5 pr-8 py-2.5 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
                         <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none"></i>
                     </div>
                     <datalist id="position-datalist">
@@ -379,32 +379,13 @@
                         <option value="Warehouse Officer"></option>
                         <option value="Warehouse Staff"></option>
                         <option value="Warehouse Team Lead"></option>
+                        <option value="อื่นๆ (โปรดระบุเพิ่มเติม)"></option>
                     </datalist>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">ฝ่าย (Division / Section) <span class="text-red-500">*</span></label>
-                    <select id="reg-department" onchange="toggleRegDeptOther(this.value)" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
-                        <option value="Amathopia Division">Amathopia Division</option>
-                        <option value="Board of Directors">Board of Directors</option>
-                        <option value="Board of Executives">Board of Executives</option>
-                        <option value="Company Secretary Section">Company Secretary Section</option>
-                        <option value="Corporate Synergy">Corporate Synergy</option>
-                        <option value="Creative & Innovation Product and Service">Creative & Innovation Product and Service</option>
-                        <option value="Creative & Innovation Product and Service Division">Creative & Innovation Product and Service Division</option>
-                        <option value="Executive Office">Executive Office</option>
-                        <option value="People & Organization Success Division">People & Organization Success Division</option>
-                        <option value="Production Division">Production Division</option>
-                        <option value="Quality Chain Management Division">Quality Chain Management Division</option>
-                        <option value="Reo's Deli BU (P&L) Division">Reo's Deli BU (P&L) Division</option>
-                        <option value="Supply Chain Management Division">Supply Chain Management Division</option>
-                        <option value="Throughput Accounting & Operations Division">Throughput Accounting & Operations Division</option>
-                        <option value="อื่นๆ">อื่นๆ (ระบุเพิ่มเติม)</option>
-                    </select>
-                </div>
-
-                <div id="reg-department-other-container" class="hidden">
-                    <input type="text" id="reg-department-other" placeholder="โปรดระบุชื่อฝ่ายของคุณ" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs">
+                <div id="reg-position-other-container" class="hidden space-y-1">
+                    <label class="block text-xs font-semibold text-blue-700">ระบุตำแหน่งงานเพิ่มเติม <span class="text-red-500">*</span></label>
+                    <input type="text" id="reg-position-other" placeholder="โปรดระบุชื่อตำแหน่งงานของคุณ" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-blue-300 bg-blue-50/30 shadow-2xs focus:border-blue-500 focus:ring-blue-500">
                 </div>
 
                 <div>
@@ -521,8 +502,7 @@
                                             <span class="text-[11px] font-semibold text-blue-700 bg-blue-100/80 px-2 py-0.2 rounded-full" id="banner-emp-nickname">(ชื่อเล่น)</span>
                                         </div>
                                         <p class="text-[11px] text-slate-600 mt-0.5">
-                                            ตำแหน่ง: <strong class="text-slate-800" id="banner-emp-position">-</strong> | 
-                                            ฝ่าย: <strong class="text-blue-800" id="banner-emp-dept">-</strong>
+                                            ตำแหน่ง: <strong class="text-slate-800" id="banner-emp-position">-</strong>
                                         </p>
                                     </div>
                                 </div>
@@ -535,7 +515,6 @@
                             <input type="hidden" id="emp-name">
                             <input type="hidden" id="emp-nickname">
                             <input type="hidden" id="emp-position">
-                            <input type="hidden" id="emp-department">
 
                             <!-- Step 1: Select Issue Category -->
                             <div class="space-y-2.5 sm:space-y-3">
@@ -1381,8 +1360,8 @@
             if (mode === 'register') {
                 document.getElementById('register-section').classList.remove('hidden');
                 document.getElementById('register-form').reset();
-                const otherContainer = document.getElementById('reg-department-other-container');
-                if (otherContainer) otherContainer.classList.add('hidden');
+                const posOtherContainer = document.getElementById('reg-position-other-container');
+                if (posOtherContainer) posOtherContainer.classList.add('hidden');
                 document.getElementById('reg-otp-container').classList.add('hidden');
             } else if (mode === 'forgot') {
                 document.getElementById('forgot-section').classList.remove('hidden');
@@ -1394,11 +1373,13 @@
             }
         }
 
-        function toggleRegDeptOther(val) {
-            const container = document.getElementById('reg-department-other-container');
-            const otherInput = document.getElementById('reg-department-other');
+        /* Handle dynamic detection of "อื่นๆ" in position input */
+        function handlePositionInput(val) {
+            const container = document.getElementById('reg-position-other-container');
+            const otherInput = document.getElementById('reg-position-other');
             if (!container) return;
-            if (val === 'อื่นๆ') {
+
+            if (val.includes('อื่นๆ') || val.includes('โปรดระบุ')) {
                 container.classList.remove('hidden');
                 if (otherInput) otherInput.required = true;
             } else {
@@ -1430,23 +1411,19 @@
                 const nameInput = document.getElementById('emp-name');
                 const nickInput = document.getElementById('emp-nickname');
                 const posInput = document.getElementById('emp-position');
-                const deptInput = document.getElementById('emp-department');
 
                 if (nameInput) nameInput.value = state.currentUser.name || '';
                 if (nickInput) nickInput.value = state.currentUser.nickname || '';
                 if (posInput) posInput.value = state.currentUser.position || '';
-                if (deptInput) deptInput.value = state.currentUser.department || '';
 
                 // Update visual banner inside Issue Reporting Form
                 const bannerName = document.getElementById('banner-emp-fullname');
                 const bannerNick = document.getElementById('banner-emp-nickname');
                 const bannerPos = document.getElementById('banner-emp-position');
-                const bannerDept = document.getElementById('banner-emp-dept');
 
                 if (bannerName) bannerName.innerText = state.currentUser.name || 'พนักงาน';
                 if (bannerNick) bannerNick.innerText = state.currentUser.nickname ? `(${state.currentUser.nickname})` : '';
                 if (bannerPos) bannerPos.innerText = state.currentUser.position || 'พนักงานปฏิบัติการ';
-                if (bannerDept) bannerDept.innerText = state.currentUser.department || 'Production Division';
             }
 
             clearLockerSearch();
@@ -1581,7 +1558,6 @@
                     name: cleanNickname.charAt(0).toUpperCase() + cleanNickname.slice(1),
                     nickname: cleanNickname,
                     position: "พนักงานปฏิบัติการ",
-                    department: "Production Division",
                     password: password
                 };
                 userDb[email] = userProfile;
@@ -1606,10 +1582,13 @@
             const otp = document.getElementById('reg-otp').value.trim();
             const name = document.getElementById('reg-name').value.trim();
             const nickname = document.getElementById('reg-nickname').value.trim();
-            const position = document.getElementById('reg-position').value.trim();
+            const rawPosition = document.getElementById('reg-position').value.trim();
             
-            const deptSel = document.getElementById('reg-department').value;
-            const department = deptSel === 'อื่นๆ' ? (document.getElementById('reg-department-other')?.value.trim() || 'อื่นๆ') : deptSel;
+            // หากเลือก "อื่นๆ" หรือมีข้อความอื่นๆ ให้ใช้ค่าจากช่องระบุเพิ่มเติม
+            const customPosInput = document.getElementById('reg-position-other');
+            const position = (rawPosition.includes('อื่นๆ') && customPosInput?.value.trim()) 
+                ? customPosInput.value.trim() 
+                : rawPosition;
 
             if (!otp) {
                 showNotification(i18n[state.lang].alert_otp_enter, 'warning');
@@ -1621,14 +1600,13 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> บันทึกข้อมูลพนักงาน...`;
 
-            // บันทึกบัญชีเข้าคลังผู้ใช้งาน พร้อมชื่อ-สกุล, ชื่อเล่น, ตำแหน่ง และฝ่ายที่เลือก
+            // บันทึกบัญชีเข้าคลังผู้ใช้งาน พร้อมชื่อ-สกุล, ชื่อเล่น และตำแหน่งงาน
             const userDb = JSON.parse(localStorage.getItem('vsc_users_db') || '{}');
             userDb[email] = {
                 email: email,
                 name: name,
                 nickname: nickname,
                 position: position,
-                department: department,
                 password: password
             };
             localStorage.setItem('vsc_users_db', JSON.stringify(userDb));
@@ -1636,7 +1614,7 @@
             setTimeout(() => {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalHtml;
-                showNotification('ลงทะเบียนสำเร็จเรียบร้อย! ข้อมูลฝ่ายและตำแหน่งถูกบันทึกแล้ว', 'success');
+                showNotification('ลงทะเบียนสำเร็จเรียบร้อย! ตำแหน่งงานถูกบันทึกแล้ว', 'success');
                 state.currentUser = userDb[email];
                 localStorage.setItem('empeo_current_user', JSON.stringify(state.currentUser));
                 initUserSession();
@@ -2069,7 +2047,6 @@
             const employeeName = state.currentUser ? state.currentUser.name : (document.getElementById('emp-name')?.value || 'Unknown');
             const nickname = state.currentUser ? state.currentUser.nickname : (document.getElementById('emp-nickname')?.value || 'Unknown');
             const position = state.currentUser ? state.currentUser.position : (document.getElementById('emp-position')?.value || 'พนักงานปฏิบัติการ');
-            const department = state.currentUser ? (state.currentUser.department || 'Production Division') : (document.getElementById('emp-department')?.value || 'Production Division');
             const userEmail = state.currentUser ? state.currentUser.email : 'offline@vsc.co.th';
 
             let issueDate = new Date().toISOString().split('T')[0];
@@ -2108,7 +2085,7 @@
                 formattedDetails = `[ปัญหาล็อกเกอร์: ${lockerProblem}]\n`;
             }
 
-            const description = `[ฝ่าย: ${department} | ตำแหน่ง: ${position}]\n${formattedDetails}รายละเอียดเพิ่มเติม: ${rawDescription}`;
+            const description = `[ตำแหน่ง: ${position}]\n${formattedDetails}รายละเอียดเพิ่มเติม: ${rawDescription}`;
             const reportId = 'REP-' + Math.floor(1000 + Math.random() * 9000);
             const now = new Date();
             const createdTime = now.getFullYear() + '-' + 
@@ -2124,8 +2101,6 @@
                 name: employeeName,
                 nickname: nickname,
                 position: position,
-                department: department,
-                division: department,
                 issueType: issueType,
                 issueDate: issueDate,
                 description: description,
