@@ -300,8 +300,8 @@
                     <div class="flex items-center justify-between mb-1">
                         <label class="block text-xs font-bold text-slate-700 flex items-center">
                             <span>ตำแหน่ง (Position)</span> <span class="text-red-500 ml-0.5">*</span>
-                            <span id="pos-sync-status" class="text-[10px] text-blue-600 font-normal ml-2 flex items-center">
-                                <i class="fa-solid fa-arrows-rotate text-[9px] mr-1"></i> เชื่อมต่อ Google Sheet
+                            <span id="pos-sync-status" class="text-[10px] text-emerald-600 font-medium ml-2 flex items-center">
+                                <i class="fa-solid fa-circle-check text-emerald-500 text-[9px] mr-1"></i> 77 ตำแหน่งมาตรฐาน
                             </span>
                         </label>
                         <span class="text-[10px] text-slate-400">พิมพ์ค้นหา เลือก หรือพิมพ์เองได้</span>
@@ -311,7 +311,7 @@
                         <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none"></i>
                     </div>
                     <datalist id="position-datalist">
-                        <!-- Populated dynamically from Google Sheet (gid=68387922) with local fallback -->
+                        <!-- Populated dynamically with exact curated positions list -->
                     </datalist>
                 </div>
 
@@ -999,7 +999,9 @@
                         <label class="block text-xs font-bold text-slate-700">
                             ตำแหน่งงานใหม่ (Position) <span class="text-red-500">*</span>
                         </label>
-                        <span class="text-[10px] text-blue-600">ซิงค์ชีท gid=68387922</span>
+                        <span class="text-[10px] text-emerald-600 font-medium flex items-center">
+                            <i class="fa-solid fa-circle-check text-emerald-500 text-[9px] mr-1"></i> 77 ตำแหน่งมาตรฐาน
+                        </span>
                     </div>
                     <div class="relative">
                         <input type="text" id="edit-prof-position" list="position-datalist" oninput="handleEditPositionInput(this.value)" required placeholder="พิมพ์ค้นหา หรือเลือกตำแหน่งงานใหม่..." autocomplete="off" class="w-full pl-3.5 pr-8 py-2.5 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
@@ -1205,7 +1207,7 @@
         const POSITION_SHEET_GID = "68387922";
         const SPREADSHEET_ID = "1xiLu-aHE8L6tDkZhko62ZDESAEe2a_vHTF-t08ZGDIM";
 
-        const DEFAULT_POSITIONS = [
+        const OFFICIAL_POSITIONS = [
             "Accounting Administrator Officer",
             "Accounting Manager (AR)",
             "Accounting Manager (GL)",
@@ -1298,7 +1300,7 @@
             searchQuery: '',
             attachedFiles: [],
             generatedOtp: null,
-            positionsList: []
+            positionsList: OFFICIAL_POSITIONS
         };
 
         const i18n = {
@@ -1451,7 +1453,7 @@
                 const posOtherContainer = document.getElementById('reg-position-other-container');
                 if (posOtherContainer) posOtherContainer.classList.add('hidden');
                 document.getElementById('reg-otp-container').classList.add('hidden');
-                fetchPositionsFromSheet();
+                loadCuratedPositions();
             } else if (mode === 'forgot') {
                 document.getElementById('forgot-section').classList.remove('hidden');
                 document.getElementById('forgot-form').reset();
@@ -1502,19 +1504,19 @@
                     if (statusEl) {
                         statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500 text-[9px] mr-1"></i> ซิงค์สด (${sheetPositions.length - 1} ตำแหน่ง)`;
                     }
-                } else {
-                    renderPositionDatalist(DEFAULT_POSITIONS);
-                    if (statusEl) {
-                        statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-blue-500 text-[9px] mr-1"></i> รายการมาตรฐาน`;
-                    }
-                }
-            } catch (err) {
-                console.warn("Could not fetch positions from sheet, using fallback default list:", err);
-                renderPositionDatalist(DEFAULT_POSITIONS);
-                if (statusEl) {
-                    statusEl.innerHTML = `<i class="fa-solid fa-cloud-arrow-down text-slate-400 text-[9px] mr-1"></i> ใช้รายการแคช`;
-                }
+        function loadCuratedPositions() {
+            state.positionsList = [...OFFICIAL_POSITIONS];
+            renderPositionDatalist(OFFICIAL_POSITIONS);
+
+            const statusEl = document.getElementById('pos-sync-status');
+            if (statusEl) {
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500 text-[9px] mr-1"></i> 77 ตำแหน่งมาตรฐาน`;
             }
+        }
+
+        async function fetchPositionsFromSheet() {
+            // Keep strictly to the verified 77 official positions
+            loadCuratedPositions();
         }
 
         function renderPositionDatalist(list) {
@@ -1565,7 +1567,7 @@
             }
 
             if (modal) modal.classList.remove('hidden');
-            fetchPositionsFromSheet();
+            loadCuratedPositions();
         }
 
         function closeEditProfileModal() {
@@ -2965,7 +2967,7 @@
 
             init24HourTimeSelects();
             updateShiftTimeOptions();
-            fetchPositionsFromSheet();
+            loadCuratedPositions();
 
             // ตรวจสอบเซสชันเดิม หรือเริ่มที่หน้าเข้าสู่ระบบ
             const savedUser = localStorage.getItem('empeo_current_user');
