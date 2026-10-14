@@ -173,9 +173,13 @@
                         <i class="fa-solid fa-gear"></i>
                     </button>
 
-                    <!-- User Profile & Logout (Fixed missing user-display-name) -->
+                    <!-- User Profile & Logout (Click to edit position/profile) -->
                     <div id="user-profile-badge" class="hidden flex items-center space-x-1.5 pl-1.5 border-l border-slate-200">
-                        <span id="user-display-name" class="text-xs font-semibold text-slate-700 hidden sm:inline">User</span>
+                        <button onclick="openEditProfileModal()" title="คลิกเพื่อเปลี่ยนตำแหน่งหรือแก้ไขข้อมูลส่วนตัว" class="flex items-center space-x-1.5 px-2 py-1 rounded-lg hover:bg-blue-50 text-slate-700 hover:text-blue-700 transition-colors border border-transparent hover:border-blue-200">
+                            <i class="fa-solid fa-circle-user text-blue-600 text-sm"></i>
+                            <span id="user-display-name" class="text-xs font-semibold hidden sm:inline">User</span>
+                            <i class="fa-solid fa-pen text-[9px] text-slate-400"></i>
+                        </button>
                         <button onclick="handleLogout()" title="ออกจากระบบ" class="w-7 h-7 sm:w-auto sm:px-2.5 sm:py-1 rounded-lg text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 flex items-center justify-center space-x-1 text-xs font-semibold transition-all">
                             <i class="fa-solid fa-arrow-right-from-bracket text-[11px]"></i>
                             <span class="hidden sm:inline text-[11px]">ออก</span>
@@ -418,7 +422,7 @@
                         <!-- Interactive Form -->
                         <form id="issue-form" onsubmit="handleFormSubmit(event)" class="p-4 sm:p-6 space-y-5 sm:space-y-6">
 
-                            <!-- Employee Profile Identity Sync Banner -->
+                            <!-- Employee Profile Identity Sync Banner with Quick Edit Position Button -->
                             <div class="bg-blue-50/70 border border-blue-200/90 rounded-xl p-3 sm:p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
                                 <div class="flex items-center space-x-2.5">
                                     <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-xs">
@@ -430,13 +434,19 @@
                                             <span class="text-[11px] font-semibold text-blue-700 bg-blue-100/80 px-2 py-0.2 rounded-full" id="banner-emp-nickname">(ชื่อเล่น)</span>
                                         </div>
                                         <p class="text-[11px] text-slate-600 mt-0.5">
-                                            ตำแหน่ง: <strong class="text-slate-800" id="banner-emp-position">-</strong>
+                                            ตำแหน่ง: <strong class="text-blue-800 font-bold" id="banner-emp-position">-</strong>
                                         </p>
                                     </div>
                                 </div>
-                                <span class="inline-flex items-center self-start sm:self-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-white text-emerald-700 border border-emerald-200 shadow-2xs">
-                                    <i class="fa-solid fa-circle-check text-emerald-500 mr-1 text-[9px]"></i> ซิงค์โปรไฟล์นี้ลงชีท
-                                </span>
+                                <div class="flex items-center space-x-2 self-start sm:self-center">
+                                    <button type="button" onclick="openEditProfileModal()" class="px-2.5 py-1 text-[11px] font-bold text-blue-700 bg-white hover:bg-blue-100/80 rounded-lg border border-blue-300 shadow-2xs transition-all flex items-center space-x-1">
+                                        <i class="fa-solid fa-user-pen text-blue-600 text-[10px]"></i>
+                                        <span>เปลี่ยนตำแหน่ง</span>
+                                    </button>
+                                    <span class="hidden sm:inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-white text-emerald-700 border border-emerald-200 shadow-2xs">
+                                        <i class="fa-solid fa-circle-check text-emerald-500 mr-1 text-[9px]"></i> ซิงค์ลงชีท
+                                    </span>
+                                </div>
                             </div>
 
                             <!-- Hidden Employee Profile Data Fields -->
@@ -946,6 +956,72 @@
             <button onclick="closeLockerDetailModal()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition-colors">
                 ปิดหน้าต่าง
             </button>
+        </div>
+    </div>
+
+    <!-- Edit Profile & Change Position Modal -->
+    <div id="edit-profile-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl border border-slate-200">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">
+                        <i class="fa-solid fa-user-pen"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-sm">เปลี่ยนตำแหน่ง / แก้ไขโปรไฟล์</h4>
+                        <p class="text-[10px] text-slate-400">ข้อมูลนี้จะอัปเดตในระบบและการส่งรายงาน</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeEditProfileModal()" class="text-slate-400 hover:text-slate-600 text-base">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="edit-profile-form" onsubmit="handleProfileUpdateSubmit(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">อีเมลพนักงาน</label>
+                    <input type="email" id="edit-prof-email" readonly disabled class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-100 text-slate-500 cursor-not-allowed">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อ-นามสกุล <span class="text-red-500">*</span></label>
+                        <input type="text" id="edit-prof-name" required placeholder="สมชาย ใจดี" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อเล่น <span class="text-red-500">*</span></label>
+                        <input type="text" id="edit-prof-nickname" required placeholder="ชาย" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-xs font-bold text-slate-700">
+                            ตำแหน่งงานใหม่ (Position) <span class="text-red-500">*</span>
+                        </label>
+                        <span class="text-[10px] text-blue-600">ซิงค์ชีท gid=68387922</span>
+                    </div>
+                    <div class="relative">
+                        <input type="text" id="edit-prof-position" list="position-datalist" oninput="handleEditPositionInput(this.value)" required placeholder="พิมพ์ค้นหา หรือเลือกตำแหน่งงานใหม่..." autocomplete="off" class="w-full pl-3.5 pr-8 py-2.5 text-xs rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-blue-500 focus:ring-blue-500">
+                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none"></i>
+                    </div>
+                </div>
+
+                <div id="edit-prof-position-other-container" class="hidden space-y-1">
+                    <label class="block text-xs font-semibold text-blue-700">ระบุชื่อตำแหน่งงานเพิ่มเติม <span class="text-red-500">*</span></label>
+                    <input type="text" id="edit-prof-position-other" placeholder="โปรดระบุตำแหน่งงานของคุณ" class="w-full px-3.5 py-2 text-xs rounded-xl border border-blue-300 bg-blue-50/40 shadow-2xs focus:border-blue-500 focus:ring-blue-500">
+                </div>
+
+                <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeEditProfileModal()" class="px-3.5 py-2 text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors font-medium">
+                        ยกเลิก
+                    </button>
+                    <button type="submit" class="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-sm flex items-center space-x-1.5">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>บันทึกตำแหน่งใหม่</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1461,6 +1537,129 @@
                 if (otherInput) {
                     otherInput.required = false;
                     otherInput.value = '';
+                }
+            }
+        }
+
+        /* Handle Edit Profile & Position Modal */
+        function openEditProfileModal() {
+            if (!state.currentUser) return;
+
+            const modal = document.getElementById('edit-profile-modal');
+            const emailInput = document.getElementById('edit-prof-email');
+            const nameInput = document.getElementById('edit-prof-name');
+            const nicknameInput = document.getElementById('edit-prof-nickname');
+            const posInput = document.getElementById('edit-prof-position');
+            const otherContainer = document.getElementById('edit-prof-position-other-container');
+            const otherInput = document.getElementById('edit-prof-position-other');
+
+            if (emailInput) emailInput.value = state.currentUser.email || '';
+            if (nameInput) nameInput.value = state.currentUser.name || '';
+            if (nicknameInput) nicknameInput.value = state.currentUser.nickname || '';
+            if (posInput) posInput.value = state.currentUser.position || '';
+
+            if (otherContainer) otherContainer.classList.add('hidden');
+            if (otherInput) {
+                otherInput.value = '';
+                otherInput.required = false;
+            }
+
+            if (modal) modal.classList.remove('hidden');
+            fetchPositionsFromSheet();
+        }
+
+        function closeEditProfileModal() {
+            const modal = document.getElementById('edit-profile-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function handleEditPositionInput(val) {
+            const container = document.getElementById('edit-prof-position-other-container');
+            const otherInput = document.getElementById('edit-prof-position-other');
+            if (!container) return;
+
+            if (val.includes('อื่นๆ') || val.includes('โปรดระบุ')) {
+                container.classList.remove('hidden');
+                if (otherInput) otherInput.required = true;
+            } else {
+                container.classList.add('hidden');
+                if (otherInput) {
+                    otherInput.required = false;
+                    otherInput.value = '';
+                }
+            }
+        }
+
+        async function handleProfileUpdateSubmit(event) {
+            event.preventDefault();
+            if (!state.currentUser) return;
+
+            const newName = document.getElementById('edit-prof-name').value.trim();
+            const newNickname = document.getElementById('edit-prof-nickname').value.trim();
+            const rawPos = document.getElementById('edit-prof-position').value.trim();
+            const otherPos = document.getElementById('edit-prof-position-other')?.value.trim();
+
+            const finalPosition = (rawPos.includes('อื่นๆ') && otherPos) ? otherPos : rawPos;
+
+            if (!newName || !newNickname || !finalPosition) {
+                showNotification('กรุณากรอกข้อมูลและเลือกตำแหน่งงานให้ครบถ้วน', 'warning');
+                return;
+            }
+
+            // Update in-memory state
+            state.currentUser.name = newName;
+            state.currentUser.nickname = newNickname;
+            state.currentUser.position = finalPosition;
+
+            // Update current user cache and user database
+            localStorage.setItem('empeo_current_user', JSON.stringify(state.currentUser));
+            const userDb = JSON.parse(localStorage.getItem('vsc_users_db') || '{}');
+            if (userDb[state.currentUser.email]) {
+                userDb[state.currentUser.email].name = newName;
+                userDb[state.currentUser.email].nickname = newNickname;
+                userDb[state.currentUser.email].position = finalPosition;
+                localStorage.setItem('vsc_users_db', JSON.stringify(userDb));
+            }
+
+            // Update UI elements immediately
+            const bannerName = document.getElementById('banner-emp-fullname');
+            const bannerNick = document.getElementById('banner-emp-nickname');
+            const bannerPos = document.getElementById('banner-emp-position');
+            const displayNameEl = document.getElementById('user-display-name');
+
+            if (bannerName) bannerName.innerText = newName;
+            if (bannerNick) bannerNick.innerText = `(${newNickname})`;
+            if (bannerPos) bannerPos.innerText = finalPosition;
+            if (displayNameEl) displayNameEl.innerText = newNickname || newName;
+
+            const formName = document.getElementById('emp-name');
+            const formNick = document.getElementById('emp-nickname');
+            const formPos = document.getElementById('emp-position');
+            if (formName) formName.value = newName;
+            if (formNick) formNick.value = newNickname;
+            if (formPos) formPos.value = finalPosition;
+
+            closeEditProfileModal();
+            showNotification(`อัปเดตตำแหน่งเป็น "${finalPosition}" เรียบร้อยแล้ว!`, 'success');
+
+            // Send profile sync to Google Sheet API
+            const targetUrl = state.googleSheetUrl || DEFAULT_API_URL;
+            if (targetUrl) {
+                try {
+                    fetch(targetUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: JSON.stringify({
+                            action: 'updateProfile',
+                            email: state.currentUser.email,
+                            name: newName,
+                            nickname: newNickname,
+                            position: finalPosition
+                        })
+                    }).catch(e => console.warn('Background profile sync notice:', e));
+                } catch (e) {
+                    console.warn('Sync ignored', e);
                 }
             }
         }
