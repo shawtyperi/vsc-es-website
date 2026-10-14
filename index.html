@@ -726,8 +726,11 @@
                                             </label>
                                             <div class="relative">
                                                 <i class="fa-solid fa-hashtag absolute left-3 top-1/2 -translate-y-1/2 text-amber-500 text-xs pointer-events-none"></i>
-                                                <input type="text" id="locker-number" placeholder="เช่น R-05, C-12 หรือระบุเลขตู้" class="w-full pl-8 pr-3 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-amber-500 focus:ring-amber-500">
+                                                <input type="text" id="locker-number" list="locker-numbers-datalist" placeholder="เช่น VSC-01, VSC-02 หรือระบุเลขตู้" class="w-full pl-8 pr-3 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white shadow-2xs focus:border-amber-500 focus:ring-amber-500">
                                             </div>
+                                            <datalist id="locker-numbers-datalist">
+                                                <!-- Populated dynamically with locker numbers -->
+                                            </datalist>
                                         </div>
                                     </div>
                                     <p class="text-[10px] text-amber-800 flex items-center">
@@ -2851,7 +2854,16 @@
             document.getElementById('stat-raw-vacant').innerText = rawVacant;
             document.getElementById('stat-cooked-vacant').innerText = cookedVacant;
 
+            updateLockerNumberDatalist();
             renderLockerSquares();
+        }
+
+        /* Update Datalist with all locker numbers */
+        function updateLockerNumberDatalist() {
+            const datalist = document.getElementById('locker-numbers-datalist');
+            if (!datalist || !state.lockerData || state.lockerData.length === 0) return;
+            const uniqueNums = [...new Set(state.lockerData.map(l => l.num).filter(Boolean))];
+            datalist.innerHTML = uniqueNums.map(num => `<option value="${num}"></option>`).join('');
         }
 
         function renderLockerSquares() {
