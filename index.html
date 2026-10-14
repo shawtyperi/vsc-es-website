@@ -1592,7 +1592,8 @@
             }
 
             try {
-                const fetchUrl = `${state.googleSheetUrl}?action=getHistory&email=${encodeURIComponent(state.currentUser.email)}`;
+                // เพิ่ม timestamp เพื่อป้องกันเบราว์เซอร์จำค่าแคชเก่า
+                const fetchUrl = `${state.googleSheetUrl}?action=getHistory&email=${encodeURIComponent(state.currentUser.email)}&_=${Date.now()}`;
                 const response = await fetch(fetchUrl);
                 const result = await response.json();
 
@@ -2118,10 +2119,23 @@
 
             let html = '';
             state.localHistory.forEach(item => {
+                const statusStr = String(item.status || '').trim();
+                const statusLower = statusStr.toLowerCase();
+
+                // ตรวจจับสถานะ 'Done' จาก Column J (รวมถึง done, DONE, เรียบร้อย, สำเร็จ ฯลฯ)
+                const isDone = statusLower === 'done' || 
+                               statusLower.includes('done') || 
+                               statusStr === 'ดำเนินการเรียบร้อย' || 
+                               statusStr === 'ดำเนินการเรียบร้อยแล้ว' || 
+                               statusStr === 'แก้ไขเสร็จสิ้น' || 
+                               statusStr === 'แก้ไขแล้ว' || 
+                               statusStr.includes('เรียบร้อย') || 
+                               statusStr.includes('เสร็จสิ้น');
+
                 let badgeClass = 'bg-amber-100 text-amber-800 border border-amber-200';
                 let displayStatus = dictionary.status_pending;
 
-                if (item.status === 'ดำเนินการเรียบร้อย' || item.status === 'แก้ไขเสร็จสิ้น' || item.status === 'แก้ไขแล้ว' || item.status === 'ดำเนินการเรียบร้อยแล้ว') {
+                if (isDone) {
                     badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200';
                     displayStatus = dictionary.status_done;
                 }
@@ -2131,7 +2145,7 @@
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold text-slate-800">${item.issueType}</span>
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeClass}">
-                                <i class="fa-regular fa-clock mr-1"></i>${displayStatus}
+                                <i class="${isDone ? 'fa-solid fa-circle-check text-emerald-600' : 'fa-regular fa-clock'} mr-1"></i>${displayStatus}
                             </span>
                         </div>
                         <div class="flex items-center justify-between text-[10px] text-slate-500 font-mono">
