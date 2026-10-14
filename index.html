@@ -1710,7 +1710,7 @@
                 if (lockerSub) lockerSub.classList.remove('hidden');
                 if (lockerNum) {
                     lockerNum.required = true;
-                    lockerNum.focus();
+                    setTimeout(() => lockerNum.focus(), 100);
                 }
             }
         }
@@ -2013,8 +2013,15 @@
             } else if (issueType === 'ล็อกเกอร์มีปัญหา') {
                 const lockerProblem = document.getElementById('locker-problem-type').value;
                 const rawNum = document.getElementById('locker-number')?.value.trim() || '';
-                const cleanDigits = rawNum.replace(/^VSC/i, '').replace(/[^0-9]/g, '');
-                const fullLockerCode = 'VSC' + (cleanDigits || rawNum);
+                const cleanDigits = rawNum.replace(/[^0-9]/g, '');
+
+                if (!cleanDigits) {
+                    showNotification('กรุณากรอกหมายเลขตู้ล็อกเกอร์ (ตัวเลข)', 'warning');
+                    document.getElementById('locker-number')?.focus();
+                    return;
+                }
+
+                const fullLockerCode = 'VSC' + cleanDigits;
                 formattedDetails = `[หมายเลขตู้: ${fullLockerCode} | ปัญหา: ${lockerProblem}]\n`;
             }
 
