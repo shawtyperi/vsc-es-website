@@ -1300,7 +1300,8 @@
             searchQuery: '',
             attachedFiles: [],
             generatedOtp: null,
-            positionsList: OFFICIAL_POSITIONS
+            positionsList: OFFICIAL_POSITIONS,
+            isSubmitting: false
         };
 
         const i18n = {
@@ -1603,27 +1604,6 @@
 
             closeEditProfileModal();
             showNotification(`อัปเดตตำแหน่งเป็น "${finalPosition}" เรียบร้อยแล้ว!`, 'success');
-
-            // Send profile sync to Google Sheet API
-            const targetUrl = state.googleSheetUrl || DEFAULT_API_URL;
-            if (targetUrl) {
-                try {
-                    fetch(targetUrl, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'text/plain' },
-                        body: JSON.stringify({
-                            action: 'updateProfile',
-                            email: state.currentUser.email,
-                            name: newName,
-                            nickname: newNickname,
-                            position: finalPosition
-                        })
-                    }).catch(e => console.warn('Background profile sync notice:', e));
-                } catch (e) {
-                    console.warn('Sync ignored', e);
-                }
-            }
         }
 
         /* Initializing user session safely with DOM null-guards */
@@ -1895,10 +1875,12 @@
             showNotification('ออกจากระบบเรียบร้อย', 'info');
         }
 
-        async function fetchUserHistoryFromSheets() {
+        /* ดึงประวัติและซิงค์สถานะจาก Google Sheet gid=0 คอลัมน์ J:J */
+        async function fetchUserHistoryFromSheets(isManual = false) {
             if (!state.currentUser) return;
 
-            const cachedHistory = localStorage.getItem(`history_${state.currentUser.email}`);
+            const userEmail = state.currentUser.email || '';
+            const cachedHistory = localStorage.getItem(`history_${userEmail}`);
             if (cachedHistory) {
                 try {
                     state.localHistory = JSON.parse(cachedHistory);
@@ -1906,18 +1888,90 @@
                     state.localHistory = [];
                 }
             } else {
-                state.localHistory = [
-                    {
-                        id: "REP-1001",
-                        issueType: "การลางาน",
-                        issueDate: "2026-10-12",
-                        createdTime: "2026-10-12 14:30:00",
-                        status: "รอดำเนินการ",
-                        syncStatus: "Synced"
-                    }
-                ];
+                state.localHistory = [];
             }
-            renderLocalHistory();
+
+            // ซิงค์สถานะแบบเรียลไทม์จาก Google Sheet gid=0 คอลัมน์ J (Status)
+            const sheetId = SPREADSHEET_ID;
+            const gid = "0";
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${gid}&_=${Date.now()}`;
+
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+                const data = JSON.parse(jsonText);
+                const rows = data.table?.rows || [];
+
+                let hasUpdated = false;
+
+                rows.forEach((r, idx) => {
+                    const cells = (r.c || []).map(cell => cell?.v !== undefined && cell?.v !== null ? String(cell.v).trim() : '');
+                    if (cells.length === 0 || cells.every(v => v === '')) return;
+
+                    // คอลัมน์ J ใน Google Sheet คือ index 9 (A=0, B=1, C=2, D=3, E=4, F=5, G=6, H=7, I=8, J=9)
+                    const colJStatus = cells[9] || '';
+                    const rowText = cells.join(' ');
+
+                    // ตรวจสอบว่าคอลัมน์ J มีคำว่า Done หรือ แก้ไขแล้ว หรือไม่
+                    const isDone = colJStatus.toLowerCase() === 'done' || 
+                                   colJStatus === 'แก้ไขแล้ว' || 
+                                   colJStatus.includes('แก้ไขแล้ว') || 
+                                   colJStatus.includes('เรียบร้อย') || 
+                                   colJStatus.toLowerCase() === 'completed';
+
+                    // 1. อัปเดตรายการเดิมที่มีอยู่ในประวัติของผู้ใช้งาน
+                    state.localHistory.forEach(item => {
+                        const isMatch = (item.id && rowText.includes(item.id)) ||
+                                        (item.id && cells.some(c => c === item.id));
+
+                        if (isMatch) {
+                            if (isDone) {
+                                if (item.status !== 'ดำเนินการเรียบร้อย') {
+                                    item.status = 'ดำเนินการเรียบร้อย';
+                                    hasUpdated = true;
+                                }
+                            } else if (colJStatus && colJStatus !== item.status) {
+                                item.status = colJStatus;
+                                hasUpdated = true;
+                            }
+                        }
+                    });
+
+                    // 2. หากในเครื่องยังไม่มีประวัติ ให้ดึงแถวที่ตรงกับอีเมลหรือชื่อพนักงานมาแสดงในประวัติ
+                    const rowMatchesUser = (userEmail && rowText.includes(userEmail)) || 
+                                           (state.currentUser.name && rowText.includes(state.currentUser.name));
+
+                    if (rowMatchesUser) {
+                        const foundId = cells.find(c => c.startsWith('REP-')) || `REP-${idx + 1000}`;
+                        const alreadyExists = state.localHistory.some(h => h.id === foundId);
+
+                        if (!alreadyExists) {
+                            const issueTypeVal = cells[4] || cells[3] || 'แจ้งปัญหาทั่วไป';
+                            const dateVal = cells[5] || cells[6] || new Date().toISOString().split('T')[0];
+                            const timeVal = cells[0] || dateVal;
+
+                            state.localHistory.push({
+                                id: foundId,
+                                issueType: issueTypeVal,
+                                issueDate: dateVal,
+                                createdTime: timeVal,
+                                status: isDone ? 'ดำเนินการเรียบร้อย' : (colJStatus || 'รอดำเนินการ'),
+                                syncStatus: 'Synced'
+                            });
+                            hasUpdated = true;
+                        }
+                    }
+                });
+
+                if (hasUpdated) {
+                    localStorage.setItem(`history_${userEmail}`, JSON.stringify(state.localHistory));
+                }
+            } catch (err) {
+                console.warn('Real-time sync from sheet gid=0 note:', err);
+            } finally {
+                renderLocalHistory();
+            }
         }
 
         function openAdminAuth() {
@@ -2249,9 +2303,9 @@
             if (refreshIcon) refreshIcon.classList.add('fa-spin');
 
             try {
-                await fetchUserHistoryFromSheets();
+                await fetchUserHistoryFromSheets(isManual);
                 if (isManual) {
-                    showNotification('รีเฟรชประวัติรายงานเรียบร้อย', 'success');
+                    showNotification('รีเฟรชข้อมูลและสถานะล่าสุดจาก Google Sheet เรียบร้อย', 'success');
                 }
             } catch (e) {
                 if (isManual) showNotification('Network sync failure.', 'error');
@@ -2260,8 +2314,12 @@
             }
         }
 
+        /* ฟังก์ชันส่งข้อมูลลงชีท: กรอกข้อมูลให้เสร็จก่อน แล้วเอาข้อมูลที่กรอกเสร็จลงชีทเพียง 1 ครั้ง */
         async function handleFormSubmit(event) {
             event.preventDefault();
+
+            // ป้องกันการกดส่งซ้ำซ้อนขณะกำลังซิงค์
+            if (state.isSubmitting) return;
 
             if (state.attachedFiles.length === 0) {
                 showNotification('กรุณาแนบภาพถ่ายหรือภาพหน้าจอหลักฐานอย่างน้อย 1 รูป', 'warning');
@@ -2330,6 +2388,7 @@
                 String(now.getMinutes()).padStart(2, '0') + ':' + 
                 String(now.getSeconds()).padStart(2, '0');
 
+            // บรรจุข้อมูลทั้งหมดที่กรอกเสร็จสิ้นสมบูรณ์เพื่อเตรียมส่งลงชีท 1 ครั้ง
             const payload = {
                 id: reportId,
                 employeeName: employeeName,
@@ -2347,14 +2406,24 @@
 
             const submitBtn = document.getElementById('submit-btn');
             const originalHtml = submitBtn.innerHTML;
+            
+            // ล็อคปุ่มส่งทันทีเพื่อป้องกันการกดเบิ้ล
+            state.isSubmitting = true;
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> บันทึกข้อมูลและซิงค์ชีท...`;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> กำลังบันทึกข้อมูลลงชีท...`;
 
             let isSyncSuccess = false;
             const targetUrl = state.googleSheetUrl || DEFAULT_API_URL;
             if (targetUrl) {
                 try {
-                    isSyncSuccess = await sendToGoogleSheetWithRetry(payload, targetUrl);
+                    // ส่งข้อมูลที่กรอกเสร็จลง Google Sheet 1 ครั้งถ้วน
+                    await fetch(targetUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: JSON.stringify(payload)
+                    });
+                    isSyncSuccess = true;
                 } catch (err) {
                     console.error('Failed to write spreadsheet API', err);
                 }
@@ -2373,38 +2442,22 @@
             localStorage.setItem(`history_${userEmail}`, JSON.stringify(state.localHistory));
             renderLocalHistory();
 
+            // รีเซ็ตฟอร์มหลังจากส่งข้อมูลเรียบร้อย
             document.getElementById('issue-form').reset();
             clearImageSelection();
             document.getElementById('issue-details-container').classList.add('hidden');
 
+            state.isSubmitting = false;
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalHtml;
 
             if (isSyncSuccess) {
-                showNotification(`ส่งรายงานปัญหาสำเร็จ! (ID: ${reportId}) บันทึกข้อมูลขึ้นชีทเรียบร้อย`, 'success');
+                showNotification(`ส่งรายงานปัญหาสำเร็จ! (ID: ${reportId}) บันทึกข้อมูลขึ้นชีทเรียบร้อย 1 ครั้ง`, 'success');
+                // ตรวจสอบอัปเดตสถานะล่าสุด
+                setTimeout(() => { fetchUserHistoryFromSheets(false); }, 1500);
             } else {
                 showNotification(`บันทึกรายงานปัญหาเรียบร้อยแล้ว (ID: ${reportId})`, 'success');
             }
-        }
-
-        async function sendToGoogleSheetWithRetry(data, url, maxRetries = 2) {
-            let delay = 1000;
-            for (let i = 0; i < maxRetries; i++) {
-                try {
-                    await fetch(url, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'text/plain' },
-                        body: JSON.stringify(data)
-                    });
-                    return true;
-                } catch (e) {
-                    console.warn(`Retry attempt ${i+1} failed. Retrying...`, e);
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    delay *= 2;
-                }
-            }
-            return false;
         }
 
         function renderLocalHistory() {
@@ -2437,9 +2490,19 @@
                 let badgeClass = 'bg-amber-100 text-amber-800 border border-amber-200';
                 let displayStatus = item.status;
 
-                if (item.status === 'ดำเนินการเรียบร้อย' || item.status === 'แก้ไขเสร็จสิ้น' || item.status === 'แก้ไขแล้ว' || item.status === 'ดำเนินการเรียบร้อยแล้ว') {
+                const statusLower = (item.status || '').toLowerCase();
+                // รองรับเงื่อนไข Done หรือ แก้ไขแล้ว หรือ ดำเนินการเรียบร้อย
+                if (
+                    item.status === 'ดำเนินการเรียบร้อย' || 
+                    item.status === 'แก้ไขเสร็จสิ้น' || 
+                    item.status === 'แก้ไขแล้ว' || 
+                    item.status === 'ดำเนินการเรียบร้อยแล้ว' ||
+                    statusLower === 'done' ||
+                    statusLower.includes('แก้ไขแล้ว') ||
+                    statusLower.includes('เรียบร้อย')
+                ) {
                     badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200';
-                    displayStatus = dictionary.status_done;
+                    displayStatus = dictionary.status_done; // แสดงผลเป็น "ดำเนินการเรียบร้อย"
                 } else if (item.status === 'รอดำเนินการ') {
                     badgeClass = 'bg-amber-100 text-amber-800 border border-amber-200';
                     displayStatus = dictionary.status_pending;
@@ -2452,7 +2515,7 @@
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold text-slate-800">${item.issueType}</span>
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeClass}">
-                                <i class="fa-regular fa-clock mr-1"></i>${displayStatus}
+                                <i class="${displayStatus === dictionary.status_done ? 'fa-solid fa-circle-check' : 'fa-regular fa-clock'} mr-1"></i>${displayStatus}
                             </span>
                         </div>
                         <div class="flex items-center justify-between text-[10px] text-slate-500 font-mono">
