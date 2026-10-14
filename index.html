@@ -751,36 +751,36 @@
                                 <!-- Action Submit Button -->
                                 <div class="pt-2">
                                     <button type="submit" id="submit-btn" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md shadow-blue-500/20 flex items-center justify-center space-x-2 transition-all">
-                                        <i class="fa-solid fa-paper-plane"></i>
-                                        <span data-i18n="submit_btn">ส่งรายงานปัญหาระบบและบันทึกรูปภาพ</span>
-                                    </button>
-                                </div>
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    <span data-i18n="submit_btn">ส่งรายงานปัญหาระบบและบันทึกรูปภาพ</span>
+                                </button>
                             </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- RIGHT COLUMN: Recent Submissions History (4 Cols) -->
-                <div class="lg:col-span-4 space-y-6">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col">
-                        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                            <div class="flex items-center space-x-2">
-                                <i class="fa-solid fa-clock-rotate-left text-blue-600 text-xs"></i>
-                                <h4 class="font-bold text-slate-900 text-xs sm:text-sm" data-i18n="history_title">ประวัติการส่งรายงานล่าสุดของคุณ</h4>
-                            </div>
-                            <button onclick="checkReportStatusAutomated(true)" class="text-[11px] text-blue-600 hover:text-blue-800 font-semibold flex items-center space-x-1">
-                                <i id="refresh-icon" class="fa-solid fa-rotate text-[10px]"></i>
-                                <span data-i18n="refresh_btn">รีเฟรช</span>
-                            </button>
                         </div>
-
-                        <!-- Submission Cards List -->
-                        <div id="local-history-list" class="divide-y divide-slate-100 max-h-[32rem] overflow-y-auto p-2 space-y-2"></div>
-                    </div>
+                    </form>
                 </div>
-
             </div>
-        </section>
+
+            <!-- RIGHT COLUMN: Recent Submissions History (4 Cols) -->
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col">
+                    <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-clock-rotate-left text-blue-600 text-xs"></i>
+                            <h4 class="font-bold text-slate-900 text-xs sm:text-sm" data-i18n="history_title">ประวัติการส่งรายงานล่าสุดของคุณ</h4>
+                        </div>
+                        <button onclick="checkReportStatusAutomated(true)" class="text-[11px] text-blue-600 hover:text-blue-800 font-semibold flex items-center space-x-1">
+                            <i id="refresh-icon" class="fa-solid fa-rotate text-[10px]"></i>
+                            <span data-i18n="refresh_btn">รีเฟรช</span>
+                        </button>
+                    </div>
+
+                    <!-- Submission Cards List -->
+                    <div id="local-history-list" class="divide-y divide-slate-100 max-h-[32rem] overflow-y-auto p-2 space-y-2"></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
 
         <!-- TAB 2: LOCKER MAP -->
         <section id="tab-content-locker" class="space-y-4 sm:space-y-6 hidden">
@@ -1875,11 +1875,40 @@
             showNotification('ออกจากระบบเรียบร้อย', 'info');
         }
 
+        /* ตรวจสอบค่าสถานะ Done หรือ แก้ไขแล้ว อย่างครอบคลุม */
+        function checkIsDoneStatus(colJVal, allCells) {
+            const s = String(colJVal || '').toLowerCase().trim();
+            if (
+                s === 'done' || 
+                s.includes('done') || 
+                s.includes('แก้ไขแล้ว') || 
+                s.includes('เรียบร้อย') || 
+                s.includes('เสร็จ') || 
+                s === 'completed' || 
+                s === 'true'
+            ) {
+                return true;
+            }
+            // ตรวจสอบเพิ่มเติมว่ามีเซลล์ใดในแถวนี้ที่ระบุว่า Done หรือ แก้ไขแล้ว หรือไม่
+            return (allCells || []).some(c => {
+                const cs = String(c || '').toLowerCase().trim();
+                return cs === 'done' || 
+                       cs === 'แก้ไขแล้ว' || 
+                       cs.includes('แก้ไขแล้ว') || 
+                       cs.includes('เรียบร้อยแล้ว') || 
+                       cs === 'completed';
+            });
+        }
+
         /* ดึงประวัติและซิงค์สถานะจาก Google Sheet gid=0 คอลัมน์ J:J */
         async function fetchUserHistoryFromSheets(isManual = false) {
             if (!state.currentUser) return;
 
-            const userEmail = state.currentUser.email || '';
+            const userEmail = (state.currentUser.email || '').toLowerCase().trim();
+            const userName = (state.currentUser.name || '').toLowerCase().trim();
+            const userNickname = (state.currentUser.nickname || '').toLowerCase().trim();
+            const emailPrefix = userEmail ? userEmail.split('@')[0] : '';
+
             const cachedHistory = localStorage.getItem(`history_${userEmail}`);
             if (cachedHistory) {
                 try {
@@ -1903,60 +1932,106 @@
                 const data = JSON.parse(jsonText);
                 const rows = data.table?.rows || [];
 
+                // ค้นหาตำแหน่งคอลัมน์ J (Column J) จากโครงสร้างข้อมูล GViz อย่างแม่นยำ
+                let colJIndex = -1;
+                if (data.table?.cols && Array.isArray(data.table.cols)) {
+                    colJIndex = data.table.cols.findIndex(c => c && (
+                        c.id === 'J' || 
+                        c.label === 'J' || 
+                        (c.label && (c.label.includes('สถานะ') || c.label.toLowerCase().includes('status')))
+                    ));
+                }
+                if (colJIndex === -1) colJIndex = 9; // คอลัมน์ที่ 10 (J: A=0, B=1, ... J=9)
+
                 let hasUpdated = false;
+                const parsedSheetRows = [];
 
                 rows.forEach((r, idx) => {
-                    const cells = (r.c || []).map(cell => cell?.v !== undefined && cell?.v !== null ? String(cell.v).trim() : '');
+                    if (!r || !r.c) return;
+                    const cells = r.c.map(cell => {
+                        if (!cell) return '';
+                        if (cell.v !== undefined && cell.v !== null) return String(cell.v).trim();
+                        if (cell.f !== undefined && cell.f !== null) return String(cell.f).trim();
+                        return '';
+                    });
                     if (cells.length === 0 || cells.every(v => v === '')) return;
 
-                    // คอลัมน์ J ใน Google Sheet คือ index 9 (A=0, B=1, C=2, D=3, E=4, F=5, G=6, H=7, I=8, J=9)
-                    const colJStatus = cells[9] || '';
                     const rowText = cells.join(' ');
+                    // ข้ามแถวหัวตาราง
+                    if (cells[0] && (cells[0].includes('ประทับเวลา') || cells[0].includes('Timestamp') || cells[0] === 'ID')) return;
 
-                    // ตรวจสอบว่าคอลัมน์ J มีคำว่า Done หรือ แก้ไขแล้ว หรือไม่
-                    const isDone = colJStatus.toLowerCase() === 'done' || 
-                                   colJStatus === 'แก้ไขแล้ว' || 
-                                   colJStatus.includes('แก้ไขแล้ว') || 
-                                   colJStatus.includes('เรียบร้อย') || 
-                                   colJStatus.toLowerCase() === 'completed';
+                    // ค่าในคอลัมน์ J (หรือคอลัมน์สถานะ)
+                    const colJStatus = (colJIndex !== -1 && cells[colJIndex] !== undefined && cells[colJIndex] !== '') 
+                        ? cells[colJIndex] 
+                        : (cells[9] || '');
 
-                    // 1. อัปเดตรายการเดิมที่มีอยู่ในประวัติของผู้ใช้งาน
-                    state.localHistory.forEach(item => {
-                        const isMatch = (item.id && rowText.includes(item.id)) ||
-                                        (item.id && cells.some(c => c === item.id));
+                    const isDone = checkIsDoneStatus(colJStatus, cells);
 
-                        if (isMatch) {
-                            if (isDone) {
-                                if (item.status !== 'ดำเนินการเรียบร้อย') {
-                                    item.status = 'ดำเนินการเรียบร้อย';
-                                    hasUpdated = true;
-                                }
-                            } else if (colJStatus && colJStatus !== item.status) {
-                                item.status = colJStatus;
-                                hasUpdated = true;
-                            }
-                        }
+                    parsedSheetRows.push({
+                        idx,
+                        cells,
+                        rowText,
+                        colJStatus,
+                        isDone
+                    });
+                });
+
+                // 1. อัปเดตรายการเดิมที่มีอยู่ใน state.localHistory
+                state.localHistory.forEach(item => {
+                    // จับคู่ด้วย ID หรือประเภทปัญหา + วันที่
+                    const matched = parsedSheetRows.find(sr => {
+                        const idMatch = item.id && (sr.rowText.includes(item.id) || sr.cells.some(c => c === item.id));
+                        if (idMatch) return true;
+
+                        // ถ้าไม่มี ID ให้จับคู่ด้วยประเภทปัญหา + วันที่แจ้ง
+                        const typeMatch = item.issueType && sr.rowText.includes(item.issueType);
+                        const dateMatch = (item.issueDate && sr.rowText.includes(item.issueDate)) ||
+                                          (item.createdTime && sr.rowText.includes(item.createdTime.split(' ')[0]));
+                        return typeMatch && dateMatch;
                     });
 
-                    // 2. หากในเครื่องยังไม่มีประวัติ ให้ดึงแถวที่ตรงกับอีเมลหรือชื่อพนักงานมาแสดงในประวัติ
-                    const rowMatchesUser = (userEmail && rowText.includes(userEmail)) || 
-                                           (state.currentUser.name && rowText.includes(state.currentUser.name));
+                    if (matched) {
+                        if (matched.isDone) {
+                            if (item.status !== 'ดำเนินการเรียบร้อย') {
+                                item.status = 'ดำเนินการเรียบร้อย';
+                                hasUpdated = true;
+                            }
+                        } else if (matched.colJStatus && matched.colJStatus !== item.status) {
+                            item.status = matched.colJStatus;
+                            hasUpdated = true;
+                        }
+                    }
+                });
 
-                    if (rowMatchesUser) {
-                        const foundId = cells.find(c => c.startsWith('REP-')) || `REP-${idx + 1000}`;
-                        const alreadyExists = state.localHistory.some(h => h.id === foundId);
+                // 2. ดึงรายการจาก Google Sheet ที่เป็นของผู้ใช้คนนี้เข้ามาเพิ่มเติม (กรณีเปิดเครื่องใหม่หรือล้างแคช)
+                parsedSheetRows.forEach(sr => {
+                    const rowLower = sr.rowText.toLowerCase();
+                    const isUserRow = (userEmail && rowLower.includes(userEmail)) ||
+                                      (emailPrefix && emailPrefix.length >= 3 && rowLower.includes(emailPrefix)) ||
+                                      (userName && userName.length >= 2 && rowLower.includes(userName)) ||
+                                      (userNickname && userNickname.length >= 2 && rowLower.includes(userNickname));
+
+                    if (isUserRow) {
+                        // ค้นหารหัส REP- ในแถว
+                        const foundIdMatch = sr.rowText.match(/REP-\d+/);
+                        const id = foundIdMatch ? foundIdMatch[0] : (sr.cells.find(c => c.startsWith('REP-')) || `REP-${sr.idx + 1000}`);
+
+                        const alreadyExists = state.localHistory.some(h => 
+                            h.id === id || 
+                            (h.issueType && sr.rowText.includes(h.issueType) && sr.rowText.includes(h.issueDate))
+                        );
 
                         if (!alreadyExists) {
-                            const issueTypeVal = cells[4] || cells[3] || 'แจ้งปัญหาทั่วไป';
-                            const dateVal = cells[5] || cells[6] || new Date().toISOString().split('T')[0];
-                            const timeVal = cells[0] || dateVal;
+                            const issueTypeVal = ['การลางาน', 'การกดขอโอที', 'กะการทำงานไม่ตรง', 'เข้า VSC Care ไม่ได้', 'ล็อกเกอร์มีปัญหา'].find(t => sr.rowText.includes(t)) || sr.cells[4] || 'แจ้งปัญหา';
+                            const dateMatch = sr.rowText.match(/\d{4}-\d{2}-\d{2}/);
+                            const issueDateVal = dateMatch ? dateMatch[0] : (sr.cells[5] || new Date().toISOString().split('T')[0]);
 
                             state.localHistory.push({
-                                id: foundId,
+                                id: id,
                                 issueType: issueTypeVal,
-                                issueDate: dateVal,
-                                createdTime: timeVal,
-                                status: isDone ? 'ดำเนินการเรียบร้อย' : (colJStatus || 'รอดำเนินการ'),
+                                issueDate: issueDateVal,
+                                createdTime: sr.cells[0] || issueDateVal,
+                                status: sr.isDone ? 'ดำเนินการเรียบร้อย' : (sr.colJStatus || 'รอดำเนินการ'),
                                 syncStatus: 'Synced'
                             });
                             hasUpdated = true;
@@ -1964,7 +2039,7 @@
                     }
                 });
 
-                if (hasUpdated) {
+                if (hasUpdated || state.localHistory.length > 0) {
                     localStorage.setItem(`history_${userEmail}`, JSON.stringify(state.localHistory));
                 }
             } catch (err) {
@@ -2378,8 +2453,9 @@
                 formattedDetails = `[ปัญหาล็อกเกอร์: ${lockerProblem}]\n`;
             }
 
-            const description = `[ตำแหน่ง: ${position}]\n${formattedDetails}รายละเอียดเพิ่มเติม: ${rawDescription}`;
             const reportId = 'REP-' + Math.floor(1000 + Math.random() * 9000);
+            // แนบรหัสอ้างอิงและตำแหน่งลงในรายละเอียดเพื่อการจับคู่ที่แม่นยำ 100% กับ Google Sheet
+            const description = `[รหัสอ้างอิง: ${reportId}]\n[ตำแหน่ง: ${position}]\n${formattedDetails}รายละเอียดเพิ่มเติม: ${rawDescription}`;
             const now = new Date();
             const createdTime = now.getFullYear() + '-' + 
                 String(now.getMonth() + 1).padStart(2, '0') + '-' + 
@@ -2453,7 +2529,7 @@
 
             if (isSyncSuccess) {
                 showNotification(`ส่งรายงานปัญหาสำเร็จ! (ID: ${reportId}) บันทึกข้อมูลขึ้นชีทเรียบร้อย 1 ครั้ง`, 'success');
-                // ตรวจสอบอัปเดตสถานะล่าสุด
+                // ตรวจสอบอัปเดตสถานะล่าสุดจากชีท
                 setTimeout(() => { fetchUserHistoryFromSheets(false); }, 1500);
             } else {
                 showNotification(`บันทึกรายงานปัญหาเรียบร้อยแล้ว (ID: ${reportId})`, 'success');
@@ -2490,20 +2566,25 @@
                 let badgeClass = 'bg-amber-100 text-amber-800 border border-amber-200';
                 let displayStatus = item.status;
 
-                const statusLower = (item.status || '').toLowerCase();
-                // รองรับเงื่อนไข Done หรือ แก้ไขแล้ว หรือ ดำเนินการเรียบร้อย
+                const statusStr = String(item.status || '').trim();
+                const statusLower = statusStr.toLowerCase();
+
+                // รองรับเงื่อนไข Done หรือ แก้ไขแล้ว หรือ ดำเนินการเรียบร้อย ในทุกรูปแบบ
                 if (
-                    item.status === 'ดำเนินการเรียบร้อย' || 
-                    item.status === 'แก้ไขเสร็จสิ้น' || 
-                    item.status === 'แก้ไขแล้ว' || 
-                    item.status === 'ดำเนินการเรียบร้อยแล้ว' ||
+                    statusStr === 'ดำเนินการเรียบร้อย' || 
+                    statusStr === 'แก้ไขเสร็จสิ้น' || 
+                    statusStr === 'แก้ไขแล้ว' || 
+                    statusStr === 'ดำเนินการเรียบร้อยแล้ว' ||
                     statusLower === 'done' ||
+                    statusLower.includes('done') ||
                     statusLower.includes('แก้ไขแล้ว') ||
-                    statusLower.includes('เรียบร้อย')
+                    statusLower.includes('เรียบร้อย') ||
+                    statusLower === 'completed' ||
+                    statusLower === 'true'
                 ) {
-                    badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+                    badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-2xs';
                     displayStatus = dictionary.status_done; // แสดงผลเป็น "ดำเนินการเรียบร้อย"
-                } else if (item.status === 'รอดำเนินการ') {
+                } else if (statusStr === 'รอดำเนินการ' || statusLower === 'pending') {
                     badgeClass = 'bg-amber-100 text-amber-800 border border-amber-200';
                     displayStatus = dictionary.status_pending;
                 } else {
@@ -2515,7 +2596,7 @@
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold text-slate-800">${item.issueType}</span>
                             <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeClass}">
-                                <i class="${displayStatus === dictionary.status_done ? 'fa-solid fa-circle-check' : 'fa-regular fa-clock'} mr-1"></i>${displayStatus}
+                                <i class="${displayStatus === dictionary.status_done ? 'fa-solid fa-circle-check text-emerald-600' : 'fa-regular fa-clock text-amber-600'} mr-1"></i>${displayStatus}
                             </span>
                         </div>
                         <div class="flex items-center justify-between text-[10px] text-slate-500 font-mono">
@@ -3004,6 +3085,13 @@
             } else {
                 showLoginScreen();
             }
+
+            // ตั้งเวลาตรวจสอบสถานะล่าสุดจากชีทอัตโนมัติทุก 30 วินาที
+            setInterval(() => {
+                if (state.currentUser && state.currentMainTab === 'empeo') {
+                    fetchUserHistoryFromSheets(false);
+                }
+            }, 30000);
 
             setLanguage('th');
         };
