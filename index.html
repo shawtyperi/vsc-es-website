@@ -1464,46 +1464,6 @@
             }
         }
 
-        async function fetchPositionsFromSheet() {
-            const statusEl = document.getElementById('pos-sync-status');
-            if (statusEl) {
-                statusEl.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-[9px] mr-1"></i> กำลังซิงค์ตำแหน่งจากชีท...`;
-            }
-
-            const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&gid=${POSITION_SHEET_GID}&_=${Date.now()}`;
-
-            try {
-                const response = await fetch(url);
-                const text = await response.text();
-                const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-                const data = JSON.parse(jsonText);
-                const rows = data.table?.rows || [];
-
-                const sheetPositions = [];
-
-                rows.forEach(r => {
-                    const cells = (r.c || []).map(cell => (cell?.v !== undefined && cell?.v !== null) ? String(cell.v).trim() : '');
-                    cells.forEach(val => {
-                        if (!val) return;
-                        // Skip sequence numbers and typical header identifiers
-                        if (/^\d+$/.test(val)) return;
-                        const lower = val.toLowerCase();
-                        if (val.includes('ตำแหน่ง') || lower.includes('position') || lower === 'no' || lower === 'ลำดับ' || lower === 'id') return;
-
-                        if (!sheetPositions.includes(val) && val !== 'อื่นๆ' && !val.includes('โปรดระบุเพิ่มเติม')) {
-                            sheetPositions.push(val);
-                        }
-                    });
-                });
-
-                if (sheetPositions.length > 0) {
-                    sheetPositions.sort((a, b) => a.localeCompare(b, 'th'));
-                    sheetPositions.push("อื่นๆ (โปรดระบุเพิ่มเติม)");
-                    state.positionsList = sheetPositions;
-                    renderPositionDatalist(sheetPositions);
-                    if (statusEl) {
-                        statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500 text-[9px] mr-1"></i> ซิงค์สด (${sheetPositions.length - 1} ตำแหน่ง)`;
-                    }
         function loadCuratedPositions() {
             state.positionsList = [...OFFICIAL_POSITIONS];
             renderPositionDatalist(OFFICIAL_POSITIONS);
@@ -1723,7 +1683,7 @@
         }
 
         function toggleRegPositionOther(val) {
-            toggleRegDeptOther(val);
+            handlePositionInput(val);
         }
 
         function sendRegisterOTP() {
